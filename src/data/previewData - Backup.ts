@@ -1,0 +1,38 @@
+export const previewCategories: Record<string, string> = {
+  restaurants: "Restaurants",
+  realestate: "Real Estate",
+  construction: "Construction",
+  beauty: "Beauty & Salons",
+  photography: "Photography",
+  fitness: "Fitness & Gyms",
+  cleaning: "Cleaning",
+  landscaping: "Landscaping",
+  online: "Online Stores",
+  retail: "Retail Stores",
+  law: "Law Firms",
+  accounting: "Accounting",
+  marketing: "Marketing",
+  education: "Education & Tutoring",
+  tech: "Tech",
+  coaching: "Coaching & Consulting",
+};
+
+// Maps category key → folder name under public/logo-mockups/
+export const mockupFolders: Record<string, string> = {
+  restaurants: "restaurants",
+  realestate: "real-estate",
+  construction: "construction",
+  beauty: "beauty-salons",
+  photography: "photography",
+  fitness: "fitness-gyms",
+  cleaning: "cleaning",
+  landscaping: "landscaping",
+  online: "online-stores",
+  retail: "retail-stores",
+  law: "law-firms",
+  accounting: "accounting",
+  marketing: "marketing",
+  education: "education-tutoring",
+  tech: "tech",
+  coaching: "coaching-consulting",
+};
