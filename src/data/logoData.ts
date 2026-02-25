@@ -101,6 +101,21 @@ export const categories: Record<string, Category> = {
     folder: "tattoo-studio",
     items: generateItems(22),
   },
+  insuranceAgency: {
+    l: "Insurance Agency",
+    folder: "insurance-agency",
+    items: generateItems(24),
+  },
+  jewelryBrand: {
+    l: "Jewelry Brand",
+    folder: "jewelry-brand",
+    items: generateItems(24),
+  },
+  techStartup: {
+    l: "Tech Startup",
+    folder: "tech-startup",
+    items: generateItems(24),
+  },
 };
 
 export const categoryKeys = Object.keys(categories);

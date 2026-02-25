@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { categories, categoryKeys } from "@/data/logoData";
-import CategoryTabs from "./CategoryTabs";
+import CategoryTabsAdvanced from "./CategoryTabsAdvanced";
 import SectionHeader from "./SectionHeader";
 
 const DISPLAY_COUNT = 12;
@@ -70,7 +70,7 @@ export default function LogoExamples() {
         className="mb-14 md:mb-[56px]"
       />
 
-      <CategoryTabs
+      <CategoryTabsAdvanced
         tabs={tabMap}
         active={active}
         onSelect={handleSelect}

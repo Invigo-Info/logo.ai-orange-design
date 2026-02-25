@@ -183,6 +183,11 @@ html {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
+/* ── Hide scrollbar for category tabs ── */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Footer section transition ── */
 .footer-fade::before {
   content: "";
