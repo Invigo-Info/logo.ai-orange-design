@@ -1,11 +1,11 @@
 const links = [
-  "About",
-  "Careers",
-  "Contact",
-  "Press",
-  "Privacy",
-  "Cookie Policy",
-  "Terms",
+  { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
+  { label: "Contact", href: "/contact" },
+  { label: "Press", href: "/press" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Cookie Policy", href: "/cookies" },
+  { label: "Terms", href: "/terms" },
 ];
 
 export default function Footer() {
@@ -26,11 +26,11 @@ export default function Footer() {
         <div className="flex gap-5 flex-wrap justify-center">
           {links.map((link) => (
             <a
-              key={link}
-              href="#"
+              key={link.href}
+              href={link.href}
               className="text-[0.78rem] text-cream-35 transition-colors duration-200 hover:text-cream"
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </div>
