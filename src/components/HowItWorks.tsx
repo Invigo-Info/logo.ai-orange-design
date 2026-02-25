@@ -5,17 +5,17 @@ const steps = [
   {
     num: "01",
     title: "Tell Us About Your Brand",
-    desc: "Answer a few simple questions about your brand.\nQuick taps. No long forms.",
+    desc: "Add your name and answer a few quick questions.",
   },
   {
     num: "02",
-    title: "Explore Your Logo Options",
-    desc: "We generate logo options in seconds, made for your brand.\nChoose the one you like most.",
+    title: "Review Your Options",
+    desc: "We create multiple logo designs for your brand. Choose your favorite.",
   },
   {
     num: "03",
     title: "Download & Use Anywhere",
-    desc: "Download high-quality logo files for web, print, and social.\nReady to use right away.",
+    desc: "High-quality files ready for web, social, and print.",
   },
 ];
 
@@ -27,8 +27,8 @@ export default function HowItWorks() {
     >
       <SectionHeader
         eyebrow="How It Works"
-        title="Get a Stunning Logo for Your Brand in 60 Seconds"
-        description="No design skills needed. Just a few quick taps."
+        title="From Brand to Logo in Seconds"
+        description="Just a few quick taps. No design skills needed."
         className="mb-14 md:mb-[56px]"
       />
 

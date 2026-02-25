@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 const DEFAULT_LINKS = [
-  { label: "Why logo.ai", href: "#how" },
+  // { label: "Why logo.ai", href: "#how" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "#faq" },
 ];

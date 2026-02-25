@@ -19,7 +19,7 @@ export default function Footer() {
 
         {/* Tagline */}
         <p className="text-[0.92rem] font-medium text-cream-55">
-          Stunning, professional logos. Generated in seconds.
+          Professional logos. Ready in seconds.
         </p>
 
         {/* Links */}
