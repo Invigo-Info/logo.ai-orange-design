@@ -8,7 +8,6 @@ import { getSupabase } from "@/lib/supabase";
 const BASE_COUNT = 63482;
 
 const PRESS_NAV_LINKS = [
-  { label: "Why logo.ai", href: "/#how" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "/#faq" },
 ];

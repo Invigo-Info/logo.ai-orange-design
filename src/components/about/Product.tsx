@@ -74,7 +74,7 @@ export default function Product() {
       <div className="max-w-[1100px] mx-auto md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
           {/* ── Left: Feature card grid ── */}
-          <ScrollReveal delay={1}>
+          <ScrollReveal delay={1} className="order-2 lg:order-1">
             <div className="grid grid-cols-2 gap-4">
               {FEATURES.map((f) => (
                 <div
@@ -106,7 +106,7 @@ export default function Product() {
           </ScrollReveal>
 
           {/* ── Right: Text content ── */}
-          <div>
+          <div className="order-1 lg:order-2 text-center lg:text-left">
             {/* .section-tag */}
             <ScrollReveal>
               <div className="font-display text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-accent mb-4">
@@ -127,7 +127,7 @@ export default function Product() {
 
             {/* p.desc paragraphs */}
             <ScrollReveal delay={2}>
-              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px]">
+              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px] mx-auto lg:mx-0">
                 Logo.ai doesn&apos;t recycle templates. It actually{" "}
                 <strong className="text-cream font-semibold">designs</strong> — from
                 scratch, every single time.
@@ -135,7 +135,7 @@ export default function Product() {
             </ScrollReveal>
 
             <ScrollReveal delay={3}>
-              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px]">
+              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px] mx-auto lg:mx-0">
                 Describe your brand. In under 60 seconds, our AI generates stunning,
                 original logos and a{" "}
                 <strong className="text-cream font-semibold">complete brand kit</strong>{" "}
@@ -144,7 +144,7 @@ export default function Product() {
             </ScrollReveal>
 
             <ScrollReveal delay={3}>
-              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px]">
+              <p className="font-sans text-[1.02rem] leading-[1.8] font-normal text-cream-55 mb-5 max-w-[460px] mx-auto lg:mx-0">
                 We showed early demos to founders. Their first reaction?{" "}
                 <strong className="text-cream font-semibold">
                   &quot;This can&apos;t be real.&quot;

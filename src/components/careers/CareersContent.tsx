@@ -105,10 +105,40 @@ const inputClass =
 
 function InterestForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("/api/careers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          interest: formData.get("interest"),
+          portfolio: formData.get("portfolio"),
+          why: formData.get("why"),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -147,6 +177,7 @@ function InterestForm() {
         </label>
         <input
           type="email"
+          name="email"
           placeholder="you@example.com"
           required
           className={inputClass}
@@ -159,6 +190,7 @@ function InterestForm() {
           Area of Interest
         </label>
         <select
+          name="interest"
           required
           defaultValue=""
           className={`${inputClass} pr-10 bg-no-repeat bg-[right_16px_center] bg-[length:12px_12px]`}
@@ -188,6 +220,7 @@ function InterestForm() {
         </label>
         <input
           type="url"
+          name="portfolio"
           placeholder="https://linkedin.com/in/you"
           className={inputClass}
         />
@@ -199,18 +232,25 @@ function InterestForm() {
           Why Logo.ai?
         </label>
         <textarea
+          name="why"
           placeholder="Tell us what excites you about what we're building."
           className={`${inputClass} resize-y min-h-[100px] leading-[1.6]`}
         />
       </div>
 
+      {/* Error */}
+      {error && (
+        <p className="text-[0.85rem] text-red-400">{error}</p>
+      )}
+
       {/* Submit */}
       <div className="mt-1.5">
         <button
           type="submit"
-          className="relative z-[1] px-8 py-4 rounded-full border-none bg-accent text-white font-semibold text-[0.9rem] whitespace-nowrap shadow-[0_0_30px_rgba(232,66,13,.15)] transition-all duration-300 cursor-pointer inline-flex items-center gap-2 hover:bg-accent-hi hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(232,66,13,.25),0_10px_40px_rgba(0,0,0,.3)]"
+          disabled={loading}
+          className="relative z-[1] px-8 py-4 rounded-full border-none bg-accent text-white font-semibold text-[0.9rem] whitespace-nowrap shadow-[0_0_30px_rgba(232,66,13,.15)] transition-all duration-300 cursor-pointer inline-flex items-center gap-2 hover:bg-accent-hi hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(232,66,13,.25),0_10px_40px_rgba(0,0,0,.3)] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
         >
-          Submit &rarr;
+          {loading ? "Submitting..." : "Submit →"}
         </button>
       </div>
     </form>
