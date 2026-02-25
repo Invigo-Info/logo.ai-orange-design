@@ -79,7 +79,7 @@ export default function Product() {
               {FEATURES.map((f) => (
                 <div
                   key={f.title}
-                  className="rounded-[16px] border border-[rgba(232,232,230,.10)] bg-[rgba(232,232,230,.03)] p-5 flex items-start gap-4"
+                  className="rounded-[16px] border border-[rgba(232,232,230,.10)] bg-[rgba(232,232,230,.03)] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4"
                 >
                   {/* Icon */}
                   <div

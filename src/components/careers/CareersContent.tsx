@@ -107,13 +107,18 @@ function InterestForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [tried, setTried] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setTried(true);
+
+    const form = e.target as HTMLFormElement;
+    if (!form.checkValidity()) return;
+
     setLoading(true);
     setError("");
 
-    const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
     try {
@@ -169,7 +174,7 @@ function InterestForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
+    <form onSubmit={handleSubmit} noValidate className={`flex flex-col gap-[18px] ${tried ? "tried" : ""}`}>
       {/* Email */}
       <div className="flex flex-col gap-2">
         <label className="font-display text-[0.65rem] tracking-[0.12em] uppercase text-cream-35 font-semibold">
@@ -222,6 +227,7 @@ function InterestForm() {
           type="url"
           name="portfolio"
           placeholder="https://linkedin.com/in/you"
+          required
           className={inputClass}
         />
       </div>
@@ -234,6 +240,7 @@ function InterestForm() {
         <textarea
           name="why"
           placeholder="Tell us what excites you about what we're building."
+          required
           className={`${inputClass} resize-y min-h-[100px] leading-[1.6]`}
         />
       </div>

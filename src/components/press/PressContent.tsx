@@ -45,13 +45,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
    Copy Block
    ════════════════════════════════════════════ */
 
-function CopyBlock({
-  label,
-  text,
-}: {
-  label: string;
-  text: string;
-}) {
+function CopyBlock({ label, text }: { label: string; text: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -90,13 +84,7 @@ function CopyBlock({
    Quote Card
    ════════════════════════════════════════════ */
 
-function QuoteCard({
-  quote,
-  attr,
-}: {
-  quote: string;
-  attr: string;
-}) {
+function QuoteCard({ quote, attr }: { quote: string; attr: string }) {
   return (
     <div className="py-9 border-b border-cream-05 last:border-b-0 last:pb-0">
       <p className="text-cream-80 text-[1.1rem] leading-[1.7] font-normal mb-4 italic before:content-['\201C'] after:content-['\201D']">
@@ -122,17 +110,13 @@ export default function PressContent() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="relative z-[2] pt-40 pb-20 md:pt-40 md:pb-20 hero-glow">
+      <section className="relative z-[2] pt-40 pb-20 md:pt-40 md:pb-20 text-center overflow-hidden hero-glow">
         <ScrollReveal>
-          <div className="max-w-[720px] mx-auto px-5 md:px-6">
-            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[rgba(232,66,13,.06)] border border-[rgba(232,66,13,.15)] font-display text-[0.68rem] font-semibold tracking-[0.1em] uppercase text-accent-hi mb-7">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              Press
-            </span>
-            <h1 className="font-display text-[clamp(3rem,7vw,5.2rem)] font-extrabold leading-[1.06] tracking-[-0.05em] mb-5 text-cream">
+          <div className="max-w-[1100px] mx-auto px-5 md:px-8 text-center">
+            <h1 className="font-display text-[clamp(2.8rem,6.5vw,4.8rem)] font-extrabold leading-[1.06] tracking-[-0.05em] mb-6 text-cream">
               Press kit
             </h1>
-            <p className="text-[1.15rem] text-cream-55 leading-[1.7] max-w-[480px]">
+            <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[520px] mx-auto">
               Everything you need to cover Logo.ai.
             </p>
           </div>
@@ -140,21 +124,23 @@ export default function PressContent() {
       </section>
 
       {/* ── Sections wrapper ── */}
-      <div className="relative z-[2] max-w-[720px] mx-auto px-5 md:px-6">
-
+      <div
+        id="press-content"
+        className="relative z-[2] max-w-[720px] mx-auto px-5 md:px-6"
+      >
         {/* What We're Building */}
         <ScrollReveal>
           <section className="py-14 md:py-20 border-t border-cream-05">
             <SectionLabel>What We&apos;re Building</SectionLabel>
             <p className="text-[1.1rem] text-cream-55 leading-[1.8] font-normal mb-5">
-              Logo.ai is an AI logo generator that creates professional logos and
-              complete brand kits in under 60 seconds. Original designs — not
-              templates. Every time.
+              Logo.ai is an AI logo generator that creates professional logos
+              and complete brand kits in under 60 seconds. Original designs —
+              not templates. Every time.
             </p>
             <p className="font-display text-[0.82rem] text-cream-35 tracking-[0.02em] font-medium">
               Launching April 2026.{" "}
-              <strong className="text-cream font-bold">{formatted}+</strong> founders
-              are already on the waitlist.
+              <strong className="text-cream font-bold">{formatted}+</strong>{" "}
+              founders are already on the waitlist.
             </p>
           </section>
         </ScrollReveal>
@@ -239,7 +225,8 @@ export default function PressContent() {
             <P>
               Everyone&apos;s building a brand now — startups, creators,
               freelancers, side projects. And the first thing every one of them
-              needs is a logo. But getting one? That&apos;s where it breaks down.
+              needs is a logo. But getting one? That&apos;s where it breaks
+              down.
             </P>
             <P>
               Hire a designer? <strong>$5,000+</strong> and weeks of
@@ -254,13 +241,13 @@ export default function PressContent() {
             <P>
               The result: describe your brand, and in under 60 seconds you get
               stunning, original logos and a complete brand kit — colors, fonts,
-              social media assets, business cards, and brand guidelines. Ready to
-              use anywhere.
+              social media assets, business cards, and brand guidelines. Ready
+              to use anywhere.
             </P>
             <P>
               <strong>Why now:</strong> AI has transformed writing, images, and
-              code. Logo design is next. Logo.ai is the first tool built from the
-              ground up to bring professional-grade branding to everyone.
+              code. Logo design is next. Logo.ai is the first tool built from
+              the ground up to bring professional-grade branding to everyone.
             </P>
           </section>
         </ScrollReveal>
@@ -275,9 +262,9 @@ export default function PressContent() {
               </h2>
               <p className="text-base text-cream-55 leading-[1.8] font-normal mb-5 text-center">
                 A global team of AI researchers, brand designers, and product
-                engineers. Perfectionists. Problem-solvers. Experts in generative
-                AI, machine learning, typography, color theory, and brand strategy
-                —{" "}
+                engineers. Perfectionists. Problem-solvers. Experts in
+                generative AI, machine learning, typography, color theory, and
+                brand strategy —{" "}
                 <strong className="text-cream font-semibold">
                   the exact mix needed to build something like Logo.ai.
                 </strong>
@@ -319,8 +306,8 @@ export default function PressContent() {
                 Led by people who&apos;ve done this before
               </h2>
               <p className="text-base text-cream-55 leading-[1.8] font-normal mb-5 text-center">
-                Brothers and serial entrepreneurs who&apos;ve launched technology
-                products across every major wave —{" "}
+                Brothers and serial entrepreneurs who&apos;ve launched
+                technology products across every major wave —{" "}
                 <strong className="text-cream font-semibold">
                   web, mobile, and now AI
                 </strong>
@@ -422,9 +409,8 @@ export default function PressContent() {
             <SectionLabel>Brand Guidelines</SectionLabel>
             <SectionHeading>How to write our name</SectionHeading>
             <P>
-              Always write as{" "}
-              <strong>&ldquo;Logo.ai&rdquo;</strong> — capital L, lowercase
-              o-g-o, period, lowercase a-i.
+              Always write as <strong>&ldquo;Logo.ai&rdquo;</strong> — capital
+              L, lowercase o-g-o, period, lowercase a-i.
             </P>
 
             <div className="flex flex-col gap-2.5 my-6">
@@ -447,7 +433,7 @@ export default function PressContent() {
                     </span>
                     {name}
                   </div>
-                )
+                ),
               )}
             </div>
 

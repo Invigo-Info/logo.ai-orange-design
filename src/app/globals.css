@@ -175,6 +175,14 @@ html {
   background: rgba(232, 232, 230, 0.05);
 }
 
+/* ── Form validation: red border on invalid fields after submit attempt ── */
+.tried input:invalid,
+.tried select:invalid,
+.tried textarea:invalid {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
 /* ── Footer section transition ── */
 .footer-fade::before {
   content: "";

@@ -76,39 +76,34 @@ export default function CostComparison() {
               {/* .problem-visual — flex-col gap-5 */}
               <div className="flex flex-col gap-5 relative z-[1]">
                 {/* ── Designer row ── */}
-                {/* .problem-row: p-[20px_24px] rounded-[16px] border rgba(232,66,13,.2) bg rgba(232,66,13,.04) */}
-                <div className="flex items-center gap-4 py-5 px-6 rounded-[16px] border border-[rgba(232,66,13,.2)] bg-[rgba(232,66,13,.04)]">
-                  {/* .problem-row-icon: 52×52 rounded-[12px] bg rgba(232,66,13,.12) */}
-                  <div className="w-[52px] h-[52px] rounded-[12px] shrink-0 flex items-center justify-center bg-[rgba(232,66,13,.12)]">
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                      <circle cx="11" cy="11" r="8" stroke="#FF5C2E" strokeWidth="1.5" />
-                      <path d="M11 7v4.5" stroke="#FF5C2E" strokeWidth="1.5" strokeLinecap="round" />
-                      <circle cx="11" cy="14.5" r="0.85" fill="#FF5C2E" />
-                    </svg>
-                  </div>
-
-                  {/* .problem-row-text */}
-                  <div className="flex-1 min-w-0">
-                    {/* .problem-row-label: 0.85rem/600 cream mb-[2px] */}
-                    <div className="text-[0.85rem] font-semibold text-cream mb-[2px]">
-                      Hire a designer
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 py-5 px-5 sm:px-6 rounded-[16px] border border-[rgba(232,66,13,.2)] bg-[rgba(232,66,13,.04)]">
+                  <div className="flex items-center gap-3 sm:gap-4 sm:flex-1 sm:min-w-0">
+                    <div className="w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] rounded-[12px] shrink-0 flex items-center justify-center bg-[rgba(232,66,13,.12)]">
+                      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <circle cx="11" cy="11" r="8" stroke="#FF5C2E" strokeWidth="1.5" />
+                        <path d="M11 7v4.5" stroke="#FF5C2E" strokeWidth="1.5" strokeLinecap="round" />
+                        <circle cx="11" cy="14.5" r="0.85" fill="#FF5C2E" />
+                      </svg>
                     </div>
-                    {/* .problem-row-sub: 0.78rem c35 */}
-                    <div className="text-[0.78rem] text-cream-35">
-                      Weeks of waiting &amp; revisions
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[0.85rem] font-semibold text-cream mb-[2px]">
+                        Hire a designer
+                      </div>
+                      <div className="text-[0.78rem] text-cream-35">
+                        Weeks of waiting &amp; revisions
+                      </div>
                     </div>
                   </div>
 
-                  {/* .problem-row-price: Sora 1.4rem/700 cream nowrap tracking--0.02em */}
-                  <div className="font-display text-[1.4rem] font-bold text-cream whitespace-nowrap tracking-[-0.02em]">
-                    $5,000+
-                  </div>
-
-                  {/* .problem-row-x: 28×28 circle bg rgba(232,66,13,.15) color accent-hi 0.75rem/600 */}
-                  <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-[rgba(232,66,13,.15)]">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M2 2l6 6M8 2l-6 6" stroke="#FF5C2E" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pl-[56px] sm:pl-0">
+                    <div className="font-display text-[1.4rem] font-bold text-cream whitespace-nowrap tracking-[-0.02em]">
+                      $5,000+
+                    </div>
+                    <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-[rgba(232,66,13,.15)]">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path d="M2 2l6 6M8 2l-6 6" stroke="#FF5C2E" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
@@ -118,38 +113,35 @@ export default function CostComparison() {
                 </div>
 
                 {/* ── Logo makers row ── */}
-                {/* .problem-row.orange: border rgba(255,170,50,.2) bg rgba(255,170,50,.04) */}
-                <div className="flex items-center gap-4 py-5 px-6 rounded-[16px] border border-[rgba(255,170,50,.2)] bg-[rgba(255,170,50,.04)]">
-                  {/* .problem-row-icon orange: bg rgba(255,170,50,.12) color #ffaa33 */}
-                  <div className="w-[52px] h-[52px] rounded-[12px] shrink-0 flex items-center justify-center bg-[rgba(255,170,50,.12)]">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <rect x="2" y="2" width="7" height="7" rx="1.5" fill="#ffaa33" />
-                      <rect x="11" y="2" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.55" />
-                      <rect x="2" y="11" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.55" />
-                      <rect x="11" y="11" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.3" />
-                    </svg>
-                  </div>
-
-                  {/* .problem-row-text */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[0.85rem] font-semibold text-cream mb-[2px]">
-                      Logo makers
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 py-5 px-5 sm:px-6 rounded-[16px] border border-[rgba(255,170,50,.2)] bg-[rgba(255,170,50,.04)]">
+                  <div className="flex items-center gap-3 sm:gap-4 sm:flex-1 sm:min-w-0">
+                    <div className="w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] rounded-[12px] shrink-0 flex items-center justify-center bg-[rgba(255,170,50,.12)]">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="2" y="2" width="7" height="7" rx="1.5" fill="#ffaa33" />
+                        <rect x="11" y="2" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.55" />
+                        <rect x="2" y="11" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.55" />
+                        <rect x="11" y="11" width="7" height="7" rx="1.5" fill="#ffaa33" opacity="0.3" />
+                      </svg>
                     </div>
-                    <div className="text-[0.78rem] text-cream-35">
-                      Generic, cookie-cutter look
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[0.85rem] font-semibold text-cream mb-[2px]">
+                        Logo makers
+                      </div>
+                      <div className="text-[0.78rem] text-cream-35">
+                        Generic, cookie-cutter look
+                      </div>
                     </div>
                   </div>
 
-                  {/* .problem-row-price */}
-                  <div className="font-display text-[1.4rem] font-bold text-cream whitespace-nowrap tracking-[-0.02em]">
-                    Cheap
-                  </div>
-
-                  {/* .problem-row-x orange: bg rgba(255,170,50,.15) color #ffaa33 */}
-                  <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-[rgba(255,170,50,.15)]">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M2 2l6 6M8 2l-6 6" stroke="#ffaa33" strokeWidth="1.5" strokeLinecap="round" />
-                    </svg>
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pl-[56px] sm:pl-0">
+                    <div className="font-display text-[1.4rem] font-bold text-cream whitespace-nowrap tracking-[-0.02em]">
+                      Cheap
+                    </div>
+                    <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-[rgba(255,170,50,.15)]">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path d="M2 2l6 6M8 2l-6 6" stroke="#ffaa33" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>

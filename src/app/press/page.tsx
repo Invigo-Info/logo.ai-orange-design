@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import PressContent from "@/components/press/PressContent";
+import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import CountProvider from "@/components/CountProvider";
 import { getSupabase } from "@/lib/supabase";
@@ -8,6 +9,7 @@ import { getSupabase } from "@/lib/supabase";
 const BASE_COUNT = 63482;
 
 const PRESS_NAV_LINKS = [
+  // { label: "Press", href: "/press" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "/#faq" },
 ];
@@ -33,6 +35,7 @@ export default async function PressPage() {
     <CountProvider initialCount={initialCount}>
       <Navbar links={PRESS_NAV_LINKS} />
       <PressContent />
+      <FinalCTA />
       <Footer />
     </CountProvider>
   );
