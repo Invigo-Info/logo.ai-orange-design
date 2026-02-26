@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface CategoryTabsAdvancedProps {
   tabs: Record<string, string>;
@@ -21,19 +21,17 @@ export default function CategoryTabsAdvanced({
   active,
   onSelect,
   className = "",
-  visibleCount = 18,
+  visibleCount = 16,
 }: CategoryTabsAdvancedProps) {
   const entries = Object.entries(tabs);
   const visibleEntries = entries.slice(0, visibleCount);
   const overflowEntries = entries.slice(visibleCount);
-  const hasOverflow = entries.length > 0;
+  const hasOverflow = overflowEntries.length > 0;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   // Check if active tab is in overflow
   const activeInOverflow = overflowEntries.some(([key]) => key === active);
@@ -41,7 +39,10 @@ export default function CategoryTabsAdvanced({
   // Close dropdown on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const inDesktop = dropdownRef.current?.contains(target);
+      const inMobile = mobileDropdownRef.current?.contains(target);
+      if (!inDesktop && !inMobile) {
         setDropdownOpen(false);
         setSearch("");
       }
@@ -62,34 +63,8 @@ export default function CategoryTabsAdvanced({
     return () => document.removeEventListener("keydown", handleKey);
   }, [dropdownOpen]);
 
-  // Scroll state check
-  const checkScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 2);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    checkScroll();
-    el.addEventListener("scroll", checkScroll, { passive: true });
-    window.addEventListener("resize", checkScroll);
-    return () => {
-      el.removeEventListener("scroll", checkScroll);
-      window.removeEventListener("resize", checkScroll);
-    };
-  }, [checkScroll]);
-
-  const scroll = (dir: "left" | "right") => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
-  };
-
-  // Filter all categories for dropdown
-  const allEntries = entries.filter(([, label]) =>
+  // Filter overflow categories for dropdown
+  const filteredOverflow = overflowEntries.filter(([, label]) =>
     label.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -170,14 +145,14 @@ export default function CategoryTabsAdvanced({
                     className="flex-1 bg-transparent border-none outline-none text-cream text-[0.88rem] placeholder:text-cream-18 font-sans"
                   />
                   <span className="text-[0.72rem] text-cream-35 font-medium shrink-0">
-                    {allEntries.length} found
+                    {filteredOverflow.length} found
                   </span>
                 </div>
 
                 {/* Category grid */}
                 <div className="overflow-y-auto flex-1 p-3">
                   <div className="grid grid-cols-3 gap-1">
-                    {allEntries.map(([key, label]) => (
+                    {filteredOverflow.map(([key, label]) => (
                       <button
                         key={key}
                         onClick={() => handleDropdownSelect(key)}
@@ -202,7 +177,7 @@ export default function CategoryTabsAdvanced({
                       </button>
                     ))}
                   </div>
-                  {allEntries.length === 0 && (
+                  {filteredOverflow.length === 0 && (
                     <p className="text-center text-cream-35 text-[0.85rem] py-8">
                       No categories found
                     </p>
@@ -236,54 +211,23 @@ export default function CategoryTabsAdvanced({
         )}
       </div>
 
-      {/* ── Mobile: scrollable with arrows ── */}
-      <div className="md:hidden relative flex flex-col items-center gap-3">
-        <div className="relative w-full">
-          {/* Left arrow */}
-          {canScrollLeft && (
+      {/* ── Mobile: wrapped tabs (same as desktop) ── */}
+      <div className="md:hidden flex flex-col items-center gap-3">
+        <div className="flex flex-wrap justify-center gap-1.5 px-2">
+          {visibleEntries.map(([key, label]) => (
             <button
-              onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-b1/90 border border-cream-10 flex items-center justify-center text-cream-55 backdrop-blur-sm shadow-[4px_0_12px_rgba(0,0,0,.4)] cursor-pointer"
+              key={key}
+              onClick={() => onSelect(key)}
+              className={`${TAB_CLASS_BASE} ${active === key ? TAB_ACTIVE : TAB_INACTIVE}`}
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M7.5 3L4.5 6L7.5 9" />
-              </svg>
+              {label}
             </button>
-          )}
-
-          {/* Scrollable tabs */}
-          <div
-            ref={scrollRef}
-            className="flex gap-1.5 overflow-x-auto scrollbar-hide px-6"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {visibleEntries.map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => onSelect(key)}
-                className={`${TAB_CLASS_BASE} ${active === key ? TAB_ACTIVE : TAB_INACTIVE}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Right arrow */}
-          {canScrollRight && (
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-b1/90 border border-cream-10 flex items-center justify-center text-cream-55 backdrop-blur-sm shadow-[-4px_0_12px_rgba(0,0,0,.4)] cursor-pointer"
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M4.5 3L7.5 6L4.5 9" />
-              </svg>
-            </button>
-          )}
+          ))}
         </div>
 
         {/* Mobile More button + dropdown */}
         {hasOverflow && (
-          <div ref={!dropdownOpen ? undefined : dropdownRef} className="relative inline-flex flex-col items-center">
+          <div ref={mobileDropdownRef} className="relative inline-flex flex-col items-center">
             <button
               onClick={() => {
                 setDropdownOpen((p) => !p);
@@ -335,14 +279,14 @@ export default function CategoryTabsAdvanced({
                     className="flex-1 bg-transparent border-none outline-none text-cream text-[0.82rem] placeholder:text-cream-18 font-sans"
                   />
                   <span className="text-[0.65rem] text-cream-35 font-medium shrink-0">
-                    {allEntries.length} found
+                    {filteredOverflow.length} found
                   </span>
                 </div>
 
                 {/* Category list (single column on mobile) */}
                 <div className="overflow-y-auto flex-1 p-2">
                   <div className="flex flex-col gap-0.5">
-                    {allEntries.map(([key, label]) => (
+                    {filteredOverflow.map(([key, label]) => (
                       <button
                         key={key}
                         onClick={() => handleDropdownSelect(key)}
@@ -367,7 +311,7 @@ export default function CategoryTabsAdvanced({
                       </button>
                     ))}
                   </div>
-                  {allEntries.length === 0 && (
+                  {filteredOverflow.length === 0 && (
                     <p className="text-center text-cream-35 text-[0.82rem] py-6">
                       No categories found
                     </p>

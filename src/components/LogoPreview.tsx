@@ -1,28 +1,56 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { previewCategories, mockupFolders } from "@/data/previewData";
-import CategoryTabs from "./CategoryTabs";
+import type { DynamicCategory } from "@/lib/getLogoCategories";
+import CategoryTabsAdvanced from "./CategoryTabsAdvanced";
 import SectionHeader from "./SectionHeader";
 
-export default function LogoPreview() {
-  const [activeCategory, setActiveCategory] = useState("bakery");
+export default function LogoPreview({
+  categories,
+}: {
+  categories: DynamicCategory[];
+}) {
+  const categoryMap = useMemo(() => {
+    const map: Record<string, { folder: string; count: number }> = {};
+    for (const c of categories) {
+      map[c.key] = { folder: c.folder, count: c.count };
+    }
+    return map;
+  }, [categories]);
+
+  const tabMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const c of categories) {
+      map[c.key] = c.label;
+    }
+    return map;
+  }, [categories]);
+
+  const defaultKey =
+    "bakery" in categoryMap ? "bakery" : (categories[0]?.key ?? "");
+
+  const [activeCategory, setActiveCategory] = useState(defaultKey);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const folder = mockupFolders[activeCategory] || activeCategory;
-  const slides = [1, 2, 3, 4, 5].map((n) => `/logo-mockups/${folder}/${n}.png`);
+  const folder = categoryMap[activeCategory]?.folder ?? "";
+  const slideCount = categoryMap[activeCategory]?.count ?? 0;
+  const slides = Array.from(
+    { length: slideCount },
+    (_, i) => `/logo-mockups/${folder}/${i + 1}.png`,
+  );
 
   useEffect(() => {
     setCurrentSlide(0);
   }, [activeCategory]);
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 5);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 2200);
     return () => clearInterval(timer);
-  }, [currentSlide]);
+  }, [currentSlide, slides.length]);
 
   return (
     <section
@@ -36,8 +64,8 @@ export default function LogoPreview() {
         className="mb-10 md:mb-[52px]"
       />
 
-      <CategoryTabs
-        tabs={previewCategories}
+      <CategoryTabsAdvanced
+        tabs={tabMap}
         active={activeCategory}
         onSelect={setActiveCategory}
         className="mb-8 md:mb-10"
@@ -46,21 +74,14 @@ export default function LogoPreview() {
       {/* Framed preview */}
       <div
         className="max-w-[1200px] mx-auto rounded-[22px] p-1 md:p-1 relative border border-cream-18"
-        style={
-          {
-            // background:
-            //   "linear-gradient(145deg, rgba(232,66,13,.18), rgba(232,232,230,.08) 50%, rgba(232,66,13,.12))",
-            // boxShadow:
-            //   "0 0 0 1px rgba(232,66,13,.12), 0 0 80px rgba(232,66,13,.08), 0 0 160px rgba(232,66,13,.04), 0 30px 80px rgba(0,0,0,.5)",
-          }
-        }
+        style={{}}
       >
         <div className="relative w-full aspect-[960/520] overflow-hidden rounded-[14px] bg-b3">
           {slides.map((src, i) => (
             <Image
               key={`${activeCategory}-${i}`}
               src={src}
-              alt={`${previewCategories[activeCategory]} mockup ${i + 1}`}
+              alt={`${tabMap[activeCategory]} mockup ${i + 1}`}
               fill
               unoptimized
               className={`object-cover transition-opacity duration-[800ms] ease-in-out ${
@@ -73,7 +94,7 @@ export default function LogoPreview() {
 
       {/* Dots */}
       <div className="flex gap-2.5 justify-center mt-7">
-        {[0, 1, 2, 3, 4].map((i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentSlide(i)}

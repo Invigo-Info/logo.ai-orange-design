@@ -65,8 +65,10 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Get a professional logo in under 60 seconds. <br />
-          Beautiful, high-quality logos that elevate your brand.
+          Get a Custom Logo in Seconds <br />
+          Made for your brand. Built to stand out.
+          <br />
+          Join now to claim your free logo at launch.
           {/* Original, professional AI-generated logos.
           <br />
           No agencies. No freelancers. No $5,000+ price tag. */}
@@ -79,8 +81,8 @@ export default function Hero() {
 
           {/* Signup note */}
           <p className="text-[0.72rem] text-cream-35 relative z-[2]">
-            {/* No spam. No credit card. Just early access. */}
-            Join now to claim your free logo at launch.
+            No spam. No credit card. Just early access.
+            {/* Join now to claim your free logo at launch. */}
           </p>
         </div>
 

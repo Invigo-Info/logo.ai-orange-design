@@ -8,10 +8,15 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import CountProvider from "@/components/CountProvider";
 import { getSupabase } from "@/lib/supabase";
+import { getLogoCategories, getMockupCategories } from "@/lib/getLogoCategories";
 
 const BASE_COUNT = 63482;
 
 export default async function Home() {
+  const [logoCategories, mockupCategories] = await Promise.all([
+    getLogoCategories(),
+    getMockupCategories(),
+  ]);
   let initialCount = BASE_COUNT;
   try {
     const { count } = await getSupabase()
@@ -26,9 +31,9 @@ export default async function Home() {
     <CountProvider initialCount={initialCount}>
       <Navbar />
       <Hero />
-      <LogoExamples />
+      <LogoExamples categories={logoCategories} />
       <HowItWorks />
-      <LogoPreview />
+      <LogoPreview categories={mockupCategories} />
       <FAQ />
       <FinalCTA />
       <Footer />

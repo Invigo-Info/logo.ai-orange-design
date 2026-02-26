@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { categories, categoryKeys } from "@/data/logoData";
+import type { DynamicCategory } from "@/lib/getLogoCategories";
 import CategoryTabsAdvanced from "./CategoryTabsAdvanced";
 import SectionHeader from "./SectionHeader";
 
@@ -18,48 +18,73 @@ function shuffleAndPick<T>(array: T[], count: number): T[] {
   return shuffled.slice(0, count);
 }
 
-function getInitialCategory(): string {
-  if (typeof window === "undefined") return "restaurant";
-  const stored = sessionStorage.getItem(STORAGE_KEY);
-  if (stored && stored in categories) return stored;
-  return "restaurant";
+interface DisplayItem {
+  imgIndex: number;
 }
 
-function buildDisplayItems(categoryKey: string) {
-  const cat = categories[categoryKey];
-  const items = cat?.items || [];
-  const indexed = items.map((item, idx) => ({ ...item, imgIndex: idx + 1 }));
+function buildDisplayItems(count: number): DisplayItem[] {
+  const indexed = Array.from({ length: count }, (_, i) => ({
+    imgIndex: i + 1,
+  }));
   if (indexed.length > DISPLAY_COUNT) {
     return shuffleAndPick(indexed, DISPLAY_COUNT);
   }
   return indexed;
 }
 
-export default function LogoExamples() {
-  const [active, setActive] = useState("restaurant");
-  const [displayItems, setDisplayItems] = useState<
-    Array<{ n: string; t: string; bg: string; tc: string; imgIndex: number }>
-  >([]);
+export default function LogoExamples({
+  categories,
+}: {
+  categories: DynamicCategory[];
+}) {
+  const categoryMap = useMemo(() => {
+    const map: Record<string, { folder: string; count: number }> = {};
+    for (const c of categories) {
+      map[c.key] = { folder: c.folder, count: c.count };
+    }
+    return map;
+  }, [categories]);
 
-  // On mount: restore persisted category and build randomized items
+  const tabMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const c of categories) {
+      map[c.key] = c.label;
+    }
+    return map;
+  }, [categories]);
+
+  const defaultKey = "restaurant" in categoryMap ? "restaurant" : (categories[0]?.key ?? "");
+
+  const defaultCount = categoryMap[defaultKey]?.count ?? 0;
+  const initialItems = useMemo(
+    () =>
+      Array.from({ length: Math.min(defaultCount, DISPLAY_COUNT) }, (_, i) => ({
+        imgIndex: i + 1,
+      })),
+    [defaultCount],
+  );
+
+  const [active, setActive] = useState(defaultKey);
+  const [displayItems, setDisplayItems] = useState<DisplayItem[]>(initialItems);
+
   useEffect(() => {
-    const restored = getInitialCategory();
-    setActive(restored);
-    setDisplayItems(buildDisplayItems(restored));
-  }, []);
+    // After hydration: restore session category or shuffle the default
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    if (stored && stored in categoryMap && stored !== defaultKey) {
+      setActive(stored);
+      setDisplayItems(buildDisplayItems(categoryMap[stored]?.count ?? 0));
+    } else {
+      setDisplayItems(buildDisplayItems(categoryMap[defaultKey]?.count ?? 0));
+    }
+  }, [categoryMap, defaultKey]);
 
   const handleSelect = (key: string) => {
     setActive(key);
     sessionStorage.setItem(STORAGE_KEY, key);
-    setDisplayItems(buildDisplayItems(key));
+    setDisplayItems(buildDisplayItems(categoryMap[key]?.count ?? 0));
   };
 
-  const tabMap: Record<string, string> = {};
-  Object.entries(categories).forEach(([k, v]) => {
-    tabMap[k] = v.l;
-  });
-
-  const folder = categories[active]?.folder || "";
+  const folder = categoryMap[active]?.folder ?? "";
 
   return (
     <section className="bg-b1 py-20 md:py-[80px] px-4 md:px-8 relative">
@@ -86,7 +111,7 @@ export default function LogoExamples() {
             <div className="rounded-[10px] aspect-square relative overflow-hidden">
               <Image
                 src={`/logo-examples/${folder}/${item.imgIndex}.png`}
-                alt={item.n}
+                alt={`Logo ${item.imgIndex}`}
                 fill
                 unoptimized
                 className="object-cover transition-transform duration-[600ms]  group-hover:scale-110"
