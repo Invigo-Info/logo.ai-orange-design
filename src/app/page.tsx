@@ -11,7 +11,7 @@ import { getSupabase } from "@/lib/supabase";
 import { getLogoCategories, getMockupCategories } from "@/lib/getLogoCategories";
 
 const BASE_COUNT = 63482;
-
+export const revalidate = 60;
 export default async function Home() {
   const [logoCategories, mockupCategories] = await Promise.all([
     getLogoCategories(),
