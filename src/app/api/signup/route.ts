@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getSupabase } from "@/lib/supabase";
 
 const BASE_COUNT = 63482;
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
     const { count } = await supabase
       .from("early_access_user_emails")
       .select("*", { count: "exact", head: true });
-
+    revalidatePath("/");
     return NextResponse.json({ success: true, count: BASE_COUNT + (count ?? 0) });
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
