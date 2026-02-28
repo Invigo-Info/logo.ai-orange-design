@@ -13,7 +13,7 @@ interface NavbarProps {
 
 export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
   const scrollToCTA = () => {
-    document.getElementById("sign-up")?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("hero-cta")?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (
