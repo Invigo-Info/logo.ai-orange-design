@@ -1,6 +1,25 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+
+const TOTAL = 500_000;
+const SIMULATED_BASE = 63_513;
+const REFERENCE_DATE = new Date("2026-02-27T00:00:00").getTime();
+const DEADLINE = new Date("2026-04-01T00:00:00").getTime();
+const RATE = (TOTAL - SIMULATED_BASE) / (DEADLINE - REFERENCE_DATE); // logos per ms
+const TICK_INTERVAL = 1_000;
+
+function getSimulatedCount() {
+  const elapsed = Date.now() - REFERENCE_DATE;
+  if (elapsed <= 0) return SIMULATED_BASE;
+  return Math.min(SIMULATED_BASE + Math.floor(RATE * elapsed), TOTAL);
+}
 
 interface CountContextType {
   count: number;
@@ -23,6 +42,21 @@ export default function CountProvider({
   children: ReactNode;
 }) {
   const [count, setCount] = useState(initialCount);
+
+  // Auto-increment: use a fixed reference date so the count is
+  // deterministic regardless of page load / refresh timing.
+  useEffect(() => {
+    const tick = () => {
+      const simulated = getSimulatedCount();
+      // Use whichever is higher — real signups should never be hidden
+      setCount((prev) => Math.max(prev, simulated));
+    };
+
+    tick(); // sync immediately on mount
+    const id = setInterval(tick, TICK_INTERVAL);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <CountContext.Provider value={{ count, setCount }}>
       {children}

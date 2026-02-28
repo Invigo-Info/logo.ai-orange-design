@@ -8,9 +8,17 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import CountProvider from "@/components/CountProvider";
 import { getSupabase } from "@/lib/supabase";
-import { getLogoCategories, getMockupCategories } from "@/lib/getLogoCategories";
+import {
+  getLogoCategories,
+  getMockupCategories,
+} from "@/lib/getLogoCategories";
 
 const BASE_COUNT = 63482;
+
+// ✅ ADD THIS — ISR: revalidate every 60s as a safety net
+// On-demand revalidation (from route.ts) is the primary trigger;
+// this is a fallback so the count never goes stale for more than 60s.
+export const revalidate = 60;
 
 export default async function Home() {
   const [logoCategories, mockupCategories] = await Promise.all([

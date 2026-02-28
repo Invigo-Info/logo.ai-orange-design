@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache"; // ✅ ADD THIS
 import { getSupabase } from "@/lib/supabase";
 
 const BASE_COUNT = 63482;
@@ -24,6 +25,11 @@ export async function POST(request: Request) {
     const { count } = await supabase
       .from("early_access_user_emails")
       .select("*", { count: "exact", head: true });
+
+          // ✅ ADD THIS — Trigger on-demand ISR revalidation
+    // Tells Vercel to regenerate the cached homepage in the background
+    // so the NEXT visitor sees the updated count baked into the HTML.
+    revalidatePath("/");
 
     return NextResponse.json({ success: true, count: BASE_COUNT + (count ?? 0) });
   } catch {
