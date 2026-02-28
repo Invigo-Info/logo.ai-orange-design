@@ -73,7 +73,7 @@ export default function LogoPreview({
 
       {/* Framed preview */}
       <div
-        className="max-w-[1200px] mx-auto rounded-[22px] p-1 md:p-1 relative border border-cream-18"
+        className="max-w-[1200px] mx-auto rounded-[22px] p-1 md:p-1 relative "
         style={{}}
       >
         <div className="relative w-full aspect-[960/520] overflow-hidden rounded-[14px] bg-b3">
