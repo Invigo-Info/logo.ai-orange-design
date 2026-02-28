@@ -16,11 +16,6 @@ import {
 const BASE_COUNT = 63482;
 export const revalidate = 60;
 
-// ✅ ADD THIS — ISR: revalidate every 60s as a safety net
-// On-demand revalidation (from route.ts) is the primary trigger;
-// this is a fallback so the count never goes stale for more than 60s.
-export const revalidate = 60;
-
 export default async function Home() {
   const [logoCategories, mockupCategories] = await Promise.all([
     getLogoCategories(),
