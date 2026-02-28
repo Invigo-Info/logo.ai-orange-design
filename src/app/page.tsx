@@ -14,6 +14,7 @@ import {
 } from "@/lib/getLogoCategories";
 
 const BASE_COUNT = 63482;
+export const revalidate = 60;
 
 // ✅ ADD THIS — ISR: revalidate every 60s as a safety net
 // On-demand revalidation (from route.ts) is the primary trigger;
