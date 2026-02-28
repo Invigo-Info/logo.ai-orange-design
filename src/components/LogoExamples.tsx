@@ -87,7 +87,7 @@ export default function LogoExamples({
   const folder = categoryMap[active]?.folder ?? "";
 
   return (
-    <section className="bg-b1 py-20 md:py-[80px] px-4 md:px-8 relative">
+    <section className="bg-b1 pt-20 pb-32 md:pt-[80px] md:pb-[140px] px-4 md:px-8 relative">
       <SectionHeader
         eyebrow="Gallery"
         title="Logos Created with Logo.ai"
@@ -102,21 +102,19 @@ export default function LogoExamples({
         className="mb-10 md:mb-[52px]"
       />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-3.5 max-w-[1060px] mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 max-w-[1340px] mx-auto pb-2">
         {displayItems.map((item) => (
           <div
             key={`${active}-${item.imgIndex}`}
-            className="group bg-b1 border border-cream-10 rounded-xl p-1 text-center transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] relative hover:border-cream-18 hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)]"
+            className="group relative aspect-square overflow-hidden rounded-2xl transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)]"
           >
-            <div className="rounded-[10px] aspect-square relative overflow-hidden">
-              <Image
-                src={`/logo-examples/${folder}/${item.imgIndex}.png`}
-                alt={`Logo ${item.imgIndex}`}
-                fill
-                unoptimized
-                className="object-cover transition-transform duration-[600ms]  group-hover:scale-110"
-              />
-            </div>
+            <Image
+              src={`/logo-examples/${folder}/${item.imgIndex}.png`}
+              alt={`Logo ${item.imgIndex}`}
+              fill
+              unoptimized
+              className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
+            />
           </div>
         ))}
       </div>
