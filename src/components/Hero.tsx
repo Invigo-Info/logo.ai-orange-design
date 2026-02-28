@@ -75,9 +75,11 @@ export default function Hero() {
         </p>
 
         {/* CTA wrap with glow */}
-        <div id="hero-cta" className="relative inline-flex flex-col items-center gap-5 opacity-0 animate-rise-4 hero-cta-glow">
+        <div className="relative inline-flex flex-col items-center gap-5 opacity-0 animate-rise-4 hero-cta-glow">
           {/* Email form */}
-          <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
+          <div id="hero-email">
+            <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
+          </div>
 
           {/* Signup note */}
           <p className="text-[0.72rem] text-cream-35 relative z-[2]">

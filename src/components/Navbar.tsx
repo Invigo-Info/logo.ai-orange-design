@@ -13,7 +13,14 @@ interface NavbarProps {
 
 export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
   const scrollToCTA = () => {
-    document.getElementById("hero-cta")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const isMobile = window.innerWidth < 768;
+    const target = isMobile ? "sign-up" : "hero-email";
+    const el = document.getElementById(target);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => {
+      el.querySelector<HTMLInputElement>("input[type='email']")?.focus();
+    }, 600);
   };
 
   return (
