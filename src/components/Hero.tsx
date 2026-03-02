@@ -53,22 +53,20 @@ export default function Hero() {
             />
           </svg>
           <span className="text-[0.72rem] font-semibold tracking-[0.08em] uppercase text-accent-hi">
-            Free for the First 500,000 Users
+            World’s Best AI Logo Generator
           </span>
         </div>
 
         {/* Headline */}
         <h1 className="font-display text-[clamp(2.8rem,6.5vw,4.8rem)] font-extrabold leading-[1.06] tracking-[-0.05em] mb-6 text-center text-cream opacity-0 animate-rise-2">
-          World’s Best <br />
-          AI Logo Generator
+          Get Your Free <br />
+          Logo in Seconds
         </h1>
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Get Your Free Logo in Seconds <br />
-          Free logos for the first 500,000 users.
-          <br />
-          Join now to get yours at launch.
+          Free logo for the first 500,000 users. Join now to secure yours at
+          launch.
           {/* Original, professional AI-generated logos.
           <br />
           No agencies. No freelancers. No $5,000+ price tag. */}
@@ -83,7 +81,7 @@ export default function Hero() {
 
           {/* Signup note */}
           <p className="text-[0.72rem] text-cream-35 relative z-[2]">
-            No spam. No credit card. Just early access.
+            No credit card required.
             {/* Join now to claim your free logo at launch. */}
           </p>
         </div>
@@ -101,7 +99,7 @@ export default function Hero() {
           {/* Claimed count */}
           <p className="text-[0.78rem] text-cream-35 font-medium">
             <strong className="text-cream-55">{count.toLocaleString()}</strong>{" "}
-            of 500,000 free logos claimed
+            of 500,000 free logos secured
           </p>
         </div>
       </div>
