@@ -93,16 +93,16 @@ export default function LogoPreview({
       </div>
 
       {/* Dots */}
-      <div className="flex gap-2.5 justify-center mt-7">
+      <div className="flex gap-2.5 justify-center mt-7 relative z-[1]">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentSlide(i)}
             aria-label={`Slide ${i + 1}`}
-            className={`h-1.5 rounded-full transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] cursor-pointer ${
+            className={`h-2 rounded-full transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] cursor-pointer ${
               currentSlide === i
-                ? "w-7 bg-accent shadow-[0_0_12px_rgba(232,66,13,.35)]"
-                : "w-1.5 bg-cream-18 hover:bg-cream-55"
+                ? "w-8 bg-accent shadow-[0_0_12px_rgba(232,66,13,.35)]"
+                : "w-2 bg-cream-35 hover:bg-cream-55"
             }`}
           />
         ))}

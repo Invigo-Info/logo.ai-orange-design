@@ -59,16 +59,16 @@ export default function Hero() {
 
         {/* Headline */}
         <h1 className="font-display text-[clamp(2.8rem,6.5vw,4.8rem)] font-extrabold leading-[1.06] tracking-[-0.05em] mb-6 text-center text-cream opacity-0 animate-rise-2">
-          The World’s Most Advanced <br />
+          World’s Best <br />
           AI Logo Generator
         </h1>
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Get a Custom Logo in Seconds <br />
-          Made for your brand. Built to stand out.
+          Get Your Free Logo in Seconds <br />
+          Free logos for the first 500,000 users.
           <br />
-          Join now to claim your free logo at launch.
+          Join now to get yours at launch.
           {/* Original, professional AI-generated logos.
           <br />
           No agencies. No freelancers. No $5,000+ price tag. */}
