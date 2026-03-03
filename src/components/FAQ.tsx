@@ -1,12 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { faqs } from "@/data/faqData";
+import { useCount } from "./CountProvider";
 import SectionHeader from "./SectionHeader";
 import ScrollReveal from "./ScrollReveal";
 
+const LAUNCH_DEADLINE = new Date("2026-04-01T00:00:00").getTime();
+
+function getDaysLeft() {
+  const days = Math.max(
+    0,
+    Math.ceil((LAUNCH_DEADLINE - Date.now()) / 864e5)
+  );
+  return days === 0 ? "any day now" : `${days} day${days !== 1 ? "s" : ""}`;
+}
+
+function hydrate(text: string, count: number, countdown: string) {
+  return text
+    .replace("{{CLAIMED_COUNT}}", count.toLocaleString())
+    .replace("{{LAUNCH_COUNTDOWN}}", countdown);
+}
+
 export default function FAQ() {
+  const { count } = useCount();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState(getDaysLeft);
+
+  useEffect(() => {
+    const id = setInterval(() => setCountdown(getDaysLeft()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   const toggle = (i: number) => {
     setOpenIndex(openIndex === i ? null : i);
@@ -77,7 +101,7 @@ export default function FAQ() {
                   }`}
                 >
                   <div className="pb-6 text-[0.92rem] text-cream-55 leading-[1.7]">
-                    {faq.a}
+                    {hydrate(faq.a, count, countdown)}
                   </div>
                 </div>
               </div>
