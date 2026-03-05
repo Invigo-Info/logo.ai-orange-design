@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "World’s Best AI Logo Generator — Logo.ai",
   description:
-    "Create a custom logo in seconds. Secure your free logo at launch—first 500,000 users only. Join the waitlist now. No credit card required.",
+    "Create a custom logo in seconds. Secure your free logo at launch—first 1,000,000 users only. Join the waitlist now. No credit card required.",
 };
 
 export default function RootLayout({
