@@ -18,7 +18,7 @@ const FAQ_DATA = [
   },
   {
     q: "How many free logos are available?",
-    a: "We're giving away 500,000 free logos during launch. Once they're claimed, standard pricing begins.",
+    a: "We're giving away 1,000,000 free logos during launch. Once they're claimed, standard pricing begins.",
   },
   {
     q: "What do I get with my free logo?",

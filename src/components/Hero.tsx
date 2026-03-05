@@ -65,7 +65,7 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Free logo for the first 500,000 users. Join now to secure yours at
+          Free logo for the first 1,000,000 users. Join now to secure yours at
           launch.
           {/* Original, professional AI-generated logos.
           <br />
@@ -99,7 +99,7 @@ export default function Hero() {
           {/* Claimed count */}
           <p className="text-[0.78rem] text-cream-35 font-medium">
             <strong className="text-cream-55">{count.toLocaleString()}</strong>{" "}
-            of 500,000 free logos secured
+            of 1,000,000 free logos secured
           </p>
         </div>
       </div>

@@ -1,19 +1,19 @@
 export const faqs = [
   {
     q: "Is it really free?",
-    a: "Yes — 100%. No hidden fees, no surprise charges, and no credit card needed. If you're one of the first 500,000 sign-ups, your custom logo is completely free at launch.",
+    a: "Yes — 100%. No hidden fees, no surprise charges, and no credit card needed. If you're one of the first 1,000,000 sign-ups, your custom logo is completely free at launch.",
   },
 {
     q: "Will I be charged later?",
-    a: "No. Joining the early access list is completely free. If you're in the first 500,000 sign-ups, your logo is free at launch. If free spots are gone, you’ll see pricing clearly before you pay anything.",
+    a: "No. Joining the early access list is completely free. If you're in the first 1,000,000 sign-ups, your logo is free at launch. If free spots are gone, you’ll see pricing clearly before you pay anything.",
   },
 {
     q: "How many free logos are available?",
-    a: "500,000 total. Once all spots are secured, the free offer ends. Over {{CLAIMED_COUNT}} spots have already been secured — so the sooner you sign up, the better your chances.",
+    a: "1,000,000 total. Once all spots are secured, the free offer ends. Over {{CLAIMED_COUNT}} spots have already been secured — so the sooner you sign up, the better your chances.",
   },
 {
-    q: "How do I secure one of the first 500,000 spots?",
-    a: "Join the early access list now. Spots are limited to the first 500,000 sign-ups. Once we hit 500,000, the free offer ends.",
+    q: "How do I secure one of the first 1,000,000 spots?",
+    a: "Join the early access list now. Spots are limited to the first 1,000,000 sign-ups. Once we hit 1,000,000, the free offer ends.",
   },
 {
     q: "When will I get my logo?",
