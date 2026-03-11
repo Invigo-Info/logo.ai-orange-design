@@ -28,6 +28,10 @@ export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
       {/* Logo */}
       <Link
         href="/"
+        onClick={() => {
+          sessionStorage.removeItem("logoExamples_activeCategory");
+          sessionStorage.removeItem("logoExamples_page");
+        }}
         className="font-display text-[1.2rem] font-bold text-cream tracking-[-0.03em] no-underline"
       >
         logo<span className="text-accent">.</span>ai

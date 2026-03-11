@@ -53,7 +53,7 @@ export default function LogoExamples({
   const defaultKey = "restaurant" in categoryMap ? "restaurant" : (categories[0]?.key ?? "");
 
   const defaultCount = categoryMap[defaultKey]?.count ?? 0;
-  const initialItems = useMemo(
+  const serverItems = useMemo(
     () =>
       Array.from({ length: Math.min(defaultCount, DISPLAY_COUNT) }, (_, i) => ({
         imgIndex: i + 1,
@@ -62,11 +62,11 @@ export default function LogoExamples({
   );
 
   const [active, setActive] = useState(defaultKey);
-  const [displayItems, setDisplayItems] = useState<DisplayItem[]>(initialItems);
+  const [displayItems, setDisplayItems] = useState<DisplayItem[]>(serverItems);
   const [pageMap, setPageMap] = useState<Record<string, number>>({});
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // After hydration: restore pages and advance the current category page
     const storedPages: Record<string, number> = JSON.parse(
       sessionStorage.getItem(PAGE_KEY) || "{}"
     );
@@ -74,17 +74,17 @@ export default function LogoExamples({
     const activeKey =
       storedCategory && storedCategory in categoryMap ? storedCategory : defaultKey;
 
-    // Advance page for the active category on each page load
-    const currentPage = storedPages[activeKey] ?? 0;
-    const nextPage = currentPage + 1;
-    storedPages[activeKey] = nextPage;
-    sessionStorage.setItem(PAGE_KEY, JSON.stringify(storedPages));
+    const nextPage = (storedPages[activeKey] ?? -1) + 1;
+    const displayPages = { ...storedPages, [activeKey]: nextPage };
 
-    setPageMap(storedPages);
+    sessionStorage.setItem(PAGE_KEY, JSON.stringify(displayPages));
+
+    setPageMap(displayPages);
     setActive(activeKey);
     setDisplayItems(
       buildDisplayItems(categoryMap[activeKey]?.count ?? 0, nextPage)
     );
+    setHydrated(true);
   }, [categoryMap, defaultKey]);
 
   const handleSelect = (key: string) => {
@@ -92,6 +92,11 @@ export default function LogoExamples({
     sessionStorage.setItem(STORAGE_KEY, key);
     const currentPage = pageMap[key] ?? 0;
     setDisplayItems(buildDisplayItems(categoryMap[key]?.count ?? 0, currentPage));
+
+    // Save this category's current page so it persists correctly on refresh
+    const storedPages = JSON.parse(sessionStorage.getItem(PAGE_KEY) || "{}");
+    storedPages[key] = currentPage;
+    sessionStorage.setItem(PAGE_KEY, JSON.stringify(storedPages));
   };
 
   const folder = categoryMap[active]?.folder ?? "";
@@ -105,29 +110,33 @@ export default function LogoExamples({
         className="mb-14 md:mb-[56px]"
       />
 
-      <CategoryTabsAdvanced
-        tabs={tabMap}
-        active={active}
-        onSelect={handleSelect}
-        className="mb-10 md:mb-[52px]"
-      />
+      {hydrated && (
+        <>
+          <CategoryTabsAdvanced
+            tabs={tabMap}
+            active={active}
+            onSelect={handleSelect}
+            className="mb-10 md:mb-[52px]"
+          />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 max-w-[1340px] mx-auto pb-2">
-        {displayItems.map((item) => (
-          <div
-            key={`${active}-${item.imgIndex}`}
-            className="group relative aspect-square overflow-hidden rounded-2xl transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)]"
-          >
-            <Image
-              src={`/logo-examples/${folder}/${item.imgIndex}.png`}
-              alt={`Logo ${item.imgIndex}`}
-              fill
-              unoptimized
-              className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
-            />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 max-w-[1340px] mx-auto pb-2">
+            {displayItems.map((item) => (
+              <div
+                key={`${active}-${item.imgIndex}`}
+                className="group relative aspect-square overflow-hidden rounded-2xl transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)]"
+              >
+                <Image
+                  src={`/logo-examples/${folder}/${item.imgIndex}.png`}
+                  alt={`Logo ${item.imgIndex}`}
+                  fill
+                  unoptimized
+                  className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </section>
   );
 }
