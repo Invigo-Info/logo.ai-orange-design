@@ -8,28 +8,25 @@ import SectionHeader from "./SectionHeader";
 
 const DISPLAY_COUNT = 12;
 const STORAGE_KEY = "logoExamples_activeCategory";
-
-function shuffleAndPick<T>(array: T[], count: number): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, count);
-}
+const PAGE_KEY = "logoExamples_page";
 
 interface DisplayItem {
   imgIndex: number;
 }
 
-function buildDisplayItems(count: number): DisplayItem[] {
-  const indexed = Array.from({ length: count }, (_, i) => ({
-    imgIndex: i + 1,
-  }));
-  if (indexed.length > DISPLAY_COUNT) {
-    return shuffleAndPick(indexed, DISPLAY_COUNT);
+function buildDisplayItems(count: number, page: number): DisplayItem[] {
+  if (count <= DISPLAY_COUNT) {
+    return Array.from({ length: count }, (_, i) => ({ imgIndex: i + 1 }));
   }
-  return indexed;
+  const totalPages = Math.ceil(count / DISPLAY_COUNT);
+  const safePage = page % totalPages;
+  const start = safePage * DISPLAY_COUNT;
+  const items: DisplayItem[] = [];
+  for (let i = 0; i < DISPLAY_COUNT; i++) {
+    const imgIndex = ((start + i) % count) + 1;
+    items.push({ imgIndex });
+  }
+  return items;
 }
 
 export default function LogoExamples({
@@ -66,22 +63,35 @@ export default function LogoExamples({
 
   const [active, setActive] = useState(defaultKey);
   const [displayItems, setDisplayItems] = useState<DisplayItem[]>(initialItems);
+  const [pageMap, setPageMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    // After hydration: restore session category or shuffle the default
-    const stored = sessionStorage.getItem(STORAGE_KEY);
-    if (stored && stored in categoryMap && stored !== defaultKey) {
-      setActive(stored);
-      setDisplayItems(buildDisplayItems(categoryMap[stored]?.count ?? 0));
-    } else {
-      setDisplayItems(buildDisplayItems(categoryMap[defaultKey]?.count ?? 0));
-    }
+    // After hydration: restore pages and advance the current category page
+    const storedPages: Record<string, number> = JSON.parse(
+      sessionStorage.getItem(PAGE_KEY) || "{}"
+    );
+    const storedCategory = sessionStorage.getItem(STORAGE_KEY);
+    const activeKey =
+      storedCategory && storedCategory in categoryMap ? storedCategory : defaultKey;
+
+    // Advance page for the active category on each page load
+    const currentPage = storedPages[activeKey] ?? 0;
+    const nextPage = currentPage + 1;
+    storedPages[activeKey] = nextPage;
+    sessionStorage.setItem(PAGE_KEY, JSON.stringify(storedPages));
+
+    setPageMap(storedPages);
+    setActive(activeKey);
+    setDisplayItems(
+      buildDisplayItems(categoryMap[activeKey]?.count ?? 0, nextPage)
+    );
   }, [categoryMap, defaultKey]);
 
   const handleSelect = (key: string) => {
     setActive(key);
     sessionStorage.setItem(STORAGE_KEY, key);
-    setDisplayItems(buildDisplayItems(categoryMap[key]?.count ?? 0));
+    const currentPage = pageMap[key] ?? 0;
+    setDisplayItems(buildDisplayItems(categoryMap[key]?.count ?? 0, currentPage));
   };
 
   const folder = categoryMap[active]?.folder ?? "";
