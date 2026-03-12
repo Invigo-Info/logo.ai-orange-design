@@ -1,6 +1,3 @@
-import { readdir } from "fs/promises";
-import path from "path";
-
 export interface DynamicCategory {
   key: string;
   label: string;
@@ -45,31 +42,16 @@ function folderToKey(folder: string): string {
 }
 
 export async function getMockupCategories(): Promise<DynamicCategory[]> {
-  const baseDir = path.join(process.cwd(), "public", "logo-mockups");
-  return scanCategories(baseDir);
-}
+  const mockupBlobUrls: Record<string, Record<string, string>> = await import(
+    "@/data/mockupBlobUrls.json"
+  ).then((m) => m.default);
 
-async function scanCategories(baseDir: string): Promise<DynamicCategory[]> {
-  const entries = await readdir(baseDir, { withFileTypes: true });
-
-  const folders = entries.filter((e) => e.isDirectory()).map((e) => e.name);
-
-  const results: { folder: string; count: number }[] = [];
-
-  await Promise.all(
-    folders.map(async (folder) => {
-      const files = await readdir(path.join(baseDir, folder));
-      const pngCount = files.filter((f) =>
-        f.toLowerCase().endsWith(".png"),
-      ).length;
-      if (pngCount > 0) {
-        results.push({ folder, count: pngCount });
-      }
-    }),
-  );
-
-  // Sort: preferred order first, then alphabetical for unknown folders
   const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
+  const folders = Object.keys(mockupBlobUrls);
+
+  const results = folders
+    .map((folder) => ({ folder, count: Object.keys(mockupBlobUrls[folder]).length }))
+    .filter(({ count }) => count > 0);
 
   results.sort((a, b) => {
     const ai = orderIndex.get(a.folder);

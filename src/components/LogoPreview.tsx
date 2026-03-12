@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import type { DynamicCategory } from "@/lib/getLogoCategories";
+import mockupBlobUrls from "@/data/mockupBlobUrls.json";
 import CategoryTabsAdvanced from "./CategoryTabsAdvanced";
 import SectionHeader from "./SectionHeader";
 
@@ -35,9 +36,10 @@ export default function LogoPreview({
 
   const folder = categoryMap[activeCategory]?.folder ?? "";
   const slideCount = categoryMap[activeCategory]?.count ?? 0;
+  const mockupUrls = mockupBlobUrls as Record<string, Record<string, string>>;
   const slides = Array.from(
     { length: slideCount },
-    (_, i) => `/logo-mockups/${folder}/${i + 1}.png`,
+    (_, i) => mockupUrls[folder]?.[String(i + 1)] ?? "",
   );
 
   useEffect(() => {

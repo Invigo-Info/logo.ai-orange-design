@@ -1,0 +1,114 @@
+{
+  "bakery": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/bakery/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/bakery/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/bakery/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/bakery/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/bakery/5.png"
+  },
+  "barbershop": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/barbershop/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/barbershop/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/barbershop/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/barbershop/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/barbershop/5.png"
+  },
+  "boutique": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/boutique/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/boutique/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/boutique/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/boutique/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/boutique/5.png"
+  },
+  "cleaning-service": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/cleaning-service/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/cleaning-service/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/cleaning-service/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/cleaning-service/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/cleaning-service/5.png"
+  },
+  "clothing-brand": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/clothing-brand/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/clothing-brand/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/clothing-brand/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/clothing-brand/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/clothing-brand/5.png"
+  },
+  "coffee-shop": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/coffee-shop/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/coffee-shop/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/coffee-shop/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/coffee-shop/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/coffee-shop/5.png"
+  },
+  "content-creator": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/content-creator/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/content-creator/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/content-creator/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/content-creator/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/content-creator/5.png"
+  },
+  "e-commerce-brand": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/e-commerce-brand/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/e-commerce-brand/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/e-commerce-brand/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/e-commerce-brand/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/e-commerce-brand/5.png"
+  },
+  "food-truck": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/food-truck/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/food-truck/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/food-truck/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/food-truck/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/food-truck/5.png"
+  },
+  "gym": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/gym/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/gym/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/gym/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/gym/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/gym/5.png"
+  },
+  "hair-salon": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/hair-salon/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/hair-salon/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/hair-salon/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/hair-salon/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/hair-salon/5.png"
+  },
+  "landscaping-company": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/landscaping-company/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/landscaping-company/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/landscaping-company/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/landscaping-company/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/landscaping-company/5.png"
+  },
+  "nail-studio": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/nail-studio/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/nail-studio/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/nail-studio/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/nail-studio/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/nail-studio/5.png"
+  },
+  "pet-grooming": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/pet-grooming/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/pet-grooming/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/pet-grooming/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/pet-grooming/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/pet-grooming/5.png"
+  },
+  "restaurant": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/restaurant/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/restaurant/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/restaurant/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/restaurant/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/restaurant/5.png"
+  },
+  "tattoo-studio": {
+    "1": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/tattoo-studio/1.png",
+    "2": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/tattoo-studio/2.png",
+    "3": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/tattoo-studio/3.png",
+    "4": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/tattoo-studio/4.png",
+    "5": "https://qnn6oebf1azqwryc.public.blob.vercel-storage.com/logo-mockups/tattoo-studio/5.png"
+  }
+}
