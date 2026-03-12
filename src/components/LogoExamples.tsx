@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import type { DynamicCategory } from "@/lib/getLogoCategories";
+import blobUrls from "@/data/blobUrls.json";
 import CategoryTabsAdvanced from "./CategoryTabsAdvanced";
 import SectionHeader from "./SectionHeader";
 
@@ -126,7 +127,7 @@ export default function LogoExamples({
                 className="group relative aspect-square overflow-hidden rounded-2xl transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)]"
               >
                 <Image
-                  src={`/logo-examples/${folder}/${item.imgIndex}.png`}
+                  src={(blobUrls as Record<string, Record<string, string>>)[folder]?.[String(item.imgIndex)] ?? ""}
                   alt={`Logo ${item.imgIndex}`}
                   fill
                   unoptimized

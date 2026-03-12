@@ -89,6 +89,30 @@ async function scanCategories(baseDir: string): Promise<DynamicCategory[]> {
 }
 
 export async function getLogoCategories(): Promise<DynamicCategory[]> {
-  const baseDir = path.join(process.cwd(), "public", "logo-examples");
-  return scanCategories(baseDir);
+  const blobUrls: Record<string, Record<string, string>> = await import(
+    "@/data/blobUrls.json"
+  ).then((m) => m.default);
+
+  const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
+  const folders = Object.keys(blobUrls);
+
+  const results = folders
+    .map((folder) => ({ folder, count: Object.keys(blobUrls[folder]).length }))
+    .filter(({ count }) => count > 0);
+
+  results.sort((a, b) => {
+    const ai = orderIndex.get(a.folder);
+    const bi = orderIndex.get(b.folder);
+    if (ai !== undefined && bi !== undefined) return ai - bi;
+    if (ai !== undefined) return -1;
+    if (bi !== undefined) return 1;
+    return a.folder.localeCompare(b.folder);
+  });
+
+  return results.map(({ folder, count }) => ({
+    key: folderToKey(folder),
+    label: folderToLabel(folder),
+    folder,
+    count,
+  }));
 }
