@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import EmailBar from "./EmailBar";
 import { useCount } from "./CountProvider";
 
-const TOTAL = 500_000;
+const TOTAL = 1_000_000;
 
 export default function Hero() {
   const { count, setCount } = useCount();

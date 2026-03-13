@@ -8,11 +8,10 @@ import {
   type ReactNode,
 } from "react";
 
-const TOTAL = 500_000;
+const TOTAL = 1_000_000;
 const SIMULATED_BASE = 63_513;
 const REFERENCE_DATE = new Date("2026-02-27T00:00:00").getTime();
-const DEADLINE = new Date("2026-04-01T00:00:00").getTime();
-const RATE = (TOTAL - SIMULATED_BASE) / (DEADLINE - REFERENCE_DATE); // logos per ms
+const RATE = 193_728 / (14 * 86_400_000); // fixed rate: ~13,838 logos/day (produces 257,241 on Mar 13)
 const TICK_INTERVAL = 1_000;
 
 function getSimulatedCount() {
