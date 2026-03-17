@@ -42,15 +42,22 @@ function folderToKey(folder: string): string {
 }
 
 export async function getMockupCategories(): Promise<DynamicCategory[]> {
-  const mockupBlobUrls: Record<string, Record<string, string>> = await import(
-    "@/data/mockupBlobUrls.json"
-  ).then((m) => m.default);
+  const fs = await import("fs");
+  const path = await import("path");
+
+  const baseDir = path.join(process.cwd(), "public", "logo-mockups");
+  const folders = fs.readdirSync(baseDir).filter((f: string) =>
+    fs.statSync(path.join(baseDir, f)).isDirectory()
+  );
 
   const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
-  const folders = Object.keys(mockupBlobUrls);
 
   const results = folders
-    .map((folder) => ({ folder, count: Object.keys(mockupBlobUrls[folder]).length }))
+    .map((folder: string) => {
+      const files = fs.readdirSync(path.join(baseDir, folder));
+      const count = files.filter((f: string) => f.endsWith(".webp")).length;
+      return { folder, count };
+    })
     .filter(({ count }) => count > 0);
 
   results.sort((a, b) => {
@@ -71,15 +78,22 @@ export async function getMockupCategories(): Promise<DynamicCategory[]> {
 }
 
 export async function getLogoCategories(): Promise<DynamicCategory[]> {
-  const blobUrls: Record<string, Record<string, string>> = await import(
-    "@/data/blobUrls.json"
-  ).then((m) => m.default);
+  const fs = await import("fs");
+  const path = await import("path");
+
+  const baseDir = path.join(process.cwd(), "public", "logo-examples");
+  const folders = fs.readdirSync(baseDir).filter((f: string) =>
+    fs.statSync(path.join(baseDir, f)).isDirectory()
+  );
 
   const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
-  const folders = Object.keys(blobUrls);
 
   const results = folders
-    .map((folder) => ({ folder, count: Object.keys(blobUrls[folder]).length }))
+    .map((folder: string) => {
+      const files = fs.readdirSync(path.join(baseDir, folder));
+      const count = files.filter((f: string) => f.endsWith(".webp")).length;
+      return { folder, count };
+    })
     .filter(({ count }) => count > 0);
 
   results.sort((a, b) => {
