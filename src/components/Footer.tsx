@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="max-w-[680px] mx-auto flex flex-col items-center gap-5 text-center">
         {/* Logo */}
         <div className="font-display font-bold text-[1.4rem] text-cream tracking-[-0.03em]">
-          logo<span className="text-accent">.</span>ai
+          logo.ai
         </div>
 
         {/* Tagline */}
