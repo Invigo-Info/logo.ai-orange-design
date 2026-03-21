@@ -38,6 +38,7 @@ Categories are fetched server-side via `getLogoCategories()` and `getMockupCateg
 ### Image serving
 
 Logo images are served as **local static files** from `public/`:
+
 - `public/logo-examples/{category}/{n}.webp` — logo gallery images (up to 24 per category)
 - `public/logo-mockups/{category}/{n}.webp` — mockup slideshow images (5 per category)
 

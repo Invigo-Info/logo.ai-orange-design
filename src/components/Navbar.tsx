@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 const DEFAULT_LINKS = [
   { label: "About", href: "/about" },
@@ -24,7 +25,8 @@ export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] px-5 md:px-12 h-16 flex justify-between items-center bg-[rgba(9,9,11,.8)] backdrop-blur-[20px] backdrop-saturate-[1.4] border-b border-cream-05">
+    <nav className="fixed top-0 left-0 right-0 z-[100] h-16 bg-[rgba(9,9,11,.8)] backdrop-blur-[20px] backdrop-saturate-[1.4] border-b border-cream-05 flex items-center">
+      <div className="w-full max-w-[1340px] mx-auto px-6 md:px-8 flex items-center justify-between">
       {/* Logo */}
       <Link
         href="/"
@@ -32,13 +34,14 @@ export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
           sessionStorage.removeItem("logoExamples_activeCategory");
           sessionStorage.removeItem("logoExamples_page");
         }}
-        className="font-display text-[1.2rem] font-bold text-cream tracking-[-0.03em] no-underline"
+        className="font-display text-[1.2rem] font-bold text-cream tracking-[-0.03em] no-underline flex items-center gap-2.5 shrink-0"
       >
-        logo<span className="text-accent">.</span>ai
+        <Image src="/logo.webp" alt="Logo.ai" width={17} height={17} />
+        logo.ai
       </Link>
 
       {/* Right side */}
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-center gap-6">
         {/* Nav links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
@@ -59,6 +62,7 @@ export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
         >
           Get My Free Logo
         </button>
+      </div>
       </div>
     </nav>
   );
