@@ -11,7 +11,7 @@ export default function Hero() {
   const [time, setTime] = useState({ d: "36", h: "00", m: "00", s: "00" });
 
   useEffect(() => {
-    const end = new Date("2026-04-01T00:00:00").getTime();
+    const end = new Date("2026-04-21T00:00:00").getTime();
     const pad = (n: number) => String(n).padStart(2, "0");
 
     const tick = () => {
