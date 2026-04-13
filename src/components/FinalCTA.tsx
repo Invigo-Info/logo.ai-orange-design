@@ -4,7 +4,7 @@ import ScrollReveal from "./ScrollReveal";
 import EmailBar from "./EmailBar";
 import { useCount } from "./CountProvider";
 
-const TOTAL = 1_000_000;
+const TOTAL = 2_000_000;
 
 export default function FinalCTA() {
   const { count, setCount } = useCount();
