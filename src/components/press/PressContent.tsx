@@ -138,7 +138,7 @@ export default function PressContent() {
               not templates. Every time.
             </p>
             <p className="font-display text-[0.82rem] text-cream-35 tracking-[0.02em] font-medium">
-              Launching April 2026.{" "}
+              Launching May 2026.{" "}
               <strong className="text-cream font-bold">{formatted}+</strong>{" "}
               founders are already on the waitlist.
             </p>
@@ -152,7 +152,7 @@ export default function PressContent() {
             <table className="w-full border-collapse">
               <tbody>
                 {[
-                  ["Launch", "April 2026"],
+                  ["Launch", "May 2026"],
                   ["Product", "AI logo generator + complete brand kits"],
                   ["Time", "Under 60 seconds"],
                 ].map(([label, value]) => (
@@ -352,11 +352,11 @@ export default function PressContent() {
             <SectionHeading>Copy-paste descriptions</SectionHeading>
             <CopyBlock
               label="Short Version"
-              text="Logo.ai is an AI-powered logo generator launching April 2026. Founded by serial entrepreneurs and brothers Abhinav and Ashwin Reddy, the platform creates professional logos and complete brand kits in under 60 seconds — original designs, not templates."
+              text="Logo.ai is an AI-powered logo generator launching May 2026. Founded by serial entrepreneurs and brothers Abhinav and Ashwin Reddy, the platform creates professional logos and complete brand kits in under 60 seconds — original designs, not templates."
             />
             <CopyBlock
               label="Full Version"
-              text={`Logo.ai is an AI logo generator launching April 2026. Founded by Abhinav and Ashwin Reddy — brothers and serial entrepreneurs who've spent three decades launching technology products across web, mobile, and AI, with multiple successful exits and products used by millions — the platform creates professional logos and complete brand kits in under 60 seconds. Unlike traditional logo makers that recycle templates, Logo.ai generates original designs tailored to each brand. The company is headquartered in San Francisco, with teams in Singapore, Tallinn, and Dubai. Over ${formatted} founders, creators, and brand owners are on the waitlist ahead of launch.`}
+              text={`Logo.ai is an AI logo generator launching May 2026. Founded by Abhinav and Ashwin Reddy — brothers and serial entrepreneurs who've spent three decades launching technology products across web, mobile, and AI, with multiple successful exits and products used by millions — the platform creates professional logos and complete brand kits in under 60 seconds. Unlike traditional logo makers that recycle templates, Logo.ai generates original designs tailored to each brand. The company is headquartered in San Francisco, with teams in Singapore, Tallinn, and Dubai. Over ${formatted} founders, creators, and brand owners are on the waitlist ahead of launch.`}
             />
           </section>
         </ScrollReveal>

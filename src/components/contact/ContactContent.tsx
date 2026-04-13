@@ -10,7 +10,7 @@ import ScrollReveal from "../ScrollReveal";
 const FAQ_DATA = [
   {
     q: "When does Logo.ai launch?",
-    a: "April 2026. Sign up now and we'll email you the moment it's live so you can create yours right away.",
+    a: "May 2026. Sign up now and we'll email you the moment it's live so you can create yours right away.",
   },
   {
     q: "How much does it cost?",
@@ -18,7 +18,7 @@ const FAQ_DATA = [
   },
   {
     q: "How many free logos are available?",
-    a: "We're giving away 1,000,000 free logos during launch. Once they're claimed, standard pricing begins.",
+    a: "We're giving away 2,000,000 free logos during launch. Once they're claimed, standard pricing begins.",
   },
   {
     q: "What do I get with my free logo?",

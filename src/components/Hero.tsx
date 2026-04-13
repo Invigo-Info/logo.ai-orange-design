@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import EmailBar from "./EmailBar";
 import { useCount } from "./CountProvider";
 
-const TOTAL = 1_000_000;
+const TOTAL = 2_000_000;
 
 export default function Hero() {
   const { count, setCount } = useCount();
   const [time, setTime] = useState({ d: "36", h: "00", m: "00", s: "00" });
 
   useEffect(() => {
-    const end = new Date("2026-04-21T00:00:00").getTime();
+    const end = new Date("2026-05-31T00:00:00").getTime();
     const pad = (n: number) => String(n).padStart(2, "0");
 
     const tick = () => {
@@ -65,7 +65,7 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Free logo for the first 1,000,000 users. Join now to secure yours at
+          Free logo for the first 2,000,000 users. Join now to secure yours at
           launch.
           {/* Original, professional AI-generated logos.
           <br />
@@ -99,7 +99,7 @@ export default function Hero() {
           {/* Claimed count */}
           <p className="text-[0.78rem] text-cream-35 font-medium">
             <strong className="text-cream-55">{count.toLocaleString()}</strong>{" "}
-            of 1,000,000 free logos secured
+            of 2,000,000 free logos secured
           </p>
         </div>
       </div>

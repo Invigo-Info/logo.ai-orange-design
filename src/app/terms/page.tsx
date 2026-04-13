@@ -16,7 +16,7 @@ const TERMS_NAV_LINKS = [
 export const metadata: Metadata = {
   title: "Terms of Service — Logo.ai | AI-Powered Logo Generator",
   description:
-    "Read the Terms of Service for Logo.ai, the AI-powered logo generator launching April 2026. You own what you create. Full commercial rights are included.",
+    "Read the Terms of Service for Logo.ai, the AI-powered logo generator launching May 2026. You own what you create. Full commercial rights are included.",
 };
 
 export default async function TermsPage() {

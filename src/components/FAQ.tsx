@@ -6,7 +6,7 @@ import { useCount } from "./CountProvider";
 import SectionHeader from "./SectionHeader";
 import ScrollReveal from "./ScrollReveal";
 
-const LAUNCH_DEADLINE = new Date("2026-04-21T00:00:00").getTime();
+const LAUNCH_DEADLINE = new Date("2026-05-31T00:00:00").getTime();
 
 function getDaysLeft() {
   const days = Math.max(
