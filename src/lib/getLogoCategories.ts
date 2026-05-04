@@ -27,10 +27,16 @@ const PREFERRED_ORDER = [
   "tech-startup",
 ];
 
+const UPPERCASE_WORDS = new Set(["saas"]);
+
 function folderToLabel(folder: string): string {
   return folder
     .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .map((w) =>
+      UPPERCASE_WORDS.has(w.toLowerCase())
+        ? w.toUpperCase()
+        : w.charAt(0).toUpperCase() + w.slice(1)
+    )
     .join(" ");
 }
 
