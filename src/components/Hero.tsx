@@ -8,10 +8,10 @@ const TOTAL = 2_000_000;
 
 export default function Hero() {
   const { count, setCount } = useCount();
-  const [time, setTime] = useState({ d: "36", h: "00", m: "00", s: "00" });
+  const [time, setTime] = useState({ d: "51", h: "00", m: "00", s: "00" });
 
   useEffect(() => {
-    const end = new Date("2026-05-31T00:00:00").getTime();
+    const end = new Date("2026-06-15T00:00:00").getTime();
     const pad = (n: number) => String(n).padStart(2, "0");
 
     const tick = () => {
