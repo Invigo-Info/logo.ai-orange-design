@@ -10,7 +10,7 @@ import ScrollReveal from "../ScrollReveal";
 const FAQ_DATA = [
   {
     q: "When does Logo.ai launch?",
-    a: "May 2026. Sign up now and we'll email you the moment it's live so you can create yours right away.",
+    a: "June 2026. Sign up now and we'll email you the moment it's live so you can create yours right away.",
   },
   {
     q: "How much does it cost?",
