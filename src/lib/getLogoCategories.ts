@@ -27,7 +27,7 @@ const PREFERRED_ORDER = [
   "tech-startup",
 ];
 
-const UPPERCASE_WORDS = new Set(["saas"]);
+const UPPERCASE_WORDS = new Set(["saas", "hvac"]);
 
 function folderToLabel(folder: string): string {
   return folder
