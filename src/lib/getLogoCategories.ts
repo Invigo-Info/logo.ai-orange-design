@@ -3,9 +3,10 @@ export interface DynamicCategory {
   label: string;
   folder: string;
   count: number;
+  isPopular: boolean;
 }
 
-const PREFERRED_ORDER = [
+export const POPULAR_FOLDERS = [
   "restaurant",
   "coffee-shop",
   "bakery",
@@ -22,6 +23,10 @@ const PREFERRED_ORDER = [
   "e-commerce-brand",
   "content-creator",
   "tattoo-studio",
+];
+
+const PREFERRED_ORDER = [
+  ...POPULAR_FOLDERS,
   "insurance-agency",
   "jewelry-brand",
   "tech-startup",
@@ -57,6 +62,7 @@ export async function getMockupCategories(): Promise<DynamicCategory[]> {
   );
 
   const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
+  const popularSet = new Set(POPULAR_FOLDERS);
 
   const results = folders
     .map((folder: string) => {
@@ -80,6 +86,7 @@ export async function getMockupCategories(): Promise<DynamicCategory[]> {
     label: folderToLabel(folder),
     folder,
     count,
+    isPopular: popularSet.has(folder),
   }));
 }
 
@@ -93,6 +100,7 @@ export async function getLogoCategories(): Promise<DynamicCategory[]> {
   );
 
   const orderIndex = new Map(PREFERRED_ORDER.map((f, i) => [f, i]));
+  const popularSet = new Set(POPULAR_FOLDERS);
 
   const results = folders
     .map((folder: string) => {
@@ -116,5 +124,6 @@ export async function getLogoCategories(): Promise<DynamicCategory[]> {
     label: folderToLabel(folder),
     folder,
     count,
+    isPopular: popularSet.has(folder),
   }));
 }
