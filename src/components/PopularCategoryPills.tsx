@@ -17,7 +17,7 @@ const PILL_INACTIVE =
   "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
 
 const BROWSE_ALL =
-  "px-3.5 py-1.5 md:px-[18px] md:py-2 border rounded-full text-[0.7rem] md:text-[0.78rem] font-semibold tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 bg-[rgba(125,189,255,0.08)] border-[rgba(125,189,255,0.35)] text-[#9ec8ff] hover:bg-[rgba(125,189,255,0.14)] hover:border-[rgba(125,189,255,0.55)] hover:text-[#cfe2ff]";
+  "px-3.5 py-1.5 md:px-[18px] md:py-2 border rounded-full text-[0.7rem] md:text-[0.78rem] font-semibold tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
 
 export default function PopularCategoryPills({
   popular,
@@ -45,10 +45,10 @@ export default function PopularCategoryPills({
         <button
           type="button"
           onClick={onBrowseAll}
-          aria-label="Search more categories"
+          aria-label="Browse all categories"
           className={BROWSE_ALL}
         >
-          Search More Categories
+          Browse All Categories
         </button>
       </div>
     </div>
