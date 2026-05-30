@@ -2,22 +2,42 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
-import type { DynamicCategory } from "@/lib/getLogoCategories";
-import PopularCategoryPills from "./PopularCategoryPills";
-import CategoryBrowserModal from "./CategoryBrowserModal";
+import type { DynamicCategory, Subcategory } from "@/lib/getLogoCategories";
 import SectionHeader from "./SectionHeader";
 
 const DISPLAY_COUNT = 12;
 const STORAGE_KEY = "logoExamples_activeCategory";
 
-function getPageIndices(total: number, page: number, take: number): number[] {
-  if (total <= 0) return [];
-  const start = page * take;
-  const end = Math.min(start + take, total);
+function indicesUpTo(count: number, total: number): number[] {
+  const clamped = Math.min(Math.max(count, 0), Math.max(total, 0));
   const out: number[] = [];
-  for (let i = start; i < end; i++) out.push(i + 1);
+  for (let i = 0; i < clamped; i++) out.push(i + 1);
   return out;
 }
+
+function defaultSubFor(cat: DynamicCategory | undefined): Subcategory | null {
+  if (!cat) return null;
+  if (cat.count > 0) return null;
+  return cat.subcategories.find((s) => s.count > 0) ?? null;
+}
+
+const PILL_BASE =
+  "px-3.5 py-1.5 md:px-[18px] md:py-2 border rounded-full text-[0.7rem] md:text-[0.78rem] font-medium tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0";
+
+const PILL_ACTIVE =
+  "bg-accent border-accent text-white font-semibold shadow-[0_0_18px_rgba(232,66,13,.28)]";
+
+const PILL_INACTIVE =
+  "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
+
+const SUB_PILL_BASE =
+  "px-3 py-1.5 md:px-3.5 border rounded-full text-[0.68rem] md:text-[0.74rem] font-medium tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0";
+
+const SUB_PILL_ACTIVE =
+  "bg-transparent border-accent text-accent font-semibold";
+
+const SUB_PILL_INACTIVE =
+  "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
 
 export default function LogoExamples({
   categories,
@@ -25,36 +45,24 @@ export default function LogoExamples({
   categories: DynamicCategory[];
 }) {
   const categoryMap = useMemo(() => {
-    const map: Record<string, { folder: string; count: number; label: string }> = {};
+    const map: Record<string, DynamicCategory> = {};
     for (const c of categories) {
-      map[c.key] = { folder: c.folder, count: c.count, label: c.label };
+      map[c.key] = c;
     }
     return map;
   }, [categories]);
 
-  const popularEntries = useMemo(
-    () =>
-      categories
-        .filter((c) => c.isPopular)
-        .map(({ key, label }) => ({ key, label })),
-    [categories],
-  );
-
   const defaultKey =
     "restaurant" in categoryMap ? "restaurant" : (categories[0]?.key ?? "");
 
-  const defaultCount = categoryMap[defaultKey]?.count ?? 0;
-  const serverIndices = useMemo(
-    () => getPageIndices(defaultCount, 0, DISPLAY_COUNT),
-    [defaultCount],
-  );
-
   const [active, setActive] = useState(defaultKey);
-  const [page, setPage] = useState(0);
-  const [displayIndices, setDisplayIndices] = useState<number[]>(serverIndices);
+  const [activeSub, setActiveSub] = useState<Subcategory | null>(
+    defaultSubFor(categoryMap[defaultKey]),
+  );
+  const [visibleCount, setVisibleCount] = useState(DISPLAY_COUNT);
   const [hydrated, setHydrated] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [renderToken, setRenderToken] = useState(0);
+  const [query, setQuery] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const storedCategory = sessionStorage.getItem(STORAGE_KEY);
@@ -64,52 +72,73 @@ export default function LogoExamples({
         : defaultKey;
 
     setActive(activeKey);
-    setPage(0);
-    setDisplayIndices(
-      getPageIndices(categoryMap[activeKey]?.count ?? 0, 0, DISPLAY_COUNT),
-    );
-    setRenderToken((t) => t + 1);
+    setActiveSub(defaultSubFor(categoryMap[activeKey]));
+    setVisibleCount(DISPLAY_COUNT);
     setHydrated(true);
   }, [categoryMap, defaultKey]);
 
   const handleSelect = useCallback(
     (key: string) => {
       setActive(key);
-      setPage(0);
-      setDisplayIndices(
-        getPageIndices(categoryMap[key]?.count ?? 0, 0, DISPLAY_COUNT),
-      );
-      setRenderToken((t) => t + 1);
+      setActiveSub(defaultSubFor(categoryMap[key]));
+      setVisibleCount(DISPLAY_COUNT);
       sessionStorage.setItem(STORAGE_KEY, key);
     },
     [categoryMap],
   );
 
-  const totalInCategory = categoryMap[active]?.count ?? 0;
-  const totalPages = Math.max(1, Math.ceil(totalInCategory / DISPLAY_COUNT));
-  const isFirstPage = page <= 0;
-  const isLastPage = page >= totalPages - 1;
+  const handleSelectSub = useCallback((sub: Subcategory) => {
+    setActiveSub(sub);
+    setVisibleCount(DISPLAY_COUNT);
+  }, []);
 
-  const handleNext = useCallback(() => {
-    if (isLastPage) return;
-    const nextPage = page + 1;
-    setPage(nextPage);
-    setDisplayIndices(getPageIndices(totalInCategory, nextPage, DISPLAY_COUNT));
-    setRenderToken((t) => t + 1);
-  }, [isLastPage, page, totalInCategory]);
+  const handleSelectAllSub = useCallback(() => {
+    setActiveSub(null);
+    setVisibleCount(DISPLAY_COUNT);
+  }, []);
 
-  const handlePrev = useCallback(() => {
-    if (isFirstPage) return;
-    const prevPage = page - 1;
-    setPage(prevPage);
-    setDisplayIndices(getPageIndices(totalInCategory, prevPage, DISPLAY_COUNT));
-    setRenderToken((t) => t + 1);
-  }, [isFirstPage, page, totalInCategory]);
+  const activeCategory = categoryMap[active];
+  const totalInCategory = activeSub
+    ? activeSub.count
+    : (activeCategory?.count ?? 0);
 
-  const folder = categoryMap[active]?.folder ?? "";
-  const activeLabel = categoryMap[active]?.label ?? "";
-  const shownCount = Math.min((page + 1) * DISPLAY_COUNT, totalInCategory);
-  const navDisabled = totalInCategory <= DISPLAY_COUNT;
+  const folder = activeCategory?.folder ?? "";
+  const activeLabel = activeCategory?.label ?? "";
+  const activeSubcategories = (activeCategory?.subcategories ?? []).filter(
+    (s) => s.count > 0,
+  );
+  const imagePathBase = activeSub
+    ? `/logo-examples/${folder}/${activeSub.slug}`
+    : `/logo-examples/${folder}`;
+  const altPrefix = activeSub
+    ? `${activeSub.label} ${activeLabel}`
+    : activeLabel;
+  const displayIndices = indicesUpTo(visibleCount, totalInCategory);
+  const hasMore = visibleCount < totalInCategory;
+  const isExpanded = visibleCount >= totalInCategory && totalInCategory > DISPLAY_COUNT;
+
+  const handleShowMore = useCallback(() => {
+    setVisibleCount((v) => v + DISPLAY_COUNT);
+  }, []);
+
+  const handleShowLess = useCallback(() => {
+    setVisibleCount(DISPLAY_COUNT);
+  }, []);
+
+  const trimmedQuery = query.trim().toLowerCase();
+  const isFiltering = trimmedQuery.length > 0;
+
+  const visibleCategories = useMemo(() => {
+    if (isFiltering) {
+      return categories.filter((c) =>
+        c.label.toLowerCase().includes(trimmedQuery),
+      );
+    }
+    if (expanded) return categories;
+    return categories.filter((c) => c.isPopular);
+  }, [categories, isFiltering, trimmedQuery, expanded]);
+
+  const totalCount = categories.length;
 
   return (
     <section className="bg-b1 pt-20 pb-32 md:pt-[80px] md:pb-[140px] px-4 md:px-8 relative">
@@ -117,36 +146,18 @@ export default function LogoExamples({
         eyebrow="Gallery"
         title="Logos Created with Logo.ai"
         description="Browse AI-generated logos for different businesses. See the quality and variety you can expect."
-        className="mb-14 md:mb-[56px]"
+        className="mb-10 md:mb-12"
       />
 
       {hydrated && (
         <>
-          <PopularCategoryPills
-            popular={popularEntries}
-            active={active}
-            onSelect={handleSelect}
-            onBrowseAll={() => setModalOpen(true)}
-            className="mb-8 md:mb-10"
-          />
-
-          {/* Toolbar: count + Prev/Next */}
-          <div className="max-w-[1340px] mx-auto mb-5 md:mb-6 flex items-center justify-between gap-4 px-1">
-            <p className="text-[0.78rem] md:text-[0.85rem] text-cream-55">
-              Showing {shownCount} of {totalInCategory}
-            </p>
-
-            <div className="inline-flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handlePrev}
-                disabled={isFirstPage || navDisabled}
-                aria-label="Previous page"
-                className="inline-flex items-center gap-1.5 px-3 md:px-3.5 py-1.5 rounded-full border border-cream-10 text-[0.75rem] md:text-[0.8rem] text-cream-55 hover:text-cream hover:border-cream-35 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-cream-55 disabled:hover:border-cream-10"
-              >
+          {/* Search bar */}
+          <div className="max-w-[640px] mx-auto mb-7 md:mb-8 px-2">
+            <div className="relative">
+              <span className="absolute inset-y-0 left-5 flex items-center text-cream-35 pointer-events-none">
                 <svg
-                  width="11"
-                  height="11"
+                  width="15"
+                  height="15"
                   viewBox="0 0 14 14"
                   fill="none"
                   stroke="currentColor"
@@ -155,51 +166,104 @@ export default function LogoExamples({
                   strokeLinejoin="round"
                   aria-hidden="true"
                 >
-                  <path d="M8.5 3.5L5 7l3.5 3.5" />
+                  <circle cx="6" cy="6" r="4.2" />
+                  <path d="M9.5 9.5l3 3" />
                 </svg>
-                Prev
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={isLastPage || navDisabled}
-                aria-label="Next page"
-                className="inline-flex items-center gap-1.5 px-3 md:px-3.5 py-1.5 rounded-full border border-cream-10 text-[0.75rem] md:text-[0.8rem] text-cream-55 hover:text-cream hover:border-cream-35 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-cream-55 disabled:hover:border-cream-10"
-              >
-                Next
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5.5 3.5L9 7l-3.5 3.5" />
-                </svg>
-              </button>
+              </span>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={`Search ${totalCount} industries...`}
+                aria-label="Search industries"
+                className="w-full pl-12 pr-4 h-12 rounded-full bg-b0 border border-cream-10 text-[0.85rem] md:text-[0.9rem] text-cream placeholder:text-cream-35 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(232,66,13,.15)] transition-all"
+              />
             </div>
           </div>
 
-          <div
-            key={renderToken}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 [@media(min-width:480px)]:gap-4 md:gap-5 max-w-[1340px] mx-auto pb-2"
-          >
+          {/* All categories */}
+          <div className="max-w-[1100px] mx-auto">
+            {visibleCategories.length === 0 ? (
+              <p className="text-center text-cream-55 text-sm py-6">
+                No categories match &ldquo;{query}&rdquo;.
+              </p>
+            ) : (
+              <div
+                className={
+                  expanded || isFiltering
+                    ? "flex flex-wrap justify-center gap-1.5 md:gap-2 px-2 md:px-0"
+                    : "flex flex-nowrap overflow-x-auto md:flex-wrap md:overflow-visible md:justify-center gap-1.5 md:gap-2 -mx-4 md:mx-0 px-4 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                }
+              >
+                {visibleCategories.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => handleSelect(key)}
+                    className={`${PILL_BASE} ${active === key ? PILL_ACTIVE : PILL_INACTIVE}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Show more / Show fewer */}
+          {!isFiltering && (
+            <div className="flex justify-center mt-5 md:mt-6">
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                className="text-[0.78rem] md:text-[0.82rem] font-semibold text-accent hover:text-accent-hi transition-colors cursor-pointer"
+                aria-expanded={expanded}
+              >
+                {expanded ? "Show fewer" : `See all ${totalCount} industries →`}
+              </button>
+            </div>
+          )}
+
+          {/* Sub-categories */}
+          {activeSubcategories.length > 0 && (
+            <div className="max-w-[1000px] mx-auto mt-9 md:mt-11">
+              <p className="text-center text-cream text-[0.78rem] md:text-[0.82rem] font-medium mb-3 md:mb-4">
+                Browse:
+              </p>
+              <div className="flex flex-nowrap overflow-x-auto md:flex-wrap md:overflow-visible md:justify-center gap-1.5 md:gap-2 -mx-4 md:mx-0 px-4 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <button
+                  type="button"
+                  onClick={handleSelectAllSub}
+                  className={`${SUB_PILL_BASE} ${activeSub === null ? PILL_ACTIVE : SUB_PILL_INACTIVE}`}
+                >
+                  All
+                </button>
+                {activeSubcategories.map((sub) => (
+                  <button
+                    key={sub.slug}
+                    type="button"
+                    onClick={() => handleSelectSub(sub)}
+                    className={`${SUB_PILL_BASE} ${activeSub?.slug === sub.slug ? SUB_PILL_ACTIVE : SUB_PILL_INACTIVE}`}
+                  >
+                    {sub.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 [@media(min-width:480px)]:gap-4 md:gap-5 max-w-[1340px] mx-auto mt-8 md:mt-10 pb-2">
             {displayIndices.map((imgIndex, i) => (
               <div
-                key={`${active}-${page}-${imgIndex}`}
+                key={`${active}-${activeSub?.slug ?? "all"}-${imgIndex}`}
                 style={{
-                  animationDelay: `${Math.min(i, 11) * 28}ms`,
+                  animationDelay: `${(i % DISPLAY_COUNT) * 28}ms`,
                   opacity: 0,
                 }}
                 className="group relative aspect-square overflow-hidden rounded-2xl transition-all duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(0,0,0,.25)] animate-[rise_520ms_cubic-bezier(.16,1,.3,1)_forwards]"
               >
                 <Image
-                  src={`/logo-examples/${folder}/${imgIndex}.webp`}
-                  alt={`${activeLabel} logo ${imgIndex}`}
+                  src={`${imagePathBase}/${imgIndex}.webp`}
+                  alt={`${altPrefix} logo ${imgIndex}`}
                   fill
                   unoptimized
                   className="object-cover transition-transform duration-[600ms] group-hover:scale-105"
@@ -208,13 +272,35 @@ export default function LogoExamples({
             ))}
           </div>
 
-          <CategoryBrowserModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            categories={categories}
-            active={active}
-            onSelect={handleSelect}
-          />
+          {(hasMore || isExpanded) && (
+            <div className="flex flex-col items-center gap-3 md:gap-4 mt-8 md:mt-10">
+              <p className="text-[0.78rem] md:text-[0.85rem] text-cream-55">
+                Showing {displayIndices.length} of {totalInCategory}
+              </p>
+              <button
+                type="button"
+                onClick={hasMore ? handleShowMore : handleShowLess}
+                className="inline-flex items-center gap-2.5 px-5 md:px-6 py-2.5 md:py-3 rounded-full border border-cream-10 text-[0.8rem] md:text-[0.85rem] font-semibold text-cream-55 hover:text-accent hover:border-accent transition-colors cursor-pointer"
+              >
+                {hasMore ? `Show ${DISPLAY_COUNT} more logos` : "Show fewer"}
+                <svg
+                  width="10"
+                  height="20"
+                  viewBox="0 0 10 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className={hasMore ? "" : "rotate-180"}
+                >
+                  <line x1="5" y1="2" x2="5" y2="16" />
+                  <polyline points="1.5 12.5, 5 17, 8.5 12.5" />
+                </svg>
+              </button>
+            </div>
+          )}
         </>
       )}
     </section>
