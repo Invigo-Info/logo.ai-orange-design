@@ -34,7 +34,7 @@ const SUB_PILL_BASE =
   "px-3 py-1.5 md:px-3.5 border rounded-full text-[0.68rem] md:text-[0.74rem] font-medium tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0";
 
 const SUB_PILL_ACTIVE =
-  "bg-transparent border-accent text-accent font-semibold";
+  "bg-accent border-accent text-white font-semibold shadow-[0_0_18px_rgba(232,66,13,.28)]";
 
 const SUB_PILL_INACTIVE =
   "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
@@ -226,9 +226,6 @@ export default function LogoExamples({
           {/* Sub-categories */}
           {activeSubcategories.length > 0 && (
             <div className="max-w-[1000px] mx-auto mt-9 md:mt-11">
-              <p className="text-center text-cream text-[0.78rem] md:text-[0.82rem] font-medium mb-3 md:mb-4">
-                Browse:
-              </p>
               <div className="flex flex-nowrap overflow-x-auto md:flex-wrap md:overflow-visible md:justify-center gap-1.5 md:gap-2 -mx-4 md:mx-0 px-4 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <button
                   type="button"
@@ -280,23 +277,26 @@ export default function LogoExamples({
               <button
                 type="button"
                 onClick={hasMore ? handleShowMore : handleShowLess}
-                className="inline-flex items-center gap-2.5 px-5 md:px-6 py-2.5 md:py-3 rounded-full border border-cream-10 text-[0.8rem] md:text-[0.85rem] font-semibold text-cream-55 hover:text-accent hover:border-accent transition-colors cursor-pointer"
+                className="group inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 rounded-full border border-cream-10 text-[0.8rem] md:text-[0.85rem] font-semibold text-cream-55 hover:text-accent hover:border-accent transition-colors cursor-pointer"
               >
                 {hasMore ? `Show ${DISPLAY_COUNT} more logos` : "Show fewer"}
                 <svg
-                  width="10"
-                  height="20"
-                  viewBox="0 0 10 20"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.6"
+                  strokeWidth="1.8"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   aria-hidden="true"
-                  className={hasMore ? "" : "rotate-180"}
+                  className={`relative top-px transition-transform duration-300 ease-out ${
+                    hasMore
+                      ? "group-hover:translate-y-1"
+                      : "rotate-180 group-hover:-translate-y-1"
+                  }`}
                 >
-                  <line x1="5" y1="2" x2="5" y2="16" />
-                  <polyline points="1.5 12.5, 5 17, 8.5 12.5" />
+                  <polyline points="2 4.5, 6 8.5, 10 4.5" />
                 </svg>
               </button>
             </div>

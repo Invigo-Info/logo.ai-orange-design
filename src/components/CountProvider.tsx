@@ -9,9 +9,10 @@ import {
 } from "react";
 
 const TOTAL = 2_000_000;
-const SIMULATED_BASE = 63_513;
-const REFERENCE_DATE = new Date("2026-02-27T00:00:00").getTime();
-const RATE = 166_835 / (14 * 86_400_000); // ~11,916 logos/day — scaled by 93/108 for extended launch (2026-06-15, +15 days)
+const SIMULATED_BASE = 1_184_294;
+const REFERENCE_DATE = new Date("2026-06-01T00:00:00").getTime();
+const LAUNCH_DATE = new Date("2026-08-01T00:00:00").getTime();
+const RATE = (TOTAL - SIMULATED_BASE) / (LAUNCH_DATE - REFERENCE_DATE);
 const TICK_INTERVAL = 1_000;
 
 function getSimulatedCount() {

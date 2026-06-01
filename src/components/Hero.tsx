@@ -5,31 +5,36 @@ import EmailBar from "./EmailBar";
 import { useCount } from "./CountProvider";
 
 const TOTAL = 2_000_000;
+const COUNTDOWN_START = new Date("2026-04-01T00:00:00").getTime();
+const COUNTDOWN_END = new Date("2026-08-01T00:00:00").getTime();
 
 export default function Hero() {
   const { count, setCount } = useCount();
-  const [time, setTime] = useState({ d: "51", h: "00", m: "00", s: "00" });
+  const [time, setTime] = useState({ d: "61", h: "00", m: "00", s: "00" });
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const end = new Date("2026-06-15T00:00:00").getTime();
     const pad = (n: number) => String(n).padStart(2, "0");
 
     const tick = () => {
-      const r = Math.max(0, end - Date.now());
+      const now = Date.now();
+      const r = Math.max(0, COUNTDOWN_END - now);
       setTime({
         d: pad(Math.floor(r / 864e5)),
         h: pad(Math.floor((r % 864e5) / 36e5)),
         m: pad(Math.floor((r % 36e5) / 6e4)),
         s: pad(Math.floor((r % 6e4) / 1e3)),
       });
+
+      const span = COUNTDOWN_END - COUNTDOWN_START;
+      const elapsed = now - COUNTDOWN_START;
+      setProgress(Math.min(Math.max((elapsed / span) * 100, 0), 100));
     };
 
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
-
-  const progress = Math.min((count / TOTAL) * 100, 100);
 
   return (
     <section
