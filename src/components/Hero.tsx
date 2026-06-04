@@ -72,17 +72,22 @@ export default function Hero() {
             <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
           </div>
 
-          <p className="text-[0.78rem] text-cream-55 font-medium relative z-[2]">
+          <p className="text-[0.82rem] text-cream font-semibold relative z-[2]">
             No spam. No credit card. Just a free logo.
           </p>
-          <p className="text-[0.74rem] text-cream-35 relative z-[2] -mt-1.5 max-w-[460px] text-center leading-[1.5]">
+          <p className="text-[0.78rem] text-cream-55 relative z-[2] -mt-1 max-w-[480px] text-center leading-[1.5]">
             We&rsquo;ll email you the moment we go live so you can generate your
             free logo.
           </p>
         </div>
 
         {/* Progress */}
-        <div className="mt-9 flex flex-col items-center gap-3 w-full max-w-[440px] relative z-[1] opacity-0 animate-rise-5">
+        <div className="mt-9 flex flex-col items-center gap-3 w-full max-w-[460px] relative z-[1] opacity-0 animate-rise-5">
+          <p className="text-[0.92rem]">
+            <strong className="text-cream font-bold">{count.toLocaleString()}</strong>
+            <span className="text-cream-35"> of 2,000,000 free logos claimed</span>
+          </p>
+
           <div className="w-full h-1.5 rounded-[100px] bg-cream-10 overflow-hidden">
             <div
               className="h-full rounded-[100px] bg-gradient-to-r from-accent to-accent-hi shadow-[0_0_12px_rgba(232,66,13,.4)] transition-[width] duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)]"
@@ -90,12 +95,7 @@ export default function Hero() {
             />
           </div>
 
-          <p className="text-[0.8rem] text-cream-55 font-medium">
-            <strong className="text-cream">{count.toLocaleString()}</strong>{" "}
-            <span className="text-cream-35">of 2,000,000 free logos claimed</span>
-          </p>
-
-          <p className="text-[0.72rem] text-cream-35 italic mt-1">
+          <p className="text-[0.78rem] text-cream-35 italic mt-1">
             Going fast. Don&rsquo;t miss yours.
           </p>
         </div>
