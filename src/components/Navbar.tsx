@@ -74,9 +74,9 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-[100] h-[74px] bg-b0 border-b border-cream-05 flex items-center">
       <div
         ref={wrapRef}
-        className="w-full max-w-[1340px] mx-auto px-6 md:px-10 flex items-center justify-between"
+        className="w-full max-w-[1340px] mx-auto px-6 md:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-6"
       >
-        {/* Brand */}
+        {/* Brand (left) */}
         <Link
           href="/"
           onClick={() => {
@@ -89,13 +89,13 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
           LOGO.AI
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop nav (centered) */}
+        <div className="hidden md:flex items-center justify-center gap-8">
           {links.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-55 transition-colors duration-200 hover:text-cream no-underline"
+              className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors duration-200 hover:text-accent-hi no-underline"
             >
               {link.label}
             </Link>
@@ -122,17 +122,21 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
             items={BROWSE_LINKS}
             onItemClick={() => setOpenDropdown(null)}
           />
-
-          <button
-            onClick={scrollToCTA}
-            className="h-[41px] px-[18px] rounded-full border-none bg-accent text-white font-sans text-[0.88rem] font-semibold inline-flex items-center transition-all duration-300 cursor-pointer hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
-          >
-            Get My Free Logo
-          </button>
         </div>
 
+        {/* Spacer for mobile so grid 3rd column still aligns right */}
+        <div className="md:hidden" />
+
+        {/* Desktop CTA (right) */}
+        <button
+          onClick={scrollToCTA}
+          className="hidden md:inline-flex h-[41px] px-[18px] rounded-full border-none bg-accent text-white font-sans text-[0.88rem] font-semibold items-center transition-all duration-300 cursor-pointer hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
+        >
+          Get My Free Logo
+        </button>
+
         {/* Mobile CTA + menu toggle */}
-        <div className="md:hidden flex items-center gap-3">
+        <div className="md:hidden flex items-center gap-3 justify-self-end">
           <button
             onClick={scrollToCTA}
             className="h-[36px] px-4 rounded-full bg-accent text-white font-sans text-[0.78rem] font-semibold active:bg-accent-hi"
@@ -225,7 +229,7 @@ function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-55 transition-colors duration-200 hover:text-cream inline-flex items-center gap-1.5"
+        className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors duration-200 hover:text-accent-hi inline-flex items-center gap-1.5"
       >
         {label}
         <svg
