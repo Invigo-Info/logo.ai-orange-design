@@ -42,11 +42,11 @@ export default function Hero() {
       id="top"
       className="relative z-[2] pt-[140px] pb-[100px] text-center overflow-hidden bg-b0 hero-glow"
     >
-      <div className="flex flex-col items-center px-6 md:px-8 relative z-[2] max-w-[720px] mx-auto">
+      <div className="flex flex-col items-center px-6 md:px-8 relative z-[2] max-w-[920px] mx-auto">
         {/* Countdown pill (top) */}
-        <div className="inline-flex items-center gap-2 mb-6 opacity-0 animate-rise-1 rounded-full border border-[rgba(232,66,13,.28)] bg-[rgba(232,66,13,.08)] px-5 py-2 shadow-[0_0_24px_rgba(232,66,13,.12)]">
+        <div className="inline-flex items-center gap-2 mb-6 opacity-0 animate-rise-1 rounded-full border border-cream-10 bg-cream-05 px-4 py-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-accent-hi animate-pulse-dot" aria-hidden />
-          <span className="font-mono text-[0.7rem] font-semibold tracking-[0.08em] uppercase text-accent-hi">
+          <span className="font-sans text-[0.74rem] font-semibold tracking-[0.1em] uppercase text-cream">
             Launching in {time.d}d : {time.h}h : {time.m}m
           </span>
         </div>
@@ -57,9 +57,8 @@ export default function Hero() {
         </p>
 
         {/* Headline */}
-        <h1 className="font-display text-[clamp(2.6rem,6.4vw,4.5rem)] font-extrabold leading-[1.04] tracking-[-0.03em] mb-6 text-cream opacity-0 animate-rise-2">
-          Get Your Free <br className="hidden sm:block" />
-          Logo in Seconds
+        <h1 className="font-display text-[clamp(2.6rem,6.4vw,4.6rem)] font-extrabold leading-[1.04] tracking-[-0.03em] mb-6 text-cream opacity-0 animate-rise-2 whitespace-pre-line">
+          {"Get Your Free Logo\nin Seconds"}
         </h1>
 
         {/* Subhead */}
@@ -73,11 +72,12 @@ export default function Hero() {
             <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
           </div>
 
-          <p className="text-[0.74rem] text-cream-35 relative z-[2]">
+          <p className="text-[0.78rem] text-cream-55 font-medium relative z-[2]">
             No spam. No credit card. Just a free logo.
           </p>
-          <p className="text-[0.72rem] text-cream-35 relative z-[2] -mt-2">
-            We&rsquo;ll email you the moment we go live.
+          <p className="text-[0.74rem] text-cream-35 relative z-[2] -mt-1.5 max-w-[460px] text-center leading-[1.5]">
+            We&rsquo;ll email you the moment we go live so you can generate your
+            free logo.
           </p>
         </div>
 
