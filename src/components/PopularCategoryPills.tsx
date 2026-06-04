@@ -45,10 +45,10 @@ export default function PopularCategoryPills({
         <button
           type="button"
           onClick={onBrowseAll}
-          aria-label="Browse all categories"
+          aria-label="View all categories"
           className={BROWSE_ALL}
         >
-          Browse All Categories
+          View All Categories
         </button>
       </div>
     </div>
