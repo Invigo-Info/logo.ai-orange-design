@@ -1,8 +1,8 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Noise overlay ── */
+/* â”€â”€ Noise overlay â”€â”€ */
 body::after {
   content: "";
   position: fixed;
@@ -12,12 +12,12 @@ body::after {
   z-index: 9999;
 }
 
-/* ── Smooth scroll ── */
+/* â”€â”€ Smooth scroll â”€â”€ */
 html {
   scroll-behavior: smooth;
 }
 
-/* ── Scroll reveal ── */
+/* â”€â”€ Scroll reveal â”€â”€ */
 .sr {
   opacity: 0;
   transform: translateY(28px);
@@ -31,7 +31,7 @@ html {
 .d2 { transition-delay: 0.16s; }
 .d3 { transition-delay: 0.24s; }
 
-/* ── Hero ambient glow ── */
+/* â”€â”€ Hero ambient glow â”€â”€ */
 .hero-glow::before {
   content: "";
   position: absolute;
@@ -55,7 +55,7 @@ html {
   pointer-events: none;
 }
 
-/* ── Hero CTA area glow ── */
+/* â”€â”€ Hero CTA area glow â”€â”€ */
 .hero-cta-glow {
   position: relative;
 }
@@ -72,20 +72,20 @@ html {
   pointer-events: none;
 }
 
-/* ── Hero grid texture ── */
+/* â”€â”€ Hero grid texture â”€â”€ */
 .hero-grid::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(rgba(232, 232, 230, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 232, 230, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(245, 245, 245, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 245, 245, 0.05) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 45% 70% at 50% 50%, black 10%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 45% 70% at 50% 50%, black 10%, transparent 100%);
 }
 
-/* ── Section gradient transitions ── */
+/* â”€â”€ Section gradient transitions â”€â”€ */
 .section-fade-from-b1::before {
   content: "";
   position: absolute;
@@ -107,7 +107,7 @@ html {
   pointer-events: none;
 }
 
-/* ── CTA ambient glow ── */
+/* â”€â”€ CTA ambient glow â”€â”€ */
 .cta-glow::before {
   content: "";
   position: absolute;
@@ -120,14 +120,14 @@ html {
   pointer-events: none;
 }
 
-/* ── CTA grid texture ── */
+/* â”€â”€ CTA grid texture â”€â”€ */
 .cta-grid::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(rgba(232, 232, 230, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 232, 230, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(245, 245, 245, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 245, 245, 0.05) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse 50% 50%, black, transparent 60%);
   -webkit-mask-image: radial-gradient(ellipse 50% 50%, black, transparent 60%);
@@ -135,7 +135,7 @@ html {
   opacity: 0.3;
 }
 
-/* ── Step hover left bar ── */
+/* â”€â”€ Step hover left bar â”€â”€ */
 .step-hover::before {
   content: "";
   position: absolute;
@@ -155,7 +155,7 @@ html {
   padding-left: 16px;
 }
 
-/* ── FAQ item borders ── */
+/* â”€â”€ FAQ item borders â”€â”€ */
 .faq-item::before {
   content: "";
   position: absolute;
@@ -163,7 +163,7 @@ html {
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(232, 232, 230, 0.05);
+  background: rgba(245, 245, 245, 0.05);
 }
 .faq-item:last-child::after {
   content: "";
@@ -172,10 +172,10 @@ html {
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(232, 232, 230, 0.05);
+  background: rgba(245, 245, 245, 0.05);
 }
 
-/* ── Form validation: red border on invalid fields after submit attempt ── */
+/* â”€â”€ Form validation: red border on invalid fields after submit attempt â”€â”€ */
 .tried input:invalid,
 .tried select:invalid,
 .tried textarea:invalid {
@@ -183,12 +183,12 @@ html {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-/* ── Hide scrollbar for category tabs ── */
+/* â”€â”€ Hide scrollbar for category tabs â”€â”€ */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Footer section transition ── */
+/* â”€â”€ Footer section transition â”€â”€ */
 .footer-fade::before {
   content: "";
   position: absolute;
@@ -199,3 +199,4 @@ html {
   background: linear-gradient(#111113, #09090B);
   pointer-events: none;
 }
+
