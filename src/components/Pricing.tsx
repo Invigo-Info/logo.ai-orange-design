@@ -3,13 +3,29 @@
 import ScrollReveal from "./ScrollReveal";
 import SectionHeader from "./SectionHeader";
 
-const INCLUDED = [
-  "PNG, SVG, PDF, EPS formats",
-  "Transparent background",
-  "Brand Guidelines PDF",
-  "Full commercial license",
-  "Re-download forever",
-  "No subscription, ever",
+type Item = { title: string; desc: string };
+
+const INCLUDED: Item[] = [
+  {
+    title: "Your logo in every format you need",
+    desc: "(PNG, SVG, PDF, EPS)",
+  },
+  {
+    title: "Transparent background",
+    desc: "— works on any background color",
+  },
+  {
+    title: "Brand Guidelines PDF",
+    desc: "— how to use your logo, its exact colors, and matching fonts",
+  },
+  {
+    title: "Full commercial license",
+    desc: "— use it anywhere you want",
+  },
+  {
+    title: "Yours forever",
+    desc: "— re-download as many times as you want",
+  },
 ];
 
 export default function Pricing() {
@@ -32,57 +48,85 @@ export default function Pricing() {
       <SectionHeader
         eyebrow="Pricing"
         title="Designer-quality logos — free at launch"
-        description="Free for the first 2,000,000 users — no subscription, no credit card, no catch. 100% yours to keep forever."
-        className="mb-12 md:mb-16"
+        description="A freelance designer costs $1,500+. Other AI tools charge $20–$96/year. We're giving ours away free to the first 2,000,000 users."
+        className="mb-12 md:mb-14"
       />
 
       <ScrollReveal delay={1}>
-        <div className="max-w-[640px] mx-auto rounded-3xl border border-cream-10 bg-b1 p-8 md:p-12 relative overflow-hidden">
+        <div className="max-w-[540px] mx-auto rounded-3xl border border-cream-10 bg-b1 p-8 md:p-10 relative overflow-hidden">
           {/* Accent glow */}
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[420px] h-[280px] bg-[radial-gradient(ellipse,rgba(232,66,13,.18),transparent_60%)] pointer-events-none" />
 
+          {/* Free at launch badge */}
+          <p className="relative text-center font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-accent mb-5">
+            Free at Launch
+          </p>
+
           {/* Price */}
-          <div className="relative flex items-baseline justify-center gap-3 mb-2">
-            <span className="font-display text-[1.6rem] text-cream-35 line-through font-semibold">
+          <div className="relative flex flex-col items-center mb-2">
+            <span className="font-display text-[1.4rem] text-cream-35 line-through font-medium mb-1">
               $49
             </span>
-            <span className="font-display text-[3.4rem] md:text-[4rem] font-extrabold text-cream leading-none tracking-[-0.03em]">
+            <span className="font-display text-[4rem] md:text-[4.4rem] font-extrabold text-cream leading-none tracking-[-0.03em]">
               Free
             </span>
           </div>
-          <p className="text-center text-[0.82rem] text-cream-35 mb-8">
-            one-time, forever
+
+          {/* Price subhead */}
+          <p className="text-center text-[0.86rem] text-cream-55 mt-5 mb-3 leading-[1.5] max-w-[400px] mx-auto">
+            Free for the first 2,000,000 users — no subscription, no credit
+            card, no catch.
+          </p>
+          <p className="text-center text-[0.92rem] font-semibold text-cream mb-7">
+            100% yours to keep forever.
           </p>
 
+          {/* What you get divider */}
+          <div className="relative flex items-center my-7">
+            <div className="flex-1 h-px bg-cream-10" />
+            <span className="px-3 font-sans text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-cream-35">
+              What you get — free
+            </span>
+            <div className="flex-1 h-px bg-cream-10" />
+          </div>
+
           {/* Included list */}
-          <ul className="flex flex-col gap-3 mb-9 max-w-[420px] mx-auto">
+          <ul className="flex flex-col gap-4 mb-8">
             {INCLUDED.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-[0.92rem] text-cream-80 leading-[1.5]"
-              >
-                <span className="h-5 w-5 rounded-full bg-[rgba(232,66,13,.12)] border border-[rgba(232,66,13,.25)] grid place-items-center shrink-0 mt-0.5">
-                  <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-                    <path d="M11.5 3.8 5.6 9.7 2.5 6.6" stroke="#FF5C2E" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-                <span>{item}</span>
+              <li key={item.title} className="flex items-start gap-3">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  className="text-accent-hi shrink-0 mt-1"
+                  aria-hidden
+                >
+                  <path d="M11.5 3.8 5.6 9.7 2.5 6.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="text-[0.92rem] leading-[1.5] text-cream-55">
+                  <span className="font-semibold text-cream">{item.title}</span>{" "}
+                  {item.desc}
+                </p>
               </li>
             ))}
           </ul>
+
+          {/* Divider */}
+          <div className="h-px bg-cream-10 my-7" />
 
           {/* CTA */}
           <div className="flex justify-center">
             <button
               onClick={scrollToCTA}
-              className="h-12 px-7 rounded-full bg-accent text-white text-[0.92rem] font-semibold shadow-[0_0_24px_rgba(232,66,13,.25)] hover:bg-accent-hi hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(232,66,13,.35)] transition-all duration-300"
+              className="h-12 px-7 rounded-full bg-accent text-white font-sans text-[0.92rem] font-semibold shadow-[0_0_24px_rgba(232,66,13,.25)] hover:bg-accent-hi hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(232,66,13,.35)] transition-all duration-300"
             >
               Get My Free Logo →
             </button>
           </div>
 
-          <p className="text-center text-[0.72rem] text-cream-35 mt-6">
-            *Free for the first 2,000,000 users. After that, $49 one-time.
+          <p className="text-center text-[0.78rem] text-cream-35 mt-5">
+            Free for the first 2,000,000 users. No credit card, ever.
           </p>
         </div>
       </ScrollReveal>

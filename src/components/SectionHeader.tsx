@@ -15,14 +15,11 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className={`text-center mx-auto px-6 ${className}`}>
-      {/* Section tag pill */}
+      {/* Eyebrow */}
       <ScrollReveal>
-        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[rgba(232,66,13,.06)] border border-[rgba(232,66,13,.15)] mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-          <span className="font-display text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-accent">
-            {eyebrow}
-          </span>
-        </div>
+        <p className="font-sans text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-accent mb-5">
+          {eyebrow}
+        </p>
       </ScrollReveal>
 
       {/* Heading */}

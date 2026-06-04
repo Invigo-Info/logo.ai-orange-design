@@ -3,67 +3,60 @@ import SectionHeader from "./SectionHeader";
 
 const REVIEWS = [
   {
-    name: "Nadia Okafor",
-    title: "Founder, Lumen Studio",
-    location: "San Francisco, CA",
-    quote:
-      "Got a logo I actually liked in 90 seconds. Looks designer-made.",
-  },
-  {
     name: "Ben Hartley",
-    title: "Owner, Hartley Coffee Co.",
+    title: "Coffee Roaster",
     location: "Oakland, CA",
     quote:
-      "Saved me $2,000. The vector files matched my coffee bag artwork perfectly.",
+      "It looks like we paid a studio. We didn't. I generated a logo for our coffee company and the next was genuinely clean — the kind of thing I'd have expected to wait three weeks and a few thousand dollars for. It's been on our bags for three months. Customers keep asking who designed it.",
   },
   {
     name: "Preethi Nair",
-    title: "Co-founder, Nara Skincare",
-    location: "San Jose, CA",
+    title: "Startup Co-founder",
+    location: "San Francisco, CA",
     quote:
-      "Tried three other AI tools — none came close to this output quality.",
+      "First time our whole team agreed on anything brand-related. We typed in our company name and what we build, generated ten options, and dropped them in Slack for a vote. We agreed within an hour. The one we picked still looks sharp on everything from the favicon to the deck.",
   },
   {
     name: "Marcus Webb",
-    title: "Operator, Webb Cleaning",
-    location: "Berkeley, CA",
+    title: "Startup Founder",
+    location: "San Francisco, CA",
     quote:
-      "Used my new logo on Day 1 — business cards, van wrap, the works.",
+      "Three investors asked about our branding. I dropped the logo into our deck and three investors on separate calls commented on it. It looked considered — like we'd thought about our brand as carefully as our product. I told them how I got it. Two asked for the link.",
   },
   {
     name: "Claire Sutton",
-    title: "Designer, Sutton Floral",
-    location: "San Francisco, CA",
+    title: "Architect",
+    location: "Berkeley, CA",
     quote:
-      "Even as a designer I was impressed. Clean type, balanced spacing.",
+      "I briefed two designers last year. Neither got this close. Four months, two designers, endless revisions, and I never loved the result. The first batch here had one I'd have happily paid for the deck. It nailed it the same day. It actually looks like it belongs to my firm.",
   },
   {
     name: "James Okonkwo",
-    title: "Founder, Forge Athletic",
-    location: "Oakland, CA",
+    title: "Shop Owner",
+    location: "San Jose, CA",
     quote:
-      "The brand guidelines PDF was the unexpected hero. Sent it to my printer same day.",
+      "The logo was the only thing left. You're it's done. My store was finished for two weeks before I could land a logo I generated two options, found one that looked like a real brand, and launched three days later. It holds up on the packaging and the lab equally well.",
   },
   {
     name: "Suki Park",
-    title: "Owner, Park Nail Studio",
-    location: "San Jose, CA",
+    title: "App Co-founder",
+    location: "San Francisco, CA",
     quote:
-      "Looked at twelve options. Picked one. Done before my coffee got cold.",
+      "Updated our App Store listing. It finally looks like a real product. The icon reads perfectly even at the tiny App Store size, which is harder than it sounds. Downloads ticked up the week after we updated it.",
   },
   {
     name: "Rosa Delgado",
-    title: "Chef, Casa Verde Cantina",
-    location: "Berkeley, CA",
+    title: "Restaurant Owner",
+    location: "San Jose, CA",
     quote:
-      "Full commercial license, transparent PNGs, SVG, the lot. Couldn't ask for more.",
+      "My embroidery supplier said it was one of the cleanest files they'd seen. I needed something for staff uniforms. I downloaded the vector file and sent it over, and my supplier called to say the lines were so clean it stitched perfectly first time. The logo itself looks like a proper restaurant brand.",
   },
   {
     name: "Theo Marchetti",
-    title: "Co-founder, Marchetti Tattoo",
-    location: "San Francisco, CA",
+    title: "Co-Founder, Sales Lead",
+    location: "Berkeley, CA",
     quote:
-      "Felt custom-made for the brand. Better than my last paid designer.",
+      "They assumed we'd worked with a designer for months. We generated options the morning of our first customer meeting and picked one over breakfast. It looked polished enough that they assumed we'd had a designer on it for months. It took us about a minute.",
   },
 ];
 
@@ -80,17 +73,17 @@ export default function Testimonials() {
         className="mb-12 md:mb-16"
       />
 
-      <div className="max-w-[1180px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+      <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
         {REVIEWS.map((r, i) => (
           <ScrollReveal key={r.name} delay={(i % 3) as 0 | 1 | 2 | 3}>
-            <article className="h-full rounded-2xl border border-cream-10 bg-b0 p-6 flex flex-col gap-4 hover:border-cream-18 transition-colors duration-300">
+            <article className="h-full rounded-2xl border border-cream-10 bg-b1 p-6 md:p-7 flex flex-col gap-4">
               {/* Stars */}
               <div className="flex gap-0.5 text-accent">
                 {Array.from({ length: 5 }).map((_, j) => (
                   <svg
                     key={j}
-                    width="14"
-                    height="14"
+                    width="13"
+                    height="13"
                     viewBox="0 0 14 14"
                     fill="currentColor"
                     aria-hidden
@@ -101,30 +94,16 @@ export default function Testimonials() {
               </div>
 
               {/* Quote */}
-              <p className="text-[0.95rem] leading-[1.6] text-cream-80 flex-1">
-                &ldquo;{r.quote}&rdquo;
+              <p className="text-[0.92rem] leading-[1.6] text-cream-80 flex-1">
+                {r.quote}
               </p>
 
-              {/* Author */}
-              <div className="flex items-center gap-3 pt-2 border-t border-cream-05">
-                <div
-                  className="h-10 w-10 rounded-full bg-gradient-to-br from-accent/30 to-accent-lo/40 flex items-center justify-center text-[0.78rem] font-semibold text-cream"
-                  aria-hidden
-                >
-                  {r.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)}
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[0.85rem] font-semibold text-cream leading-tight">
-                    {r.name}
-                  </span>
-                  <span className="text-[0.72rem] text-cream-35 leading-tight">
-                    {r.title} · {r.location}
-                  </span>
-                </div>
+              {/* Author line */}
+              <div className="pt-2 mt-auto">
+                <p className="text-[0.88rem]">
+                  <span className="font-semibold text-cream">{r.name}</span>
+                  <span className="text-cream-35"> — {r.title}, {r.location}</span>
+                </p>
               </div>
             </article>
           </ScrollReveal>

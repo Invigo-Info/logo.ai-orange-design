@@ -34,72 +34,77 @@ const QUICK_LINKS = [
   { label: "Gallery", href: "#examples" },
   { label: "How It Works", href: "#how" },
   { label: "FAQ", href: "#faq" },
-  { label: "Mockups", href: "#preview" },
-  { label: "Free Logo Generator", href: "#cta-section" },
+  { label: "Blog", href: "#blog" },
+  { label: "Who It's For", href: "#use-cases" },
+  { label: "Free Logo Generator", href: "#hero-email" },
 ];
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about" },
+  { label: "Our Story", href: "/about" },
+  { label: "Team", href: "/about" },
+  { label: "Why LOGO.AI", href: "/about" },
   { label: "Press", href: "/press" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" },
+  { label: "Manifesto", href: "/about" },
+  { label: "Contact Support", href: "/contact" },
+];
+
+const EXPLORE_LINKS = [
+  { label: "Before & After", href: "#examples" },
+  { label: "Wall of Love", href: "#reviews" },
+  { label: "$0 Brand Playbook", href: "#blog" },
+  { label: "AI vs Designer", href: "#compare" },
+  { label: "Science Behind the Logo", href: "#blog" },
 ];
 
 const LEGAL_LINKS = [
   { label: "Terms of Use", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy" },
+  { label: "Refund Policy", href: "/terms" },
+  { label: "Security Policy", href: "/privacy" },
+  { label: "Commercial License", href: "/terms" },
   { label: "Cookie Policy", href: "/cookies" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="relative z-[2] border-t border-cream-05 bg-b0 pt-16 pb-10 px-6 md:px-8">
-      <div className="max-w-[1240px] mx-auto">
-        {/* Header row */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-12 border-b border-cream-05">
-          <div className="flex flex-col gap-3">
-            <div className="font-display font-bold text-[1.5rem] text-cream tracking-[-0.03em]">
-              logo.ai
-            </div>
-            <p className="text-[0.92rem] text-cream-55 max-w-[420px]">
-              Free logos for the first 2,000,000 users. Professional, original,
-              ready in seconds.
-            </p>
+    <footer className="relative z-[2] border-t border-cream-05 bg-b0 pt-16 pb-10 px-6 md:px-10">
+      <div className="max-w-[1280px] mx-auto">
+        {/* Brand block */}
+        <div className="mb-12">
+          <div className="font-display font-extrabold text-[1.6rem] text-cream tracking-[-0.02em]">
+            LOGO.AI
           </div>
-          <div className="flex items-center gap-4 text-[0.72rem] text-cream-35">
-            <div className="inline-flex items-center gap-1.5">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M6 1L2 3v3.2C2 8.6 3.7 10.5 6 11c2.3-.5 4-2.4 4-4.8V3L6 1z"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              SSL Secure
-            </div>
-            <span className="text-cream-18">•</span>
-            <span>Your data is safe</span>
-          </div>
+          <p className="text-[0.86rem] text-cream-55 mt-2">
+            Free logos for the first 2,000,000 users
+          </p>
         </div>
 
-        {/* Column grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-10 gap-x-8 py-12">
+        {/* Row 1: popular categories */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8 mb-12">
           <FooterColumn title="Popular Industries" items={POPULAR_INDUSTRIES.map((l) => ({ label: l, href: "#examples" }))} />
           <FooterColumn title="Popular Styles" items={POPULAR_STYLES.map((l) => ({ label: l, href: "#examples" }))} />
           <FooterColumn title="Popular Symbols" items={POPULAR_SYMBOLS.map((l) => ({ label: l, href: "#examples" }))} />
           <FooterColumn title="Popular Colors" items={POPULAR_COLORS.map((l) => ({ label: l, href: "#examples" }))} />
-          <FooterColumn title="Quick Links" items={QUICK_LINKS} />
-          <FooterColumn title="Company" items={COMPANY_LINKS} extra={<FooterColumn title="Legal" items={LEGAL_LINKS} compact />} />
         </div>
 
-        {/* Bottom row */}
-        <div className="pt-8 border-t border-cream-05 flex flex-col-reverse md:flex-row items-center justify-between gap-4">
-          <p className="text-[0.75rem] text-cream-35">
-            © {new Date().getFullYear()} Logo.ai · All rights reserved.
-          </p>
-          <p className="text-[0.7rem] text-cream-18 text-center md:text-right">
-            Logo.ai is an independent service. Free for the first 2,000,000 users.
+        {/* Row 2: functional columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8 pb-12 border-b border-cream-05">
+          <FooterColumn title="Quick Links" items={QUICK_LINKS} />
+          <FooterColumn title="Company" items={COMPANY_LINKS} />
+          <FooterColumn title="Explore" items={EXPLORE_LINKS} />
+          <FooterColumn title="Legal" items={LEGAL_LINKS} />
+        </div>
+
+        {/* Bottom row: trust badges + copyright */}
+        <div className="pt-8 flex flex-col-reverse md:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-5 text-[0.78rem] text-cream-55">
+            <TrustItem label="SSL Secure" />
+            <TrustItem label="Stripe Payments" />
+            <TrustItem label="Your data is safe" />
+          </div>
+          <p className="text-[0.76rem] text-cream-35 text-center md:text-right">
+            Copyright © {new Date().getFullYear()} LOGO.AI. All rights reserved.
           </p>
         </div>
       </div>
@@ -107,32 +112,40 @@ export default function Footer() {
   );
 }
 
+function TrustItem({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="text-accent-hi" aria-hidden>
+        <path d="M11.5 3.8 5.6 9.7 2.5 6.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      {label}
+    </span>
+  );
+}
+
 interface FooterColumnProps {
   title: string;
   items: { label: string; href: string }[];
-  extra?: React.ReactNode;
-  compact?: boolean;
 }
 
-function FooterColumn({ title, items, extra, compact }: FooterColumnProps) {
+function FooterColumn({ title, items }: FooterColumnProps) {
   return (
-    <div className={`flex flex-col gap-3 ${compact ? "mt-6" : ""}`}>
-      <p className="text-[0.68rem] font-semibold tracking-[0.14em] uppercase text-cream-55">
+    <div className="flex flex-col gap-3">
+      <p className="font-sans text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-accent">
         {title}
       </p>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2.5">
         {items.map((item) => (
           <li key={item.label}>
             <a
               href={item.href}
-              className="text-[0.82rem] text-cream-55 hover:text-cream transition-colors duration-150 no-underline"
+              className="text-[0.86rem] text-cream-55 hover:text-cream transition-colors duration-150 no-underline"
             >
               {item.label}
             </a>
           </li>
         ))}
       </ul>
-      {extra}
     </div>
   );
 }

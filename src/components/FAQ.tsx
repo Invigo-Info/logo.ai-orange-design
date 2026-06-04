@@ -65,34 +65,26 @@ export default function FAQ() {
                   <span className="font-display text-[0.95rem] font-semibold tracking-[-0.01em] text-cream">
                     {faq.q}
                   </span>
-                  <span
-                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300 ${
-                      isOpen
-                        ? "bg-[rgba(232,66,13,.06)] border-[rgba(232,66,13,.2)]"
-                        : "bg-cream-05 border-cream-10"
-                    }`}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    className={`shrink-0 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
-                    >
-                      <line
-                        x1="7" y1="2" x2="7" y2="12"
-                        stroke={isOpen ? "#FF5C2E" : "#E8E8E6"}
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="2" y1="7" x2="12" y2="7"
-                        stroke={isOpen ? "#FF5C2E" : "#E8E8E6"}
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
+                    <line
+                      x1="7" y1="1" x2="7" y2="13"
+                      stroke="#FF5C2E"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="1" y1="7" x2="13" y2="7"
+                      stroke="#FF5C2E"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </button>
 
                 {/* Answer */}
