@@ -55,7 +55,7 @@ export default function LogoPreview({
   return (
     <section
       id="preview"
-      className="bg-b1 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b0"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="Mockups"

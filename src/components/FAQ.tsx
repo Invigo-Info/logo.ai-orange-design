@@ -39,7 +39,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b1"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="FAQ"

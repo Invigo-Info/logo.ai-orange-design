@@ -28,7 +28,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how"
-      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b1"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="How It Works"

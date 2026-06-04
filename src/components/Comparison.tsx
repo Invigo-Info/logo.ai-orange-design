@@ -67,7 +67,7 @@ export default function Comparison() {
   return (
     <section
       id="compare"
-      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b1"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="How We Compare"

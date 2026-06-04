@@ -141,7 +141,7 @@ export default function LogoExamples({
   const totalCount = categories.length;
 
   return (
-    <section className="bg-b1 pt-20 pb-32 md:pt-[80px] md:pb-[140px] px-4 md:px-8 relative">
+    <section className="bg-b0 pt-20 pb-32 md:pt-[80px] md:pb-[140px] px-4 md:px-8 relative">
       <SectionHeader
         eyebrow="Gallery"
         title="See what your free logo could look like"

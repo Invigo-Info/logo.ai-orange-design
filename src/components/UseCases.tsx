@@ -56,7 +56,7 @@ export default function UseCases() {
   return (
     <section
       id="use-cases"
-      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b1"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="Use Cases"

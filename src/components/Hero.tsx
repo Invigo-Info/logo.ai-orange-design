@@ -101,8 +101,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Bottom fade into next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-b from-transparent to-b1 z-[3] pointer-events-none hidden md:block" />
     </section>
   );
 }

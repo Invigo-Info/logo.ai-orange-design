@@ -27,7 +27,7 @@ export default function Pricing() {
   return (
     <section
       id="pricing"
-      className="bg-b1 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b0"
+      className="bg-b0 py-20 md:py-[120px] px-4 md:px-8 relative"
     >
       <SectionHeader
         eyebrow="Pricing"
@@ -37,7 +37,7 @@ export default function Pricing() {
       />
 
       <ScrollReveal delay={1}>
-        <div className="max-w-[640px] mx-auto rounded-3xl border border-cream-10 bg-b0 p-8 md:p-12 relative overflow-hidden">
+        <div className="max-w-[640px] mx-auto rounded-3xl border border-cream-10 bg-b1 p-8 md:p-12 relative overflow-hidden">
           {/* Accent glow */}
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[420px] h-[280px] bg-[radial-gradient(ellipse,rgba(232,66,13,.18),transparent_60%)] pointer-events-none" />
 
