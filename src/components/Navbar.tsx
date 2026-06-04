@@ -1,26 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const NAV_LINKS = [
   { label: "Gallery", href: "#examples" },
   { label: "How It Works", href: "#how" },
+  { label: "Who's It For", href: "#use-cases" },
   { label: "FAQ", href: "#faq" },
 ];
 
 const COMPANY_LINKS = [
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
+  { label: "Our Story", href: "/about" },
+  { label: "Team", href: "/about" },
+  { label: "Why LOGO.AI", href: "/about" },
+  { label: "Manifesto", href: "/about" },
   { label: "Press", href: "/press" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Support", href: "/contact" },
 ];
 
 const BROWSE_LINKS = [
   { label: "By Industry", href: "#examples" },
   { label: "By Style", href: "#examples" },
-  { label: "Real-World Mockups", href: "#preview" },
+  { label: "By Symbol", href: "#examples" },
+  { label: "By Color", href: "#examples" },
 ];
 
 type Dropdown = "company" | "browse" | null;
@@ -67,12 +71,12 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] h-16 bg-[rgba(9,9,11,.8)] backdrop-blur-[20px] backdrop-saturate-[1.4] border-b border-cream-05 flex items-center">
+    <nav className="fixed top-0 left-0 right-0 z-[100] h-[74px] bg-b0 border-b border-cream-05 flex items-center">
       <div
         ref={wrapRef}
-        className="w-full max-w-[1340px] mx-auto px-6 md:px-8 flex items-center justify-between"
+        className="w-full max-w-[1340px] mx-auto px-6 md:px-10 flex items-center justify-between"
       >
-        {/* Logo */}
+        {/* Brand */}
         <Link
           href="/"
           onClick={() => {
@@ -80,34 +84,22 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
             sessionStorage.removeItem("logoExamples_page");
             setMobileOpen(false);
           }}
-          className="font-display text-[1.2rem] font-bold text-cream tracking-[-0.03em] no-underline flex items-center gap-2.5 shrink-0"
+          className="font-display text-[1.5rem] md:text-[1.6rem] font-extrabold text-cream tracking-[-0.02em] no-underline shrink-0"
         >
-          <Image src="/logo.webp" alt="Logo.ai" width={19} height={19} />
-          logo.ai
+          LOGO.AI
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           {links.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
-              className="text-[0.82rem] font-medium text-cream-55 transition-colors duration-200 hover:text-cream no-underline"
+              className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-55 transition-colors duration-200 hover:text-cream no-underline"
             >
               {link.label}
             </Link>
           ))}
-
-          {/* Browse dropdown */}
-          <Dropdown
-            label="Browse Logos"
-            isOpen={openDropdown === "browse"}
-            onToggle={() =>
-              setOpenDropdown(openDropdown === "browse" ? null : "browse")
-            }
-            items={BROWSE_LINKS}
-            onItemClick={() => setOpenDropdown(null)}
-          />
 
           {/* Company dropdown */}
           <Dropdown
@@ -120,9 +112,20 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
             onItemClick={() => setOpenDropdown(null)}
           />
 
+          {/* Browse dropdown */}
+          <Dropdown
+            label="Browse Logos"
+            isOpen={openDropdown === "browse"}
+            onToggle={() =>
+              setOpenDropdown(openDropdown === "browse" ? null : "browse")
+            }
+            items={BROWSE_LINKS}
+            onItemClick={() => setOpenDropdown(null)}
+          />
+
           <button
             onClick={scrollToCTA}
-            className="h-[38px] px-[22px] rounded-full border-none bg-accent text-white text-[0.78rem] font-semibold inline-flex items-center transition-all duration-300 cursor-pointer shadow-[0_0_16px_rgba(232,66,13,.15)] hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
+            className="h-[41px] px-[18px] rounded-full border-none bg-accent text-white font-sans text-[0.88rem] font-semibold inline-flex items-center transition-all duration-300 cursor-pointer hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
           >
             Get My Free Logo
           </button>
@@ -132,7 +135,7 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
         <div className="md:hidden flex items-center gap-3">
           <button
             onClick={scrollToCTA}
-            className="h-[34px] px-4 rounded-full bg-accent text-white text-[0.74rem] font-semibold shadow-[0_0_16px_rgba(232,66,13,.15)] active:bg-accent-hi"
+            className="h-[36px] px-4 rounded-full bg-accent text-white font-sans text-[0.78rem] font-semibold active:bg-accent-hi"
           >
             Get My Free Logo
           </button>
@@ -162,13 +165,13 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-b0 border-b border-cream-10 px-6 py-5 flex flex-col gap-1">
+        <div className="md:hidden absolute top-[74px] left-0 right-0 bg-b0 border-b border-cream-10 px-6 py-5 flex flex-col gap-1 max-h-[calc(100vh-74px)] overflow-y-auto">
           {links.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="py-2.5 text-[0.92rem] font-medium text-cream-80 hover:text-cream no-underline"
+              className="py-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-80 hover:text-cream no-underline"
             >
               {link.label}
             </Link>
@@ -222,7 +225,7 @@ function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="text-[0.82rem] font-medium text-cream-55 transition-colors duration-200 hover:text-cream inline-flex items-center gap-1"
+        className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-55 transition-colors duration-200 hover:text-cream inline-flex items-center gap-1.5"
       >
         {label}
         <svg
@@ -236,13 +239,13 @@ function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps
         </svg>
       </button>
       {isOpen && (
-        <div className="absolute right-0 top-full mt-3 min-w-[200px] rounded-2xl border border-cream-10 bg-b1/95 backdrop-blur-[20px] shadow-[0_20px_50px_rgba(0,0,0,.5)] p-2">
+        <div className="absolute right-0 top-full mt-3 min-w-[220px] rounded-2xl border border-cream-10 bg-b1/95 backdrop-blur-[20px] shadow-[0_20px_50px_rgba(0,0,0,.5)] p-2">
           {items.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               onClick={onItemClick}
-              className="block px-3 py-2.5 rounded-xl text-[0.84rem] text-cream-80 hover:text-cream hover:bg-cream-05 no-underline transition-colors duration-150"
+              className="block px-3 py-2.5 rounded-xl text-[0.85rem] font-medium text-cream-80 hover:text-cream hover:bg-cream-05 no-underline transition-colors duration-150"
             >
               {item.label}
             </Link>

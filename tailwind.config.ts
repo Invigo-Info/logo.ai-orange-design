@@ -38,6 +38,7 @@ const config: Config = {
       fontFamily: {
         serif: ["Playfair Display", "Georgia", "serif"],
         sans: ["Outfit", "sans-serif"],
+        body: ["Inter", "Outfit", "sans-serif"],
         display: ["Sora", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
       },

@@ -57,13 +57,13 @@ export default function Hero() {
         </p>
 
         {/* Headline */}
-        <h1 className="font-display text-[clamp(2.6rem,6.2vw,4.6rem)] font-extrabold leading-[1.04] tracking-[-0.05em] mb-6 text-cream opacity-0 animate-rise-2">
+        <h1 className="font-display text-[clamp(2.6rem,6.4vw,4.5rem)] font-extrabold leading-[1.04] tracking-[-0.03em] mb-6 text-cream opacity-0 animate-rise-2">
           Get Your Free <br className="hidden sm:block" />
           Logo in Seconds
         </h1>
 
         {/* Subhead */}
-        <p className="text-[1.08rem] text-cream-55 leading-[1.7] max-w-[520px] mb-9 opacity-0 animate-rise-3">
+        <p className="font-sans text-[1.125rem] font-normal text-cream-80 leading-[1.55] max-w-[520px] mb-9 opacity-0 animate-rise-3">
           Free logo for the first 2,000,000 users. Claim your spot now.
         </p>
 

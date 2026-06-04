@@ -16,17 +16,24 @@ export default function FinalCTA() {
       className="relative z-[2] py-[120px] md:py-[120px] md:pb-[140px] px-4 md:px-8 text-center overflow-hidden bg-b0 cta-glow cta-grid"
     >
       <ScrollReveal>
-        <h2 className="font-display text-[clamp(2.2rem,5vw,3.6rem)] font-extrabold tracking-[-0.04em] leading-[1.1] mb-7 text-cream relative z-[2] md:whitespace-nowrap">
+        <h2 className="font-display text-[clamp(2.2rem,5vw,3.6rem)] font-extrabold tracking-[-0.04em] leading-[1.1] mb-6 text-cream relative z-[2]">
           Ready to Get Your Free Logo?
         </h2>
       </ScrollReveal>
 
       <ScrollReveal delay={1}>
-        <p className="font-display text-[0.85rem] tracking-[-0.01em] text-cream-35 font-medium mb-10 relative z-[2]">
+        <p className="text-[1rem] text-cream-55 leading-[1.6] max-w-[520px] mx-auto mb-8 relative z-[2]">
+          Hundreds of thousands have already claimed theirs. Get yours before
+          they&rsquo;re gone.
+        </p>
+      </ScrollReveal>
+
+      <ScrollReveal delay={1}>
+        <p className="font-display text-[0.85rem] tracking-[-0.01em] text-cream-35 font-medium mb-8 relative z-[2]">
           <strong className="text-cream-55">
             {remaining.toLocaleString()}
           </strong>{" "}
-          logos remaining. Don&apos;t miss out.
+          logos remaining. Don&rsquo;t miss out.
         </p>
       </ScrollReveal>
 

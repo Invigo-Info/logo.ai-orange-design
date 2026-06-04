@@ -43,7 +43,8 @@ export default function FAQ() {
     >
       <SectionHeader
         eyebrow="FAQ"
-        title="Questions? Answers."
+        title="Your questions, answered"
+        description="Everything you need to know before you sign up for your free logo."
         className="mb-12 md:mb-16"
       />
 

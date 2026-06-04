@@ -144,8 +144,8 @@ export default function LogoExamples({
     <section className="bg-b1 pt-20 pb-32 md:pt-[80px] md:pb-[140px] px-4 md:px-8 relative">
       <SectionHeader
         eyebrow="Gallery"
-        title="Logos Created with Logo.ai"
-        description="Browse AI-generated logos for different businesses. See the quality and variety you can expect."
+        title="See what your free logo could look like"
+        description="Each logo below was made by our AI. Yours can be too — free, at launch."
         className="mb-10 md:mb-12"
       />
 

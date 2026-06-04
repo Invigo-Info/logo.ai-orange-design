@@ -58,9 +58,9 @@ export default function LogoPreview({
       className="bg-b1 py-20 md:py-[120px] px-4 md:px-8 relative section-fade-from-b0"
     >
       <SectionHeader
-        eyebrow="See It Live"
-        title="Logos on Web, Social, and Print"
-        description="See Logo.ai logos in real life — website headers, social profiles, business cards, packaging, and more."
+        eyebrow="Mockups"
+        title="Picture your logo everywhere"
+        description="Here's how our logos look on websites, business cards, signage, and anywhere your brand needs to show up."
         className="mb-10 md:mb-[52px]"
       />
 

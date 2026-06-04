@@ -1,9 +1,14 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LogoExamples from "@/components/LogoExamples";
-import HowItWorks from "@/components/HowItWorks";
 import LogoPreview from "@/components/LogoPreview";
+import HowItWorks from "@/components/HowItWorks";
+import Testimonials from "@/components/Testimonials";
+import UseCases from "@/components/UseCases";
+import Pricing from "@/components/Pricing";
+import Comparison from "@/components/Comparison";
 import FAQ from "@/components/FAQ";
+import Blog from "@/components/Blog";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import CountProvider from "@/components/CountProvider";
@@ -36,9 +41,14 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <LogoExamples categories={logoCategories} />
-      <HowItWorks />
       <LogoPreview categories={mockupCategories} />
+      <HowItWorks />
+      <Testimonials />
+      <UseCases />
+      <Pricing />
+      <Comparison />
       <FAQ />
+      <Blog />
       <FinalCTA />
       <Footer />
     </CountProvider>
