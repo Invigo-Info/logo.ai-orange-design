@@ -10,7 +10,7 @@ const COUNTDOWN_END = new Date("2026-08-01T00:00:00").getTime();
 
 export default function Hero() {
   const { count, setCount } = useCount();
-  const [time, setTime] = useState({ d: "61", h: "00", m: "00", s: "00" });
+  const [time, setTime] = useState({ d: "61", h: "00", m: "00" });
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -23,77 +23,66 @@ export default function Hero() {
         d: pad(Math.floor(r / 864e5)),
         h: pad(Math.floor((r % 864e5) / 36e5)),
         m: pad(Math.floor((r % 36e5) / 6e4)),
-        s: pad(Math.floor((r % 6e4) / 1e3)),
       });
 
-      const span = COUNTDOWN_END - COUNTDOWN_START;
+      const claimedRatio = Math.min(Math.max(count / TOTAL, 0), 1);
+      const timeSpan = COUNTDOWN_END - COUNTDOWN_START;
       const elapsed = now - COUNTDOWN_START;
-      setProgress(Math.min(Math.max((elapsed / span) * 100, 0), 100));
+      const timeRatio = Math.min(Math.max(elapsed / timeSpan, 0), 1);
+      setProgress(Math.max(claimedRatio, timeRatio) * 100);
     };
 
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [count]);
 
   return (
     <section
       id="top"
-      className="relative z-[2] pt-[160px] pb-[80px] text-center overflow-hidden bg-b0 hero-glow"
+      className="relative z-[2] pt-[140px] pb-[100px] text-center overflow-hidden bg-b0 hero-glow"
     >
-      {/* Hero content */}
-      <div className="flex flex-col items-center px-6 md:px-8 relative z-[2]">
-        {/* Free tag pill */}
-        <div className="inline-flex items-center gap-2 mb-8 opacity-0 animate-rise-1 rounded-full border border-[rgba(232,66,13,.18)] bg-[rgba(232,66,13,.06)] px-6 py-2.5">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            className="shrink-0"
-          >
-            <path
-              d="M7 1l1.76 3.57L12.7 5.2l-2.85 2.78.67 3.92L7 10.1l-3.52 1.8.67-3.92L1.3 5.2l3.94-.63L7 1z"
-              fill="#FF5C2E"
-            />
-          </svg>
-          <span className="text-[0.72rem] font-semibold tracking-[0.08em] uppercase text-accent-hi">
-            World’s Best AI Logo Generator
+      <div className="flex flex-col items-center px-6 md:px-8 relative z-[2] max-w-[720px] mx-auto">
+        {/* Countdown pill (top) */}
+        <div className="inline-flex items-center gap-2 mb-6 opacity-0 animate-rise-1 rounded-full border border-[rgba(232,66,13,.28)] bg-[rgba(232,66,13,.08)] px-5 py-2 shadow-[0_0_24px_rgba(232,66,13,.12)]">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent-hi animate-pulse-dot" aria-hidden />
+          <span className="font-mono text-[0.7rem] font-semibold tracking-[0.08em] uppercase text-accent-hi">
+            Launching in {time.d}d : {time.h}h : {time.m}m
           </span>
         </div>
 
+        {/* Eyebrow */}
+        <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-cream-55 mb-5 opacity-0 animate-rise-2">
+          World&rsquo;s Best AI Logo Generator
+        </p>
+
         {/* Headline */}
-        <h1 className="font-display text-[clamp(2.8rem,6.5vw,4.8rem)] font-extrabold leading-[1.06] tracking-[-0.05em] mb-6 text-center text-cream opacity-0 animate-rise-2">
-          Get Your Free <br />
+        <h1 className="font-display text-[clamp(2.6rem,6.2vw,4.6rem)] font-extrabold leading-[1.04] tracking-[-0.05em] mb-6 text-cream opacity-0 animate-rise-2">
+          Get Your Free <br className="hidden sm:block" />
           Logo in Seconds
         </h1>
 
         {/* Subhead */}
-        <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Free logo for the first 2,000,000 users. Join now to secure yours at
-          launch.
-          {/* Original, professional AI-generated logos.
-          <br />
-          No agencies. No freelancers. No $5,000+ price tag. */}
+        <p className="text-[1.08rem] text-cream-55 leading-[1.7] max-w-[520px] mb-9 opacity-0 animate-rise-3">
+          Free logo for the first 2,000,000 users. Claim your spot now.
         </p>
 
-        {/* CTA wrap with glow */}
-        <div className="relative inline-flex flex-col items-center gap-5 opacity-0 animate-rise-4 hero-cta-glow">
-          {/* Email form */}
-          <div id="hero-email">
+        {/* CTA */}
+        <div className="relative inline-flex flex-col items-center gap-3 opacity-0 animate-rise-4 hero-cta-glow w-full">
+          <div id="hero-email" className="w-full flex justify-center">
             <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
           </div>
 
-          {/* Signup note */}
-          <p className="text-[0.72rem] text-cream-35 relative z-[2]">
-            No credit card required.
-            {/* Join now to claim your free logo at launch. */}
+          <p className="text-[0.74rem] text-cream-35 relative z-[2]">
+            No spam. No credit card. Just a free logo.
+          </p>
+          <p className="text-[0.72rem] text-cream-35 relative z-[2] -mt-2">
+            We&rsquo;ll email you the moment we go live.
           </p>
         </div>
 
-        {/* Progress section */}
-        <div className="mt-8 flex flex-col items-center gap-3 w-full max-w-[400px] relative z-[1] opacity-0 animate-rise-5">
-          {/* Progress bar */}
+        {/* Progress */}
+        <div className="mt-9 flex flex-col items-center gap-3 w-full max-w-[440px] relative z-[1] opacity-0 animate-rise-5">
           <div className="w-full h-1.5 rounded-[100px] bg-cream-10 overflow-hidden">
             <div
               className="h-full rounded-[100px] bg-gradient-to-r from-accent to-accent-hi shadow-[0_0_12px_rgba(232,66,13,.4)] transition-[width] duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)]"
@@ -101,48 +90,18 @@ export default function Hero() {
             />
           </div>
 
-          {/* Claimed count */}
-          <p className="text-[0.78rem] text-cream-35 font-medium">
-            <strong className="text-cream-55">{count.toLocaleString()}</strong>{" "}
-            of 2,000,000 free logos secured
+          <p className="text-[0.8rem] text-cream-55 font-medium">
+            <strong className="text-cream">{count.toLocaleString()}</strong>{" "}
+            <span className="text-cream-35">of 2,000,000 free logos claimed</span>
+          </p>
+
+          <p className="text-[0.72rem] text-cream-35 italic mt-1">
+            Going fast. Don&rsquo;t miss yours.
           </p>
         </div>
       </div>
 
-      {/* Countdown */}
-      <div className="mt-[60px] text-center">
-        <div className="font-display text-[0.68rem] font-semibold tracking-[0.14em] uppercase text-cream-35 mb-5">
-          Launching In
-        </div>
-        <div className="inline-flex gap-2 items-center justify-center">
-          {[
-            { val: time.d, label: "Days" },
-            { val: time.h, label: "Hours" },
-            { val: time.m, label: "Min" },
-            { val: time.s, label: "Sec" },
-          ].map((unit, i) => (
-            <div key={unit.label} className="flex items-center">
-              {i > 0 && (
-                <span className="font-display text-[1.6rem] font-bold text-cream-18 pb-5 mx-1">
-                  :
-                </span>
-              )}
-              <div className="flex flex-col items-center gap-1.5 min-w-[56px] sm:min-w-[72px]">
-                <div className="py-3 px-3.5 sm:py-4 sm:px-5 rounded-2xl bg-cream-05 border border-cream-10">
-                  <span className="font-display text-[1.6rem] sm:text-[clamp(1.8rem,4vw,2.8rem)] font-extrabold tracking-[-0.03em] text-cream leading-none block">
-                    {unit.val}
-                  </span>
-                </div>
-                <span className="text-[0.62rem] font-semibold tracking-[0.12em] uppercase text-cream-35">
-                  {unit.label}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Hero bottom fade */}
+      {/* Bottom fade into next section */}
       <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-gradient-to-b from-transparent to-b1 z-[3] pointer-events-none hidden md:block" />
     </section>
   );
