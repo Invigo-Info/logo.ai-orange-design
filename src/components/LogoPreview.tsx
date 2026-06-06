@@ -242,7 +242,7 @@ export default function LogoPreview({
 
           {/* Sub-categories */}
           {activeSubcategories.length > 0 && (
-            <div className="max-w-[1000px] mx-auto mb-8 md:mb-10">
+            <div className="max-w-[1000px] mx-auto mb-3 md:mb-4">
               <div className="flex flex-nowrap overflow-x-auto md:flex-wrap md:overflow-visible md:justify-center gap-1.5 md:gap-2 -mx-4 md:mx-0 px-4 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <button
                   type="button"

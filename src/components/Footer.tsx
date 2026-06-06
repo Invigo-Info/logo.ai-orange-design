@@ -131,7 +131,7 @@ interface FooterColumnProps {
 function FooterColumn({ title, items }: FooterColumnProps) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-sans text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-accent">
+      <p className="font-sans text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-white">
         {title}
       </p>
       <ul className="flex flex-col gap-2.5">
@@ -139,7 +139,7 @@ function FooterColumn({ title, items }: FooterColumnProps) {
           <li key={item.label}>
             <a
               href={item.href}
-              className="text-[0.86rem] text-cream-55 hover:text-cream transition-colors duration-150 no-underline"
+              className="text-[0.86rem] text-cream-55 hover:text-accent transition-colors duration-150 no-underline"
             >
               {item.label}
             </a>

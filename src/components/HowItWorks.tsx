@@ -34,7 +34,7 @@ export default function HowItWorks() {
         eyebrow="How It Works"
         title="Your free logo in 60 seconds — on launch day"
         description="No design skills needed. Sign up today. The moment we go live, your free logo is waiting."
-        className="mb-16 md:mb-20"
+        className="mb-10 md:mb-12"
       />
 
       <div className="max-w-[1180px] mx-auto relative">
