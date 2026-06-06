@@ -37,32 +37,35 @@ export default function FinalCTA() {
           {/* Accent glow */}
           <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[440px] bg-[radial-gradient(ellipse,rgba(232,66,13,.18),transparent_60%)] pointer-events-none" />
 
-          <h2 className="relative font-display text-[clamp(1.9rem,4.4vw,2.75rem)] font-extrabold tracking-[-0.022em] leading-[1.08] mb-5 text-cream">
+          <h2 className="relative font-display text-[clamp(1.9rem,4.4vw,2.75rem)] font-extrabold tracking-[-0.022em] leading-[1.08] mb-4 text-cream">
             Ready to Get Your Free Logo?
           </h2>
 
-          <p className="relative text-[1.02rem] text-cream-55 leading-[1.55] max-w-[540px] mx-auto mb-9">
+          <p className="relative text-[1.02rem] text-[#b8b8c4] leading-[1.55] max-w-[540px] mx-auto mb-10">
             Hundreds of thousands have already claimed theirs. Get yours before
             they&rsquo;re gone.
           </p>
 
-          <div className="relative flex justify-center mb-5">
+          <div className="relative flex justify-center mb-6">
             <EmailBar source="final_cta" onSignupSuccess={(c) => setCount(c)} />
           </div>
 
-          <p className="relative text-[0.78rem] font-semibold text-cream-55 mb-1">
+          <p className="relative text-[0.78rem] font-semibold text-cream mb-3">
             No spam. No credit card. Just a free logo.
           </p>
-          <p className="relative text-[0.74rem] text-cream-35 mb-8 max-w-[460px] mx-auto leading-[1.5]">
-            We&rsquo;ll email you the moment we go live so you can generate
-            your free logo.
+          <p className="relative text-[0.74rem] text-cream-35 mb-10 max-w-[460px] mx-auto leading-[1.5]">
+            We&rsquo;ll email you the moment we go live so you can generate your
+            free logo.
           </p>
 
           {/* Progress */}
           <div className="relative max-w-[440px] mx-auto flex flex-col items-center gap-3">
             <p className="text-[0.85rem] text-cream-55 font-medium">
               <strong className="text-cream">{count.toLocaleString()}</strong>
-              <span className="text-cream-35"> of 2,000,000 free logos claimed</span>
+              <span className="text-cream-35">
+                {" "}
+                of 2,000,000 free logos claimed
+              </span>
             </p>
             <div className="w-full h-1.5 rounded-[100px] bg-cream-10 overflow-hidden">
               <div
@@ -70,7 +73,7 @@ export default function FinalCTA() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="text-[0.74rem] text-cream-35 italic mt-1">
+            <p className="text-[0.74rem] text-cream-35 mt-1">
               Don&rsquo;t miss yours.
             </p>
           </div>

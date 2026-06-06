@@ -28,16 +28,16 @@ const PILL_ACTIVE =
   "bg-accent border-accent text-white font-semibold shadow-[0_0_18px_rgba(232,66,13,.28)]";
 
 const PILL_INACTIVE =
-  "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
+  "bg-transparent border-cream-18 text-[#B9B9C5] hover:border-cream-35 hover:text-white";
 
 const SUB_PILL_BASE =
   "px-3 py-1.5 md:px-3.5 border rounded-full text-[0.68rem] md:text-[0.74rem] font-medium tracking-[0.01em] font-sans transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0";
 
 const SUB_PILL_ACTIVE =
-  "bg-accent border-accent text-white font-semibold shadow-[0_0_18px_rgba(232,66,13,.28)]";
+  "bg-transparent border-accent text-accent font-semibold shadow-[0_0_18px_rgba(232,66,13,.18)]";
 
 const SUB_PILL_INACTIVE =
-  "bg-transparent border-cream-10 text-cream-55 hover:border-cream-18 hover:text-cream";
+  "bg-transparent border-cream-10 text-cream-35 hover:border-accent hover:text-accent";
 
 export default function LogoExamples({
   categories,
@@ -152,13 +152,13 @@ export default function LogoExamples({
       {hydrated && (
         <>
           {/* Search bar */}
-          <div className="max-w-[640px] mx-auto mb-7 md:mb-8 px-2">
+          <div className="max-w-[460px] mx-auto mb-7 md:mb-8 px-2">
             <div className="relative">
-              <span className="absolute inset-y-0 left-5 flex items-center text-cream-35 pointer-events-none">
+              <span className="absolute inset-y-0 left-5 flex items-center text-cream-70 pointer-events-none">
                 <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 14 14"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -166,8 +166,8 @@ export default function LogoExamples({
                   strokeLinejoin="round"
                   aria-hidden="true"
                 >
-                  <circle cx="6" cy="6" r="4.2" />
-                  <path d="M9.5 9.5l3 3" />
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-3.5-3.5" />
                 </svg>
               </span>
               <input
@@ -176,7 +176,7 @@ export default function LogoExamples({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={`Search ${totalCount} industries...`}
                 aria-label="Search industries"
-                className="w-full pl-12 pr-4 h-12 rounded-full bg-b0 border border-cream-10 text-[0.85rem] md:text-[0.9rem] text-cream placeholder:text-cream-35 outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(232,66,13,.15)] transition-all"
+                className="w-full pl-12 pr-4 h-12 rounded-full bg-b3 border border-[#2E2E38] text-[12px] font-normal text-cream placeholder:text-white/50 placeholder:text-[12px] placeholder:font-normal outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(232,66,13,.15)] transition-all"
               />
             </div>
           </div>
@@ -211,14 +211,32 @@ export default function LogoExamples({
 
           {/* Show more / Show fewer */}
           {!isFiltering && (
-            <div className="flex justify-center mt-5 md:mt-6">
+            <div className="flex justify-center mt-7 md:mt-9 mb-10 md:mb-14">
               <button
                 type="button"
                 onClick={() => setExpanded((v) => !v)}
-                className="text-[0.78rem] md:text-[0.82rem] font-semibold text-accent hover:text-accent-hi transition-colors cursor-pointer"
+                className="group inline-flex items-center gap-1.5 text-[0.78rem] md:text-[0.82rem] font-medium text-[#B9B9C5] hover:text-accent transition-colors cursor-pointer"
                 aria-expanded={expanded}
               >
-                {expanded ? "Show fewer" : `See all ${totalCount} industries →`}
+                {expanded ? "Show Fewer" : `See All ${totalCount} Industries`}
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className={`relative top-px transition-transform duration-300 ease-out ${
+                    expanded
+                      ? "rotate-180 group-hover:-translate-y-1"
+                      : "group-hover:translate-y-1"
+                  }`}
+                >
+                  <polyline points="2 4.5, 6 8.5, 10 4.5" />
+                </svg>
               </button>
             </div>
           )}
@@ -230,7 +248,7 @@ export default function LogoExamples({
                 <button
                   type="button"
                   onClick={handleSelectAllSub}
-                  className={`${SUB_PILL_BASE} ${activeSub === null ? PILL_ACTIVE : SUB_PILL_INACTIVE}`}
+                  className={`${SUB_PILL_BASE} ${activeSub === null ? SUB_PILL_ACTIVE : SUB_PILL_INACTIVE}`}
                 >
                   All
                 </button>
@@ -248,7 +266,7 @@ export default function LogoExamples({
             </div>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 [@media(min-width:480px)]:gap-4 md:gap-5 max-w-[1340px] mx-auto mt-8 md:mt-10 pb-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 [@media(min-width:480px)]:gap-4 md:gap-5 max-w-[1340px] mx-auto mt-5 md:mt-6 pb-2">
             {displayIndices.map((imgIndex, i) => (
               <div
                 key={`${active}-${activeSub?.slug ?? "all"}-${imgIndex}`}
@@ -277,9 +295,9 @@ export default function LogoExamples({
               <button
                 type="button"
                 onClick={hasMore ? handleShowMore : handleShowLess}
-                className="group inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 rounded-full border border-cream-10 text-[0.8rem] md:text-[0.85rem] font-semibold text-cream-55 hover:text-accent hover:border-accent transition-colors cursor-pointer"
+                className="group inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 rounded-full border border-cream-10 text-[0.8rem] md:text-[0.85rem] font-semibold text-cream hover:text-accent hover:border-accent transition-colors cursor-pointer"
               >
-                {hasMore ? `Show ${DISPLAY_COUNT} more logos` : "Show fewer"}
+                {hasMore ? `Show ${DISPLAY_COUNT} More Logos` : "Show Fewer"}
                 <svg
                   width="12"
                   height="12"

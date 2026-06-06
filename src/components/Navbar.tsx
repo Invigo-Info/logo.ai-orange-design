@@ -33,9 +33,12 @@ interface NavbarProps {
   links?: { label: string; href: string }[];
 }
 
+type MobileSection = "company" | "browse" | null;
+
 export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
   const [openDropdown, setOpenDropdown] = useState<Dropdown>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSection, setMobileSection] = useState<MobileSection>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -71,7 +74,7 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] h-[74px] bg-b0 border-b border-cream-05 flex items-center">
+    <nav className="fixed top-0 left-0 right-0 z-[100] h-[74px] bg-b0 border-b border-cream-10 flex items-center">
       <div
         ref={wrapRef}
         className="w-full max-w-[1340px] mx-auto px-6 md:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-6"
@@ -84,18 +87,18 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
             sessionStorage.removeItem("logoExamples_page");
             setMobileOpen(false);
           }}
-          className="font-display text-[1.5rem] md:text-[1.6rem] font-extrabold text-cream tracking-[-0.02em] no-underline shrink-0"
+          className="font-brand text-[1.4375rem] md:text-[1.5375rem] font-black text-cream tracking-[-0.02em] no-underline shrink-0"
         >
           LOGO.AI
         </Link>
 
         {/* Desktop nav (centered) */}
-        <div className="hidden md:flex items-center justify-center gap-8">
+        <div className="hidden md:flex items-center justify-center gap-2">
           {links.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors duration-200 hover:text-accent-hi no-underline"
+              className="text-[0.7175rem] font-semibold uppercase tracking-[0.12em] text-[#b8b8c4] hover:text-accent-hi hover:bg-white/5 px-3 py-2 rounded-md transition-colors duration-200 no-underline"
             >
               {link.label}
             </Link>
@@ -130,36 +133,46 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
         {/* Desktop CTA (right) */}
         <button
           onClick={scrollToCTA}
-          className="hidden md:inline-flex h-[41px] px-[18px] rounded-full border-none bg-accent text-white font-sans text-[0.88rem] font-semibold items-center transition-all duration-300 cursor-pointer hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
+          className="hidden md:inline-flex h-[41px] px-[18px] rounded-full border-none bg-accent text-white font-sans text-[0.8175rem] font-semibold items-center transition-all duration-300 cursor-pointer hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
         >
           Get My Free Logo
         </button>
 
-        {/* Mobile CTA + menu toggle */}
-        <div className="md:hidden flex items-center gap-3 justify-self-end">
-          <button
-            onClick={scrollToCTA}
-            className="h-[36px] px-4 rounded-full bg-accent text-white font-sans text-[0.78rem] font-semibold active:bg-accent-hi"
-          >
-            Get My Free Logo
-          </button>
+        {/* Mobile menu toggle */}
+        <div className="md:hidden justify-self-end">
           <button
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
-            className="h-9 w-9 grid place-items-center rounded-full border border-cream-10 text-cream"
+            className="h-10 w-10 grid place-items-center rounded-md text-cream active:bg-cream-05"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
               {mobileOpen ? (
                 <path
-                  d="M2 2l10 10M12 2L2 12"
+                  d="M5 5l12 12M17 5L5 17"
                   stroke="currentColor"
-                  strokeWidth="1.6"
+                  strokeWidth="1.8"
                   strokeLinecap="round"
                 />
               ) : (
                 <>
-                  <path d="M2 4h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  <path d="M2 10h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <path
+                    d="M3 6h16"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M3 11h16"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M3 16h16"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
                 </>
               )}
             </svg>
@@ -169,48 +182,99 @@ export default function Navbar({ links = NAV_LINKS }: NavbarProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-[74px] left-0 right-0 bg-b0 border-b border-cream-10 px-6 py-5 flex flex-col gap-1 max-h-[calc(100vh-74px)] overflow-y-auto">
+        <div className="md:hidden absolute top-[74px] left-0 right-0 bg-b0 border-t border-cream-10 max-h-[calc(100vh-74px)] overflow-y-auto">
           {links.map((link) => (
             <Link
               key={link.label}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="py-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream-80 hover:text-cream no-underline"
+              className="block px-6 py-5 text-[0.8575rem] font-bold uppercase tracking-[0.14em] text-cream border-b border-cream-10 no-underline active:bg-cream-05"
             >
               {link.label}
             </Link>
           ))}
-          <div className="h-px bg-cream-10 my-2" />
-          <p className="pt-1 text-[0.66rem] font-semibold tracking-[0.14em] uppercase text-cream-35">
-            Browse Logos
-          </p>
-          {BROWSE_LINKS.map((link) => (
+
+          <MobileAccordion
+            label="Company"
+            items={COMPANY_LINKS}
+            isOpen={mobileSection === "company"}
+            onToggle={() =>
+              setMobileSection(mobileSection === "company" ? null : "company")
+            }
+            onItemClick={() => setMobileOpen(false)}
+          />
+
+          <MobileAccordion
+            label="Browse Logos"
+            items={BROWSE_LINKS}
+            isOpen={mobileSection === "browse"}
+            onToggle={() =>
+              setMobileSection(mobileSection === "browse" ? null : "browse")
+            }
+            onItemClick={() => setMobileOpen(false)}
+          />
+        </div>
+      )}
+    </nav>
+  );
+}
+
+interface MobileAccordionProps {
+  label: string;
+  items: { label: string; href: string }[];
+  isOpen: boolean;
+  onToggle: () => void;
+  onItemClick: () => void;
+}
+
+function MobileAccordion({
+  label,
+  items,
+  isOpen,
+  onToggle,
+  onItemClick,
+}: MobileAccordionProps) {
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex items-center justify-between w-full px-6 py-5 text-[0.8575rem] font-bold uppercase tracking-[0.14em] text-cream border-b border-cream-10 active:bg-cream-05"
+      >
+        <span>{label}</span>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        >
+          <path
+            d="M3 5l4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {isOpen && (
+        <div>
+          {items.map((item) => (
             <Link
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="py-1.5 text-[0.88rem] text-cream-55 hover:text-cream no-underline"
+              key={item.label}
+              href={item.href}
+              onClick={onItemClick}
+              className="block px-10 py-4 text-[0.8375rem] font-normal text-cream-55 border-b border-cream-10 no-underline active:bg-cream-05 hover:text-cream"
             >
-              {link.label}
-            </Link>
-          ))}
-          <div className="h-px bg-cream-10 my-2" />
-          <p className="pt-1 text-[0.66rem] font-semibold tracking-[0.14em] uppercase text-cream-35">
-            Company
-          </p>
-          {COMPANY_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="py-1.5 text-[0.88rem] text-cream-55 hover:text-cream no-underline"
-            >
-              {link.label}
+              {item.label}
             </Link>
           ))}
         </div>
       )}
-    </nav>
+    </div>
   );
 }
 
@@ -222,14 +286,20 @@ interface DropdownProps {
   onItemClick: () => void;
 }
 
-function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps) {
+function Dropdown({
+  label,
+  isOpen,
+  onToggle,
+  items,
+  onItemClick,
+}: DropdownProps) {
   return (
     <div className="relative">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors duration-200 hover:text-accent-hi inline-flex items-center gap-1.5"
+        className="text-[0.7175rem] font-semibold uppercase tracking-[0.12em] text-[#b8b8c4] hover:text-accent-hi hover:bg-white/5 px-3 py-2 rounded-md transition-colors duration-200 inline-flex items-center gap-1.5"
       >
         {label}
         <svg
@@ -239,7 +309,13 @@ function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps
           fill="none"
           className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         >
-          <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M2 3.5l3 3 3-3"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </button>
       {isOpen && (
@@ -249,7 +325,7 @@ function Dropdown({ label, isOpen, onToggle, items, onItemClick }: DropdownProps
               key={item.label}
               href={item.href}
               onClick={onItemClick}
-              className="block px-3 py-2.5 rounded-xl text-[0.85rem] font-medium text-cream-80 hover:text-cream hover:bg-cream-05 no-underline transition-colors duration-150"
+              className="block px-3 py-2.5 rounded-xl text-[0.7875rem] font-medium text-cream-80 hover:text-cream hover:bg-cream-05 no-underline transition-colors duration-150"
             >
               {item.label}
             </Link>

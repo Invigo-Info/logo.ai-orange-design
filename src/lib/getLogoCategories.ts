@@ -151,11 +151,35 @@ export async function getMockupCategories(): Promise<DynamicCategory[]> {
 
   const results = folders
     .map((folder: string) => {
-      const files = fs.readdirSync(path.join(baseDir, folder));
-      const count = files.filter((f: string) => f.endsWith(".webp")).length;
-      return { folder, count };
+      const dirPath = path.join(baseDir, folder);
+      const entries = fs.readdirSync(dirPath);
+
+      const count = entries.filter((e: string) => {
+        if (!e.endsWith(".webp")) return false;
+        return fs.statSync(path.join(dirPath, e)).isFile();
+      }).length;
+
+      const subcategories: Subcategory[] = entries
+        .filter((e: string) => fs.statSync(path.join(dirPath, e)).isDirectory())
+        .map((subFolder: string) => {
+          const subPath = path.join(dirPath, subFolder);
+          const subCount = fs
+            .readdirSync(subPath)
+            .filter((f: string) => f.endsWith(".webp")).length;
+          return {
+            key: folderToKey(subFolder.toLowerCase().replace(/\s+/g, "-")),
+            label: subFolder,
+            slug: subFolder,
+            count: subCount,
+          };
+        })
+        .filter((s) => s.count > 0);
+
+      return { folder, count, subcategories };
     })
-    .filter(({ count }) => count > 0);
+    .filter(({ count, subcategories }) =>
+      count > 0 || subcategories.some((s) => s.count > 0),
+    );
 
   results.sort((a, b) => {
     const ai = orderIndex.get(a.folder);
@@ -166,13 +190,13 @@ export async function getMockupCategories(): Promise<DynamicCategory[]> {
     return a.folder.localeCompare(b.folder);
   });
 
-  return results.map(({ folder, count }) => ({
+  return results.map(({ folder, count, subcategories }) => ({
     key: folderToKey(folder),
     label: folderToLabel(folder),
     folder,
     count,
     isPopular: popularSet.has(folder),
-    subcategories: [],
+    subcategories,
   }));
 }
 

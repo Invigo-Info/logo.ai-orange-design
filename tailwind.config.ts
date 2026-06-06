@@ -28,6 +28,7 @@ const config: Config = {
         cream: {
           DEFAULT: "#F5F5F5",
           80: "rgba(245,245,245,.80)",
+          70: "rgba(245,245,245,.70)",
           55: "rgba(245,245,245,.55)",
           35: "rgba(245,245,245,.35)",
           18: "rgba(245,245,245,.18)",
@@ -40,6 +41,7 @@ const config: Config = {
         sans: ["Outfit", "sans-serif"],
         body: ["Inter", "Outfit", "sans-serif"],
         display: ["Sora", "sans-serif"],
+        brand: ["Montserrat", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
       },
       keyframes: {

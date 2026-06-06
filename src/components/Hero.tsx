@@ -40,50 +40,50 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative z-[2] pt-[140px] pb-[100px] text-center overflow-hidden bg-b0 hero-glow"
+      className="relative z-[2] pt-[90px] pb-[80px] md:pt-[150px] md:pb-[140px] text-center overflow-hidden bg-b0"
     >
       <div className="flex flex-col items-center px-6 md:px-8 relative z-[2] max-w-[920px] mx-auto">
         {/* Countdown pill (top) */}
-        <div className="inline-flex items-center gap-2 mb-6 opacity-0 animate-rise-1 rounded-full border border-cream-10 bg-cream-05 px-4 py-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent-hi animate-pulse-dot" aria-hidden />
-          <span className="font-sans text-[0.74rem] font-semibold tracking-[0.1em] uppercase text-cream">
+        <div className="inline-flex items-center gap-2.5 mt-1 md:mt-2 mb-8 opacity-0 animate-rise-1 rounded-full border border-cream-10 bg-black px-4 py-1.5">
+          <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" aria-hidden />
+          <span className="font-sans text-[0.7175rem] font-bold tracking-[0.1em] uppercase text-white/70">
             Launching in {time.d}d : {time.h}h : {time.m}m
           </span>
         </div>
 
         {/* Eyebrow */}
-        <p className="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-cream-55 mb-5 opacity-0 animate-rise-2">
+        <p className="text-[0.6575rem] font-semibold tracking-[0.2em] uppercase text-accent mb-8 opacity-0 animate-rise-2">
           World&rsquo;s Best AI Logo Generator
         </p>
 
         {/* Headline */}
-        <h1 className="font-display text-[clamp(2.6rem,6.4vw,4.6rem)] font-extrabold leading-[1.04] tracking-[-0.03em] mb-6 text-cream opacity-0 animate-rise-2 whitespace-pre-line">
+        <h1 className="font-display text-[clamp(2.4975rem,6.1vw,4.6415rem)] font-extrabold leading-[1.04] tracking-[-0.03em] mb-8 text-cream opacity-0 animate-rise-2 whitespace-pre-line">
           {"Get Your Free Logo\nin Seconds"}
         </h1>
 
         {/* Subhead */}
-        <p className="font-sans text-[1.125rem] font-normal text-cream-80 leading-[1.55] max-w-[520px] mb-9 opacity-0 animate-rise-3">
+        <p className="font-sans text-[0.9875rem] md:text-[1.0875rem] font-normal text-white/50 leading-[1.55] max-w-[520px] mb-9 md:mb-12 opacity-0 animate-rise-3">
           Free logo for the first 2,000,000 users. Claim your spot now.
         </p>
 
         {/* CTA */}
-        <div className="relative inline-flex flex-col items-center gap-3 opacity-0 animate-rise-4 hero-cta-glow w-full">
-          <div id="hero-email" className="w-full flex justify-center">
-            <EmailBar source="hero" onSignupSuccess={(c) => setCount(c)} />
+        <div className="relative inline-flex flex-col items-center gap-4 opacity-0 animate-rise-4 w-full">
+          <div id="hero-email" className="w-full flex justify-center mb-1">
+            <EmailBar source="hero" size="lg" onSignupSuccess={(c) => setCount(c)} />
           </div>
 
-          <p className="text-[0.82rem] text-cream font-semibold relative z-[2]">
+          <p className="text-[0.7575rem] text-cream font-semibold relative z-[2]">
             No spam. No credit card. Just a free logo.
           </p>
-          <p className="text-[0.78rem] text-cream-55 relative z-[2] -mt-1 max-w-[480px] text-center leading-[1.5]">
+          <p className="text-[0.7175rem] text-cream-55 relative z-[2] max-w-[480px] text-center leading-[1.5]">
             We&rsquo;ll email you the moment we go live so you can generate your
             free logo.
           </p>
         </div>
 
         {/* Progress */}
-        <div className="mt-9 flex flex-col items-center gap-3 w-full max-w-[460px] relative z-[1] opacity-0 animate-rise-5">
-          <p className="text-[0.92rem]">
+        <div className="mt-14 flex flex-col items-center gap-3 w-full max-w-[460px] relative z-[1] opacity-0 animate-rise-5">
+          <p className="text-[0.8575rem]">
             <strong className="text-cream font-bold">{count.toLocaleString()}</strong>
             <span className="text-cream-35"> of 2,000,000 free logos claimed</span>
           </p>
@@ -95,7 +95,7 @@ export default function Hero() {
             />
           </div>
 
-          <p className="text-[0.78rem] text-cream-35 italic mt-1">
+          <p className="text-[0.7175rem] text-cream-35 mt-1">
             Going fast. Don&rsquo;t miss yours.
           </p>
         </div>

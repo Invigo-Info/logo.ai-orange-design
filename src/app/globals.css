@@ -15,6 +15,7 @@ body::after {
 /* â”€â”€ Smooth scroll â”€â”€ */
 html {
   scroll-behavior: smooth;
+  font-size: 15px;
 }
 
 /* â”€â”€ Scroll reveal â”€â”€ */
@@ -35,24 +36,35 @@ html {
 .hero-glow::before {
   content: "";
   position: absolute;
-  top: 0;
+  bottom: -15%;
   left: 50%;
   transform: translateX(-50%);
-  width: 900px;
-  height: 700px;
-  background: radial-gradient(ellipse, rgba(232, 66, 13, 0.06), transparent 60%);
+  width: min(1200px, 110%);
+  height: 70%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(232, 66, 13, 0.22) 0%,
+    rgba(232, 66, 13, 0.10) 35%,
+    transparent 70%
+  );
   pointer-events: none;
+  z-index: 0;
 }
 .hero-glow::after {
   content: "";
   position: absolute;
-  width: 1000px;
-  height: 1000px;
-  top: 50%;
+  top: 0;
   left: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(232, 66, 13, 0.05) 0%, transparent 60%);
+  transform: translateX(-50%);
+  width: min(1100px, 105%);
+  height: 60%;
+  background: radial-gradient(
+    ellipse at center top,
+    rgba(232, 66, 13, 0.07) 0%,
+    transparent 70%
+  );
   pointer-events: none;
+  z-index: 0;
 }
 
 /* â”€â”€ Hero CTA area glow â”€â”€ */

@@ -1,66 +1,50 @@
 export const faqs = [
   {
-    q: "Is it really free?",
-    a: "Yes — 100%. No hidden fees, no surprise charges, and no credit card needed. If you're one of the first 2,000,000 sign-ups, your custom logo is completely free at launch.",
+    q: "Is the logo actually free?",
+    a: "Yes — completely free for the first 2,000,000 users. No credit card, no trial, no catch. Sign up now to claim your spot, then download your logo free on launch day.",
   },
-{
-    q: "Will I be charged later?",
-    a: "No. Joining the early access list is completely free. If you're in the first 2,000,000 sign-ups, your logo is free at launch. If free spots are gone, you’ll see pricing clearly before you pay anything.",
+  {
+    q: "Why are you giving logos away for free?",
+    a: "We're launching soon and we want the world to see what LOGO.AI can do. The best way to do that is to let 2,000,000 founders, creators, and small business owners experience it themselves — free.",
   },
-{
-    q: "How many free logos are available?",
-    a: "2,000,000 total. Once all spots are secured, the free offer ends. Over {{CLAIMED_COUNT}} spots have already been secured — so the sooner you sign up, the better your chances.",
+  {
+    q: "What if the free spots run out before I sign up?",
+    a: "Your spot is reserved the moment you sign up. If you're in before we hit 2,000,000, your free logo is guaranteed — no matter how many people sign up after you.",
   },
-{
-    q: "How do I secure one of the first 2,000,000 spots?",
-    a: "Join the early access list now. Spots are limited to the first 2,000,000 sign-ups. Once we hit 2,000,000, the free offer ends.",
+  {
+    q: "When exactly can I get my logo?",
+    a: "We're launching soon. The moment we go live, you'll be able to log in and generate your free logo. We'll send you a reminder email on launch day.",
   },
-{
-    q: "When will I get my logo?",
-    a: "The moment we launch! You'll get an email as soon as Logo.ai goes live. Then you can create and download your logo right away — it takes less than a minute.",
+  {
+    q: "Do I need design skills?",
+    a: "No. Just enter your business name and a few words about what it does — our AI handles the style, colors, fonts, and layout for you. No design skills, no Photoshop, no creative brief needed.",
   },
-{
-    q: "Will I get more than one logo option?",
-    a: "Yes. We’ll show you multiple logo options upfront. Pick the one you love and download it.",
+  {
+    q: "How many logos will I see?",
+    a: "Each time you generate, you'll see 10 logos to choose from. Don't love them? Generate again — free. For the first 2,000,000 users, downloading is free too. No payment, ever.",
   },
-{
+  {
+    q: "What's included in the free logo?",
+    a: "Everything. Your logo in every format (PNG, SVG, PDF, EPS) with a transparent background, full commercial license, Brand Guidelines PDF, and yours forever — re-download as many times as you want.",
+  },
+  {
     q: "Will my logo be unique to me?",
-    a: "Every single one. Each logo is generated fresh — just for you. No two are the same. Your brand gets its own look, not a recycled template.",
+    a: "Yes. Our AI creates each logo from scratch based on your brand details — no two are alike. Once you download, it's yours alone.",
   },
-{
-    q: "Is my logo trademark-safe?",
-    a: "We design logos to reduce look-alike risks. However, we can’t guarantee trademark approval. If you plan to trademark your logo, we recommend doing a quick legal check.",
+  {
+    q: "What if I don't love my logo?",
+    a: "Generate again — free. You can generate as many times as you want until you find one you love. Don't love any of them? Walk away — your spot is still free.",
   },
-{
-    q: "How is this different from other logo makers?",
-    a: "Most \"logo makers\" give you a generic template with your name added. Logo.ai creates a custom logo based on your brand and your industry — powered by advanced AI to deliver something original.",
+  {
+    q: "What happens after the 2,000,000 free logos are gone?",
+    a: "After the launch offer ends, LOGO.AI will be $49 — one-time, no subscription. So if you're reading this, now is the time to claim yours free.",
   },
-{
-    q: "What’s included for free?",
-    a: "Free users get a custom logo at launch. Paid upgrades may include full brand kits, social media sizes, stationery designs, and extra revisions.",
+  {
+    q: "What happens to my email address?",
+    a: "We'll send you a launch day reminder and that's it. No spam, no sales emails, no sharing your data with anyone. Ever.",
   },
-{
-    q: "Do I own what Logo.ai creates?",
-    a: "Yes. Once you download your logo, it’s yours to use on your website, products, social media, packaging, merchandise, and more.",
-  },
-{
-    q: "What file formats are included?",
-    a: "You'll receive high-resolution files ready for both web and print — including PNG, SVG, and PDF. Everything you need to use your logo anywhere.",
-  },
-{
-    q: "Can I upload my existing logo?",
-    a: "Yes. At launch, you’ll be able to upload your current logo so we can generate cleaner, more modern options based on it.",
-  },
-{
-    q: "I’m just starting out. Is this right for me?",
-    a: "Absolutely. Whether you're launching a side hustle, opening a shop, or starting freelance work — you need a professional logo. This is one of the easiest and most affordable ways to get one.",
-  },
-{
-    q: "Why are you giving away free logos?",
-    a: "We're launching something new and we want the world to see how good our logos can be. You get an amazing logo. We get happy users who tell their friends. Win-win.",
-  },
-{
-    q: "When does Logo.ai go live?",
-    a: "We’re launching in about {{LAUNCH_COUNTDOWN}}. Secure your spot today so you don’t miss the free offer.",
+  {
+    q: "Can I trademark my free logo?",
+    a: "Yes. Since you fully own it and have a commercial license, you can register your logo as a trademark in your country. Whether it can be trademarked depends on your local laws and how unique the design is — so it's worth checking with a trademark lawyer.",
   },
 ];

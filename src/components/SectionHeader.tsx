@@ -24,7 +24,7 @@ export default function SectionHeader({
 
       {/* Heading */}
       <ScrollReveal delay={1}>
-        <h2 className="font-display text-[clamp(1.9rem,3.6vw,2.75rem)] font-bold leading-[1.08] tracking-[-0.022em] mb-5 text-cream max-w-[820px] mx-auto">
+        <h2 className="font-display text-[clamp(1.813rem,3.4vw,2.731rem)] font-bold leading-[1.08] tracking-[-0.022em] mb-5 text-cream mx-auto max-w-[820px] md:max-w-none md:whitespace-nowrap">
           {title}
         </h2>
       </ScrollReveal>

@@ -69,7 +69,7 @@ export default function HowItWorks() {
 
         {/* Trust statement */}
         <ScrollReveal delay={5}>
-          <p className="text-center text-[0.85rem] text-cream-55 mt-14 md:mt-16 max-w-[640px] mx-auto px-4 inline-flex items-center justify-center gap-2 w-full">
+          <p className="text-[0.85rem] text-cream-55 mt-9 md:mt-11 max-w-[640px] mx-auto px-4 flex items-center justify-center gap-2 w-full">
             <svg
               width="14"
               height="14"
@@ -86,8 +86,10 @@ export default function HowItWorks() {
                 strokeLinejoin="round"
               />
             </svg>
-            Your brand details stay private — never shared, never sold, only
-            used to make your logos.
+            <span className="text-center">
+              Your brand details stay private — never shared, never sold, only
+              used to make your logos.
+            </span>
           </p>
         </ScrollReveal>
       </div>

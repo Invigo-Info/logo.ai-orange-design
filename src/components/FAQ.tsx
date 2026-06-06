@@ -9,10 +9,7 @@ import ScrollReveal from "./ScrollReveal";
 const LAUNCH_DEADLINE = new Date("2026-08-01T00:00:00").getTime();
 
 function getDaysLeft() {
-  const days = Math.max(
-    0,
-    Math.ceil((LAUNCH_DEADLINE - Date.now()) / 864e5)
-  );
+  const days = Math.max(0, Math.ceil((LAUNCH_DEADLINE - Date.now()) / 864e5));
   return days === 0 ? "any day now" : `${days} day${days !== 1 ? "s" : ""}`;
 }
 
@@ -73,13 +70,19 @@ export default function FAQ() {
                     className={`shrink-0 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                   >
                     <line
-                      x1="7" y1="1" x2="7" y2="13"
+                      x1="7"
+                      y1="1"
+                      x2="7"
+                      y2="13"
                       stroke="#FF5C2E"
                       strokeWidth="1.8"
                       strokeLinecap="round"
                     />
                     <line
-                      x1="1" y1="7" x2="13" y2="7"
+                      x1="1"
+                      y1="7"
+                      x2="13"
+                      y2="7"
                       stroke="#FF5C2E"
                       strokeWidth="1.8"
                       strokeLinecap="round"
@@ -93,7 +96,7 @@ export default function FAQ() {
                     isOpen ? "max-h-[300px]" : "max-h-0"
                   }`}
                 >
-                  <div className="pb-6 text-[0.92rem] text-cream-55 leading-[1.7]">
+                  <div className="pb-6 text-[0.92rem] text-white/70 leading-[1.7]">
                     {hydrate(faq.a, count, countdown)}
                   </div>
                 </div>

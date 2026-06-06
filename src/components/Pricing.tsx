@@ -53,18 +53,19 @@ export default function Pricing() {
       />
 
       <ScrollReveal delay={1}>
-        <div className="max-w-[540px] mx-auto rounded-3xl border border-cream-10 bg-b1 p-8 md:p-10 relative overflow-hidden">
+        <div className="max-w-[540px] mx-auto rounded-3xl p-[1px] bg-gradient-to-b from-accent via-cream-10 to-cream-10 shadow-[0_0_60px_rgba(232,66,13,.12)]">
+        <div className="rounded-[calc(1.5rem-1px)] bg-b1 p-8 md:p-10 relative overflow-hidden">
           {/* Accent glow */}
-          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[420px] h-[280px] bg-[radial-gradient(ellipse,rgba(232,66,13,.18),transparent_60%)] pointer-events-none" />
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[480px] h-[320px] bg-[radial-gradient(ellipse,rgba(232,66,13,.28),transparent_65%)] pointer-events-none" />
 
           {/* Free at launch badge */}
-          <p className="relative text-center font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-accent mb-5">
+          <p className="relative text-center font-sans text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-accent mb-7">
             Free at Launch
           </p>
 
           {/* Price */}
           <div className="relative flex flex-col items-center mb-2">
-            <span className="font-display text-[1.4rem] text-cream-35 line-through font-medium mb-1">
+            <span className="font-display text-[1.4rem] text-cream-35 line-through font-medium mb-2">
               $49
             </span>
             <span className="font-display text-[4rem] md:text-[4.4rem] font-extrabold text-cream leading-none tracking-[-0.03em]">
@@ -73,25 +74,25 @@ export default function Pricing() {
           </div>
 
           {/* Price subhead */}
-          <p className="text-center text-[0.86rem] text-cream-55 mt-5 mb-3 leading-[1.5] max-w-[400px] mx-auto">
+          <p className="text-center text-[0.86rem] text-white/70 mt-8 mb-4 leading-[1.5] max-w-[400px] mx-auto">
             Free for the first 2,000,000 users — no subscription, no credit
             card, no catch.
           </p>
-          <p className="text-center text-[0.92rem] font-semibold text-cream mb-7">
+          <p className="text-center text-[0.92rem] font-semibold text-cream mb-10">
             100% yours to keep forever.
           </p>
 
           {/* What you get divider */}
-          <div className="relative flex items-center my-7">
+          <div className="relative flex items-center my-10">
             <div className="flex-1 h-px bg-cream-10" />
-            <span className="px-3 font-sans text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-cream-35">
+            <span className="px-3 font-sans text-[0.73rem] font-semibold uppercase tracking-[0.16em] text-[rgba(232,232,230,0.65)]">
               What you get — free
             </span>
             <div className="flex-1 h-px bg-cream-10" />
           </div>
 
           {/* Included list */}
-          <ul className="flex flex-col gap-4 mb-8">
+          <ul className="flex flex-col gap-5 mb-10">
             {INCLUDED.map((item) => (
               <li key={item.title} className="flex items-start gap-3">
                 <svg
@@ -113,7 +114,7 @@ export default function Pricing() {
           </ul>
 
           {/* Divider */}
-          <div className="h-px bg-cream-10 my-7" />
+          <div className="h-px bg-cream-10 my-10" />
 
           {/* CTA */}
           <div className="flex justify-center">
@@ -125,9 +126,10 @@ export default function Pricing() {
             </button>
           </div>
 
-          <p className="text-center text-[0.78rem] text-cream-35 mt-5">
+          <p className="text-center text-[0.78rem] text-[rgba(232,232,230,0.65)] mt-7">
             Free for the first 2,000,000 users. No credit card, ever.
           </p>
+        </div>
         </div>
       </ScrollReveal>
     </section>

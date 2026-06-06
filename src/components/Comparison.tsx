@@ -79,20 +79,7 @@ export default function Comparison() {
 
       <ScrollReveal delay={1}>
         <div className="max-w-[1080px] mx-auto relative">
-          {/* BEST badge above Logo.ai column */}
-          <div
-            aria-hidden
-            className="hidden md:block absolute -top-3 right-[2%] z-[2] pointer-events-none"
-            style={{ width: "calc((100% - 32px) * 0.22)" }}
-          >
-            <div className="flex justify-center">
-              <span className="inline-flex items-center px-4 py-1 rounded-full bg-accent text-white font-sans text-[0.66rem] font-bold uppercase tracking-[0.14em] shadow-[0_0_18px_rgba(232,66,13,.4)]">
-                Best
-              </span>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto pt-4">
             <table className="w-full min-w-[640px] border-collapse">
               <thead>
                 <tr>
@@ -107,7 +94,13 @@ export default function Comparison() {
                       Other AI Tools
                     </span>
                   </th>
-                  <th className="p-4 md:p-5 text-center align-middle rounded-t-2xl border-x-2 border-t-2 border-accent bg-[rgba(232,66,13,.06)]">
+                  <th className="relative p-4 md:p-5 text-center align-middle rounded-t-2xl border-x-2 border-t-2 border-accent bg-[rgba(232,66,13,.06)]">
+                    <span
+                      aria-hidden
+                      className="hidden md:inline-flex absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 items-center px-4 py-1 rounded-full bg-accent text-white font-sans text-[0.66rem] font-bold uppercase tracking-[0.14em] shadow-[0_0_18px_rgba(232,66,13,.4)] whitespace-nowrap z-[2]"
+                    >
+                      Best
+                    </span>
                     <span className="block font-sans text-[0.74rem] font-bold uppercase tracking-[0.16em] text-accent-hi">
                       Logo.ai
                     </span>
