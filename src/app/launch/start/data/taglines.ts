@@ -1,0 +1,41 @@
+// Industry-aware tagline suggestions (10 each, for a 5 + Show-5-more
+// dropdown). Falls back to TAGLINES.
+export const TAGLINES_BY_INDUSTRY: Record<string, string[]> = {
+  restaurant: ['Made with love. Served fresh.', 'Where the neighbourhood eats.', 'Real food. Real people.', 'Crafted plates, every day.', 'Open table. Open hearts.', 'A seat at our table.', 'Taste the difference.', 'From kitchen to table.', 'Eat happy. Live well.', 'Fresh ingredients, honest cooking.'],
+  coffee:     ['Brewed daily. Loved fully.', 'Roasted in-house, served with care.', 'Your morning, made better.', 'Small batch, big flavour.', 'From bean to cup.', 'A daily ritual, made better.', 'Quietly excellent coffee.', 'One cup at a time.', 'Single-origin, simply made.', 'Coffee for the curious.'],
+  boutique:   ['Thoughtfully curated.', 'Style that lasts.', 'Found, not bought.', 'For the everyday and beyond.', 'Quality you can feel.', 'Better pieces, fewer choices.', 'Made for the modern wardrobe.', 'Less, but better.', 'Style with a story.', 'Discover the difference.'],
+  agency:     ['Bold work for bold brands.', 'Strategy meets craft.', 'Brands worth remembering.', 'Where ideas take shape.', 'Built to be different.', 'Brands with backbone.', 'Smart design. Sharp strategy.', 'We build what others copy.', 'Brand-building, made simple.', 'For brands that mean something.'],
+  fitness:    ['Move with purpose.', 'Stronger every day.', 'Fitness, redefined.', 'Show up. Push through.', 'Your strongest self awaits.', 'Train smart. Train often.', 'Built for the long haul.', 'Better, every session.', 'Sweat is the new black.', 'Earn your strength.'],
+  salon:      ['Where confidence begins.', 'Crafted with care.', 'Beauty, on your terms.', 'Your best look, always.', 'Pampered. Polished. Perfected.', 'The art of looking good.', 'Walk in. Glow out.', 'Beauty that feels like you.', 'Your daily glow-up.', 'Where self-care happens.'],
+  bakery:     ['Baked fresh, with love.', 'A little bit of everything good.', 'Sweet moments, daily.', 'From oven to table.', 'Made by hand. Loved by all.', 'Where sourdough lives.', 'Crumbs of happiness.', 'Open early. Baked fresh.', 'Small batch. Big flavour.', 'Every loaf, a love letter.'],
+  tech:       ['Built for builders.', 'Software that just works.', 'Power. Simplified.', 'Smart tech for smart teams.', 'Innovation, delivered.', 'Less plumbing. More building.', 'Tools that get out of the way.', 'Designed for makers.', 'Faster, simpler, smarter.', 'Work better, together.'],
+  bar:        ['Cheers to the everyday.', 'Pour over expectations.', 'Where the night begins.', 'Drink well. Live well.', 'Crafted pours, every time.', 'A good pour, every time.', 'Better drinks. Better nights.', 'Stay a while.', 'Mixed with intention.', 'Where good nights happen.'],
+  foodtruck:  ['Fast food, finer flavour.', 'Chasing flavour, town to town.', 'Real food on the road.', 'Find us. Eat well.', 'Big taste. Small wheels.', 'Made fresh. Served hot.', 'Street food, properly done.', 'Where flavour rolls in.', 'Quick bites, slow craft.', 'Catch us if you can.'],
+  ecommerce:  ['Delivered to your door.', 'Discover the best.', 'Shop better. Live better.', 'Curated for you.', 'Made for the modern home.', 'Better products, fewer clicks.', 'Built around you.', 'Designed to last.', 'Shop with intention.', 'Less stuff. More quality.'],
+  yoga:       ['Breathe. Move. Be.', 'Where the world slows down.', 'Your practice, your pace.', 'Mindfulness in motion.', 'Find your centre.', 'A quieter kind of strong.', 'Show up for yourself.', 'Begin again, daily.', 'Stronger, softer, here.', 'Move with the breath.'],
+  consulting: ['Clarity for the complex.', 'Strategy that ships.', 'Plans that work.', 'Make better decisions.', 'Grow with confidence.', 'Clear thinking, delivered.', 'Plans that move the needle.', 'Cut through the noise.', 'Smart advice, plainly said.', 'The unfair advantage you need.'],
+  realestate: ['Find your way home.', 'Doors opened daily.', 'Where homes find people.', 'Local. Knowledgeable. Yours.', 'Your home, our mission.', 'Real estate, redefined.', 'Homes worth coming home to.', 'Your move, our expertise.', 'From listing to keys.', 'Where home begins.'],
+  photo:      ['Capturing what matters.', 'Stills that speak.', 'Moments, made to last.', 'Light. Frame. Forever.', 'See the story.', 'Stories told in light.', 'Honest moments, beautifully kept.', 'Made to remember.', 'Frame the everyday.', 'Pictures that stay with you.'],
+  wedding:    ['For the day of your life.', 'Love, exactly as you imagined.', 'Beautiful weddings, simply done.', 'Forever, framed perfectly.', 'Your day, your way.', 'A wedding, beautifully planned.', 'Every detail. Every moment.', 'Love, well celebrated.', 'Crafted for two.', 'Your once-in-a-lifetime, done well.'],
+  trades:     ['Built to last.', 'Quality you can rely on.', 'Done right the first time.', 'Honest work. Honest prices.', 'Your home, in good hands.', 'Skilled hands. Honest work.', 'On time. On budget. Built right.', 'The craftsmen you can call.', 'Done well. Done once.', 'When it has to be right.'],
+  cleaning:   ['Cleaner than clean.', 'A fresh start, every visit.', 'Spotless. Effortless.', 'Leave the cleaning to us.', 'Clean home, calm mind.', 'Tidied. Trusted. Done.', 'A cleaner kind of clean.', 'Sparkle, on schedule.', 'Spotless, on repeat.', 'Cleaning you can feel.'],
+  pet:        ['Loving every paw.', 'Care that wags.', 'For the family with fur.', 'Happy pets, happy homes.', 'Where pets are family.', 'For the love of pets.', 'Tails that wag, hearts that smile.', 'Where pets feel at home.', 'Care, paw-fect every time.', 'Healthy pets. Happy people.'],
+  medical:    ['Care, close to home.', 'Your health, our priority.', 'Healing, with heart.', 'A practice you can trust.', 'Wellness, simplified.', 'Compassionate care, every visit.', 'Where care comes first.', 'Healing, the personal way.', 'Care that listens.', 'Better health begins here.'],
+  legal:      ['Counsel you can count on.', 'Clarity in every case.', 'Practical answers, real results.', 'On your side. Every step.', 'Your story, well told.', 'When the stakes are high.', 'Clear advice. Strong defence.', 'Law, made plain.', 'Counsel that fights for you.', 'Your case, our craft.'],
+  education:  ['Where learning begins.', 'Brighter minds. Brighter futures.', 'Education, reimagined.', 'Curiosity, fed.', 'Learn. Grow. Thrive.', 'Learning that sticks.', 'A school for the curious.', 'Where minds get sharper.', 'Teaching that lights you up.', 'Curiosity, served daily.'],
+  nonprofit:  ['Change, together.', 'Built on hope.', 'For a better tomorrow.', 'Small acts. Big change.', 'Make the difference.', 'A force for good.', 'Every gift, every life.', 'Hope, in action.', 'Lifting where we live.', 'Together, we can.'],
+  creator:    ['Built from the inside out.', 'Story, told well.', 'Find your voice.', 'Where ideas grow.', 'Real talk. Real impact.', 'Made by hand. Made with care.', 'Where curiosity lives.', 'Stories worth your time.', 'Honest, useful, ongoing.', 'Just press play.'],
+}
+
+export const TAGLINES = [
+  'Design Smarter. Brand Faster.',
+  'Your Brand, Instantly.',
+  'AI Meets Identity.',
+  'Logos That Think.',
+  'From Idea to Icon.',
+  'Branding at the Speed of AI.',
+  'Smart Design. Bold Brands.',
+  'Create. Generate. Own.',
+  'Your Logo, Reimagined.',
+  'Where AI Builds Brands.',
+]

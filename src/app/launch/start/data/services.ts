@@ -1,0 +1,43 @@
+// Industry-aware services (12 each, for a pill-cloud "pick 3 of 12" UX).
+// Falls back to SERVICES when industry is 'other' or missing.
+export const SERVICES_BY_INDUSTRY: Record<string, string[]> = {
+  restaurant: ['Dine-in service', 'Takeout and delivery', 'Catering and private events', 'Bar and craft cocktails', 'Weekend brunch', 'Outdoor patio seating', 'Lunch specials', 'Wine pairings', 'Live music nights', 'Online ordering', 'Gift cards', 'Loyalty programme'],
+  coffee:     ['Espresso and pour-over', 'Pastries and baked goods', 'Whole bean retail', 'Wi-fi and seating', 'Event coffee catering', 'Cold brew on tap', 'Smoothies and juices', 'Coffee subscriptions', 'Loyalty rewards', 'Merchandise (mugs, beans)', 'Barista classes', 'Drive-through'],
+  boutique:   ['In-store shopping', 'Online and ship-to-home', 'Personal styling', 'Gift wrapping', 'Alterations and repairs', 'New arrivals weekly', 'Local pickup', 'Bridal and special occasion', 'Loyalty rewards', 'Gift cards', 'Wholesale to other shops', 'Custom orders'],
+  agency:     ['Brand strategy and naming', 'Logo and identity design', 'Website design and build', 'Marketing and social campaigns', 'Content and copywriting', 'Packaging design', 'Photography and art direction', 'Brand guidelines', 'Pitch deck design', 'Motion graphics', 'Email design', 'SEO and analytics'],
+  fitness:    ['Group fitness classes', 'Personal training', 'Nutrition coaching', 'Open gym membership', 'Corporate wellness', 'Drop-in classes', 'Bootcamps and challenges', 'Online workout library', 'Recovery and mobility', 'Meal planning', 'Childcare during classes', 'Locker rooms and showers'],
+  salon:      ['Haircuts and styling', 'Colour and highlights', 'Manicures and pedicures', 'Facials and skincare', 'Waxing and brows', 'Bridal hair and makeup', 'Hair treatments and masks', 'Lash lifts and tints', 'Spray tans', 'Massage therapy', 'Eyelash extensions', 'Loyalty rewards'],
+  bakery:     ['Daily breads and pastries', 'Custom cakes and orders', 'Coffee and seating', 'Wholesale to cafés', 'Event boxes and platters', 'Birthday and celebration cakes', 'Wedding cakes', 'Sandwiches and salads', 'Cooking classes', 'Gift baskets', 'Holiday specials', 'Catering trays'],
+  tech:       ['SaaS subscriptions', 'API integrations', 'Onboarding and support', 'Custom enterprise plans', 'Documentation and dev tools', 'Free trial', 'Self-serve plans', 'Data migration', 'Single sign-on (SSO)', 'Analytics and reporting', 'Slack / Teams integrations', 'Mobile and desktop apps'],
+  bar:        ['Craft cocktails and beer', 'Wine list and tastings', 'Small-plate menu', 'Private events and bookings', 'Live music nights', 'Happy hour specials', 'Sports viewing', 'Trivia and karaoke nights', 'Outdoor patio', 'Bottle service', 'Custom cocktail menus', 'Brewery / distillery tours'],
+  foodtruck:  ['Daily street menu', 'Event and festival catering', 'Private bookings', 'Wholesale and pop-ups', 'Online ordering and pickup', 'Weekly schedule and locations', 'Loyalty stamp card', 'Office lunch deliveries', 'Birthday parties', 'Group catering packages', 'Vegan and gluten-free options', 'Brunch on weekends'],
+  ecommerce:  ['Online storefront', 'Direct-to-consumer shipping', 'Subscription boxes', 'Wholesale accounts', 'Returns and exchanges', 'Gift cards', 'Loyalty programme', 'Free shipping over X', 'Order tracking', 'Live chat support', 'Customer reviews', 'International shipping'],
+  yoga:       ['Group yoga classes', 'Pilates and reformer', 'Workshops and retreats', 'Private sessions', 'Teacher training', 'Aerial yoga', 'Sound bath sessions', 'Wellness coaching', 'Class packages', 'Drop-in rates', 'Yoga therapy', 'Childcare during classes'],
+  consulting: ['Strategy consulting', 'Coaching and advisory', 'Workshops and training', 'Project-based engagements', 'Fractional executive roles', 'Audits and assessments', 'Implementation support', 'Team training', 'Speaking and keynotes', 'Productized services', 'Retainer engagements', 'Reports and research'],
+  realestate: ['Buyer representation', 'Seller listings and marketing', 'Property management', 'Investment advisory', 'Rental and leasing', 'Open houses', 'Virtual tours', 'Home staging', 'Mortgage referrals', 'Relocation services', 'New construction sales', 'Property valuations'],
+  photo:      ['Portrait and headshot sessions', 'Wedding and event coverage', 'Commercial and product shoots', 'Real estate photography', 'Editing and retouching', 'Photo prints and albums', 'Online galleries', 'Headshot day sessions', 'Brand content packages', 'Engagement shoots', 'Aerial / drone footage', 'Studio rental'],
+  wedding:    ['Full-service planning', 'Day-of coordination', 'Venue sourcing', 'Florals and design', 'Vendor management', 'Officiant services', 'Stationery and invitations', 'Honeymoon planning', 'Rehearsal dinner coordination', 'Welcome bags', 'Engagement parties', 'Wedding videography'],
+  trades:     ['Residential remodelling', 'Repairs and maintenance', 'New construction', 'Emergency service', 'Free estimates', 'Same-day service', 'Financing options', 'Warranties', 'Inspections and assessments', 'Permit handling', '24-hour emergency line', 'Annual maintenance plans'],
+  cleaning:   ['Recurring residential cleans', 'Move-in / move-out deep clean', 'Commercial and office cleaning', 'Post-construction cleanup', 'Carpet and upholstery', 'Pet-friendly cleaning', 'Eco-friendly products', 'Window cleaning', 'Pressure washing', 'Vacation rental turnovers', 'Free quotes', 'One-time deep cleans'],
+  pet:        ['Veterinary care', 'Grooming and bathing', 'Boarding and daycare', 'Training and behaviour', 'Pet supplies and food', 'Mobile grooming', 'Dental cleanings', 'Vaccinations', 'Microchipping', 'Senior pet care', 'Online appointment booking', 'In-home visits'],
+  medical:    ['Primary care visits', 'Specialist consultations', 'Preventive screenings', 'Telehealth appointments', 'Lab work and diagnostics', 'Same-day appointments', 'Insurance accepted', 'Online patient portal', 'Vaccinations and immunisations', 'In-house imaging', 'Care coordination', 'Wellness programmes'],
+  legal:      ['Consultations and advice', 'Document drafting and review', 'Court representation', 'Estate and succession planning', 'Tax and accounting', 'Free initial consultation', 'Flat-fee services', 'Payment plans', 'Mediation and arbitration', 'Notary services', 'After-hours appointments', 'Multilingual staff'],
+  education:  ['Group classes', 'Private tutoring', 'Test preparation', 'Online courses', 'Workshops and camps', 'Free trial lesson', 'In-person and virtual classes', 'Small group classes', 'Year-round enrolment', 'College counselling', 'Scholarship opportunities', 'Special needs support'],
+  nonprofit:  ['Direct programmes and services', 'Volunteer opportunities', 'Fundraising and donations', 'Community partnerships', 'Advocacy and outreach', 'Monthly giving programme', 'Corporate sponsorships', 'Major gifts', 'Planned giving', 'Annual gala and events', 'Volunteer training', 'Community workshops'],
+  creator:    ['Original content (video, audio, written)', 'Sponsorships and partnerships', 'Speaking and appearances', 'Courses and digital products', 'Community membership', 'Affiliate links and partnerships', 'Brand collaborations', 'Newsletter sponsorships', 'Live events and meetups', 'Coaching and consulting', '1:1 sessions', 'Merchandise and merch drops'],
+}
+
+export const SERVICES = [
+  'AI-generated logo designs from text prompts',
+  'Custom color palette generation',
+  'Brand kit creation with logos and assets',
+  'Typography and font pairing suggestions',
+  'Logo variations for social media and print',
+  'One-click logo resizing and formatting',
+  'SVG and vector file export',
+  'Business card and stationery mockups',
+  'Animated logo generation',
+  'AI-powered brand name suggestions',
+  'Favicon and app icon creation',
+  'Logo style quiz for brand discovery',
+]
