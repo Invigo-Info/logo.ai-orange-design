@@ -13,17 +13,6 @@ interface NavbarProps {
 }
 
 export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
-  const scrollToCTA = () => {
-    const isMobile = window.innerWidth < 768;
-    const target = isMobile ? "sign-up" : "hero-email";
-    const el = document.getElementById(target);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => {
-      el.querySelector<HTMLInputElement>("input[type='email']")?.focus();
-    }, 600);
-  };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] h-16 bg-[rgba(9,9,11,.8)] backdrop-blur-[20px] backdrop-saturate-[1.4] border-b border-cream-05 flex items-center">
       <div className="w-full max-w-[1340px] mx-auto px-6 md:px-8 flex items-center justify-between">
@@ -56,12 +45,12 @@ export default function Navbar({ links = DEFAULT_LINKS }: NavbarProps) {
           </div>
 
           {/* CTA */}
-          <button
-            onClick={scrollToCTA}
-            className="h-[38px] px-[22px] rounded-full border-none bg-accent text-white text-[0.78rem] font-semibold inline-flex items-center transition-all duration-300 cursor-pointer shadow-[0_0_16px_rgba(232,66,13,.15)] hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
+          <Link
+            href="/launch/start"
+            className="h-[38px] px-[22px] rounded-full border-none bg-accent text-white text-[0.78rem] font-semibold inline-flex items-center transition-all duration-300 cursor-pointer no-underline shadow-[0_0_16px_rgba(232,66,13,.15)] hover:bg-accent-hi hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(232,66,13,.25)]"
           >
             Get My Free Logo
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
