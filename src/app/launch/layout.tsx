@@ -20,6 +20,13 @@ export const metadata: Metadata = {
 export default function NLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      {/* Montserrat (display + logo) + Inter (body) — the typefaces the
+          onboarding design was built for. Scoped in effect to /launch since
+          only .m-theme references --font-montserrat / --font-inter. */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
       {/* Identical token block to prelaunch/layout.tsx — keeps /launch
           self-contained and pixel-matched to /prelaunch. */}
       <style dangerouslySetInnerHTML={{ __html: `
@@ -27,6 +34,13 @@ export default function NLayout({ children }: { children: ReactNode }) {
            the Freepik toggle can use them (see [data-brand-color="freepik"]
            below). No other toggle references them. */
         .m-theme {
+          /* Font family vars the onboarding CSS expects. Defined HERE inside
+             the .m-theme scope so they only exist on /launch pages — the rest
+             of the site (home, about, press, …) never sees them. The actual
+             font files are loaded via the <link> below. */
+          --font-montserrat: 'Montserrat';
+          --font-inter: 'Inter';
+
           /* === Remapped to the new logo site (dark editorial + orange) === */
           --m-brand: #ff5a1f;
           --m-brand-strong: #e54e18;
@@ -106,6 +120,16 @@ export default function NLayout({ children }: { children: ReactNode }) {
 
         .m-display { font-family: var(--m-font-display), system-ui, sans-serif; }
         .m-sans    { font-family: var(--m-font-sans), system-ui, sans-serif; }
+
+        /* Logo wordmark — the LogoWordmark SVG relies on these classes for
+           fill + weight. Without them the "LOGO.AI" text defaults to black
+           and disappears on the dark header. Values match the original
+           onboarding (off-white #f3f1ee, Montserrat 900; the square period
+           shares the text colour, it is NOT the orange accent). Scoped to
+           .m-theme so only /launch is affected. */
+        .m-theme .logo-wordmark { color: var(--m-ink); }
+        .m-theme .logo-text { fill: currentColor; font-family: var(--font-montserrat), sans-serif; font-weight: 900; }
+        .m-theme .logo-dot-sq { fill: currentColor; }
 
         .m-h1 { font-family: var(--m-font-display), serif; font-weight: 700; font-size: 60px; line-height: 68px; letter-spacing: -2.8px; color: var(--m-ink); }
         .m-h2 { font-family: var(--m-font-display), serif; font-weight: 600; font-size: 48px; line-height: 60px; letter-spacing: -1.6px; color: var(--m-ink-deep); }
@@ -1286,7 +1310,7 @@ export default function NLayout({ children }: { children: ReactNode }) {
         }
 
       ` }} />
-      <div className="m-theme">
+      <div className="m-theme" data-brand-color="vermillion-pure-black">
         {children}
       </div>
     </>
