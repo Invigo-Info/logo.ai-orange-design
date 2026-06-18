@@ -1,10 +1,10 @@
 export const LOGO_PRICE = 49
 export const PREVIEW_COUNT = 10
 
-// How many real logos to generate (in parallel) on the Generating screen.
-// Each Gemini image call is ~10s, so this trades wall-clock + cost for choice.
-// If generation fails, the results screen falls back to the SVG previews.
-export const GEN_COUNT = 4
+// How many real logos to generate on the Generating screen. Each 2K Imagen
+// call is ~9s and they run a few at a time, so this trades wall-clock + cost
+// for choice. If generation fails, the results screen falls back to SVG.
+export const GEN_COUNT = 10
 
 // Real coffee-shop logo previews. We have 5 unique images; the results
 // grid shows them cycled twice (10 slots total).

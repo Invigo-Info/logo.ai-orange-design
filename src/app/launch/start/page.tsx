@@ -229,9 +229,10 @@ export default function LogoOnboarding() {
 
     // Generate GEN_COUNT logos, then show the results. We cap concurrency at 2
     // because the image model returns 503 ("overloaded") when hit with too many
-    // simultaneous requests — 2-at-a-time is far more reliable than a burst of
-    // 4. If they all fail (or no key), logoImages stays empty and Results uses
-    // the SVG previews.
+    // simultaneous requests. 3-at-a-time stays reliable while keeping the wait
+    // for 10 logos reasonable. If they all fail (or no key), logoImages stays
+    // empty and Results uses the SVG previews.
+    const CONCURRENCY = 3
     ;(async () => {
       const out: (string | null)[] = []
       let next = 0
@@ -241,18 +242,17 @@ export default function LogoOnboarding() {
           out[cur] = await genOne(cur)
         }
       }
-      await Promise.all([worker(), worker()]) // concurrency = 2
+      await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()))
       if (cancelled) return
       setLogoImages(out.filter((x): x is string => Boolean(x)))
       setPhase('results')
     })()
 
-    // Safety net — never leave the user stuck on the generating screen.
-    // Concurrency 2 over GEN_COUNT means up to a couple of sequential rounds,
-    // so allow generous headroom before forcing the results screen.
+    // Safety net — never leave the user stuck on the generating screen. 10
+    // logos at 2K over a few rounds can take ~40s, so allow generous headroom.
     const safety = setTimeout(() => {
       if (!cancelled) setPhase('results')
-    }, 75000)
+    }, 130000)
 
     return () => {
       cancelled = true
@@ -573,7 +573,7 @@ export default function LogoOnboarding() {
           flex: 1,
           // Results is the showroom/pay step — let it go wide; every other
           // step stays at the focused 720px reading width.
-          maxWidth: phase === 'results' ? 1180 : 720,
+          maxWidth: phase === 'results' ? 1360 : 720,
           width: '100%',
           margin: '0 auto',
           padding: phase === 'results' ? '32px 16px 120px' : '72px 24px 140px',
@@ -3693,7 +3693,7 @@ function Results({
   })()
 
   return (
-    <div className="mx-auto w-full px-4" style={{ maxWidth: 1180 }}>
+    <div className="mx-auto w-full px-4" style={{ maxWidth: 1360 }}>
       {/* Header */}
       <div className="flex flex-col items-center text-center">
         <div style={{ ...monoLabel }}>Here are your logos</div>
@@ -3710,8 +3710,9 @@ function Results({
         </p>
       </div>
 
-      {/* All concepts spread out — hover any card to buy it */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style={{ gap: 18, marginTop: 36 }}>
+      {/* All concepts spread out — hover any card to buy it. 5 columns so 10
+          logos form two even rows of larger thumbnails. */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style={{ gap: 22, marginTop: 36 }}>
         {Array.from({ length: cardCount }).map((_, i) => {
           const isUnlocked = unlocked[i]
           const realLogo = logos[i]
