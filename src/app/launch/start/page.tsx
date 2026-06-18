@@ -262,14 +262,20 @@ export default function LogoOnboarding() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  // Persist the brief so the dashboard shows the SAME brand name + logos the
-  // user generated (prototype: localStorage; production: load from account).
+  // Persist the brief + the REAL generated logo images so the checkout and
+  // dashboard show the exact logos the user generated (prototype: localStorage;
+  // production: load from the user's account). The richer brand snapshot
+  // (logoai:brand) is persisted by the demo-mode effect further down.
   useEffect(() => {
     if (phase !== 'results') return
     try {
       localStorage.setItem('logoai_brief', JSON.stringify({ brandName, tagline, paletteIndex }))
-    } catch {}
-  }, [phase, brandName, tagline, paletteIndex])
+      // The real generated logo data-URLs (empty if generation fell back to SVG).
+      localStorage.setItem('logoai:logos', JSON.stringify(logoImages))
+    } catch {
+      /* quota / unavailable — dashboard falls back to placeholders */
+    }
+  }, [phase, brandName, tagline, paletteIndex, logoImages])
 
   // Reservation timer — kicks in once results render.
   const [reservedAt, setReservedAt] = useState<number | null>(null)
@@ -701,12 +707,21 @@ export default function LogoOnboarding() {
         price={LOGO_PRICE}
         preview={
           checkoutFor !== null ? (
-            <LogoArtwork
-              variant={checkoutFor}
-              brandName={brandName}
-              tagline={tagline}
-              palette={palette}
-            />
+            logoImages[checkoutFor] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoImages[checkoutFor]}
+                alt={`${formattedBrand} logo ${checkoutFor + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#FFFFFF' }}
+              />
+            ) : (
+              <LogoArtwork
+                variant={checkoutFor}
+                brandName={brandName}
+                tagline={tagline}
+                palette={palette}
+              />
+            )
           ) : null
         }
         onClose={() => setCheckoutFor(null)}
@@ -716,6 +731,16 @@ export default function LogoOnboarding() {
             if (checkoutFor !== null) next[checkoutFor] = true
             return next
           })
+          // Record which generated logos were purchased so the dashboard can
+          // show them watermark-free and offer the download.
+          if (typeof window !== 'undefined' && checkoutFor !== null) {
+            try {
+              const raw = window.localStorage.getItem('logoai:purchased')
+              const set = new Set<number>(raw ? JSON.parse(raw) : [])
+              set.add(checkoutFor)
+              window.localStorage.setItem('logoai:purchased', JSON.stringify([...set]))
+            } catch {}
+          }
           // Persist brand snapshot so the dashboard reflects the user's
           // actual brand (name, tagline, palette) instead of the sample.
           if (typeof window !== 'undefined') {

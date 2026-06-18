@@ -243,8 +243,16 @@ export default function NCheckoutModal({ open, index, price, preview, onClose, o
               Payment Successful!
             </h2>
 
+            {/* The logo they just bought */}
             <div
-              className="w-full overflow-hidden mt-6"
+              className="mt-6 overflow-hidden"
+              style={{ width: '100%', maxWidth: 320, aspectRatio: '1 / 1', borderRadius: 16, border: '1px solid var(--m-border)', background: '#FFFFFF', position: 'relative' }}
+            >
+              <div style={{ position: 'absolute', inset: 0 }}>{preview}</div>
+            </div>
+
+            <div
+              className="w-full overflow-hidden mt-5"
               style={{ maxWidth: 420, borderRadius: 16, border: '1px solid var(--m-border)', background: 'var(--m-surface)' }}
             >
               <div style={{ padding: '16px 24px' }}>

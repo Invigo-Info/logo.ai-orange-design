@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
@@ -65,6 +66,11 @@ export default function Dashboard() {
   const [reviewPhase, setReviewPhase] = useState<'rate' | 'write' | 'done'>('rate')
   const [reviewText, setReviewText] = useState('')
   const [brief, setBrief] = useState(FALLBACK)
+  // Real generated logos (data-URLs) + which indices were purchased. Empty
+  // when the user reached the dashboard without generating real logos (the
+  // page then falls back to the SVG placeholder art).
+  const [logos, setLogos] = useState<string[]>([])
+  const [purchased, setPurchased] = useState<number[]>([])
 
   // Sentiment split: 4–5★ opens a public review box; 1–3★ opens private feedback.
   function submitReview(n: number) {
@@ -86,38 +92,71 @@ export default function Dashboard() {
     window.location.href = '/'
   }
 
-  // Download the purchased logo. `what` is either 'all' (a .zip of everything)
-  // or a single format key from DOWNLOADS.
-  function handleDownload(what: string) {
-    // PROGRAMMER: stream the requested asset from the server, e.g.
-    //   GET /api/logo/<purchaseId>/download?format=<what>
-    // returns that file; what === 'all' returns a .zip of every format above.
-    // The purchased logo belongs to the authenticated user — verify the paid
-    // purchase + ownership server-side before serving any watermark-free file,
-    // then trigger the browser download from the returned blob.
-    void what
-    if (!downloaded) {
-      setDownloaded(true)
-      setShowReview(true) // review nudge on the first download (post-purchase win)
+  // Download the purchased logo(s). `what === 'all'` builds a .zip of every
+  // purchased PNG; any other key downloads the purchased PNG directly (we only
+  // generate PNGs, so every format maps to the same image for now).
+  async function handleDownload(what: string) {
+    try {
+      const imgs = purchasedImages
+      if (imgs.length === 0) return // placeholder mode — nothing real to download
+      const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
+
+      if (what === 'all') {
+        const zip = new JSZip()
+        imgs.forEach((dataUrl, i) => {
+          const base64 = dataUrl.split(',')[1] ?? ''
+          zip.file(imgs.length > 1 ? `${safe}-logo-${i + 1}.png` : `${safe}-logo.png`, base64, { base64: true })
+        })
+        const blob = await zip.generateAsync({ type: 'blob' })
+        const url = URL.createObjectURL(blob)
+        triggerDownload(url, `${safe}-logos.zip`)
+        setTimeout(() => URL.revokeObjectURL(url), 2000)
+      } else {
+        triggerDownload(imgs[0], `${safe}-${what}.png`)
+      }
+    } finally {
+      if (!downloaded) {
+        setDownloaded(true)
+        setShowReview(true) // review nudge on the first download (post-purchase win)
+      }
     }
   }
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem('logoai_brief')
-      if (!raw) return
-      const b = JSON.parse(raw)
-      setBrief({
-        brandName: typeof b.brandName === 'string' && b.brandName.trim() ? b.brandName.trim() : FALLBACK.brandName,
-        tagline: typeof b.tagline === 'string' ? b.tagline : FALLBACK.tagline,
-        paletteIndex: typeof b.paletteIndex === 'number' ? b.paletteIndex : FALLBACK.paletteIndex,
-      })
+      if (raw) {
+        const b = JSON.parse(raw)
+        setBrief({
+          brandName: typeof b.brandName === 'string' && b.brandName.trim() ? b.brandName.trim() : FALLBACK.brandName,
+          tagline: typeof b.tagline === 'string' ? b.tagline : FALLBACK.tagline,
+          paletteIndex: typeof b.paletteIndex === 'number' ? b.paletteIndex : FALLBACK.paletteIndex,
+        })
+      }
+      // Real generated images + purchased indices.
+      const rawLogos = localStorage.getItem('logoai:logos')
+      if (rawLogos) {
+        const arr = JSON.parse(rawLogos)
+        if (Array.isArray(arr)) setLogos(arr.filter((x) => typeof x === 'string' && x.startsWith('data:')))
+      }
+      const rawPurchased = localStorage.getItem('logoai:purchased')
+      if (rawPurchased) {
+        const arr = JSON.parse(rawPurchased)
+        if (Array.isArray(arr)) setPurchased(arr.filter((x) => typeof x === 'number'))
+      }
     } catch {}
   }, [])
 
   const brand = brief.brandName
   const tagline = brief.tagline
   const palette: Palette | null = PALETTES[brief.paletteIndex] ?? PALETTES[0] ?? null
+
+  // The purchased logos as data-URLs. If purchases weren't recorded but real
+  // logos exist, treat the first as purchased so the hero + download still work.
+  const purchasedImages = (purchased.length ? purchased : logos.length ? [0] : [])
+    .map((i) => logos[i])
+    .filter((x): x is string => Boolean(x))
+  const heroImage = purchasedImages[0] ?? null
 
   const navItem = (active: boolean): React.CSSProperties => ({
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
@@ -140,7 +179,7 @@ export default function Dashboard() {
           <button type="button" className="m-sans" onClick={() => setView('brand')} style={navItem(view === 'brand')}>{brand}</button>
           <button type="button" className="m-sans" onClick={() => setView('concepts')} style={navItem(view === 'concepts')}>
             <span>Other logos</span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: view === 'concepts' ? 'var(--m-ink)' : 'var(--m-text-soft)' }}>{ALL_CONCEPTS.length}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: view === 'concepts' ? 'var(--m-ink)' : 'var(--m-text-soft)' }}>{logos.length || ALL_CONCEPTS.length}</span>
           </button>
           <a href="/launch/feedback" className="m-sans" style={{ padding: '10px 12px', borderRadius: 10, color: 'var(--m-text-muted)', fontSize: 14, textDecoration: 'none' }}>Feedback</a>
         </nav>
@@ -185,7 +224,16 @@ export default function Dashboard() {
               <div style={{ width: '100%', maxWidth: 420, flexShrink: 0 }}>
                 <div style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: 20, border: '1px solid var(--m-border)', background: colorMode === 'dark' ? '#141413' : '#FFFFFF', overflow: 'hidden', position: 'relative', transition: 'background 0.2s ease' }}>
                   <div style={{ position: 'absolute', inset: 0 }}>
-                    <LogoArtwork variant={PURCHASED} brandName={brand} tagline={tagline} palette={palette} colorMode={colorMode} />
+                    {heroImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={heroImage}
+                        alt={`${brand} logo`}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', background: colorMode === 'dark' ? '#141413' : '#FFFFFF' }}
+                      />
+                    ) : (
+                      <LogoArtwork variant={PURCHASED} brandName={brand} tagline={tagline} palette={palette} colorMode={colorMode} />
+                    )}
                   </div>
                 </div>
 
@@ -263,9 +311,20 @@ export default function Dashboard() {
               Every logo you generated, saved as a watermarked preview — newest first. Unlock any in HD for ${PRICE}.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginTop: 28 }}>
-              {ALL_CONCEPTS.map((v, i) => (
-                <FreeTile key={i + '-' + v} variant={v} brand={brand} tagline={tagline} palette={palette} />
-              ))}
+              {logos.length > 0
+                ? logos.map((src, i) => (
+                    <RealTile
+                      key={i}
+                      src={src}
+                      brand={brand}
+                      isPurchased={purchased.includes(i)}
+                      price={PRICE}
+                      onBuy={() => setView('brand')}
+                    />
+                  ))
+                : ALL_CONCEPTS.map((v, i) => (
+                    <FreeTile key={i + '-' + v} variant={v} brand={brand} tagline={tagline} palette={palette} />
+                  ))}
             </div>
           </>
         )}
@@ -340,6 +399,42 @@ export default function Dashboard() {
         </div>
       )}
     </div>
+  )
+}
+
+// Trigger a browser download for a data-URL or blob-URL.
+function triggerDownload(href: string, filename: string) {
+  const a = document.createElement('a')
+  a.href = href
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+}
+
+// A real generated logo tile for the "Other logos" grid. Purchased ones show
+// clean with a PURCHASED badge; the rest stay watermarked with a buy hint.
+function RealTile({ src, brand, isPurchased, price, onBuy }: { src: string; brand: string; isPurchased: boolean; price: number; onBuy: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={isPurchased ? undefined : onBuy}
+      className="group relative overflow-hidden"
+      style={{ aspectRatio: '1 / 1', borderRadius: 12, border: '1px solid var(--m-border)', background: '#FFFFFF', padding: 0, cursor: isPurchased ? 'default' : 'pointer', textAlign: 'left' }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={`${brand} logo`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }} />
+      {!isPurchased && <WatermarkOverlay />}
+      {isPurchased ? (
+        <span className="absolute" style={{ top: 8, left: 8, padding: '3px 8px', borderRadius: 6, background: 'var(--m-success)', color: '#fff', fontFamily: 'var(--m-font-sans),sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: '0.04em' }}>PURCHASED</span>
+      ) : (
+        <span aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100" style={{ transition: 'opacity 0.18s ease', background: 'linear-gradient(to top, rgba(0,0,0,0.42), rgba(0,0,0,0) 55%)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: 10 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 8, background: 'var(--m-brand)', color: '#fff', fontFamily: 'var(--m-font-sans),sans-serif', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
+            Get for ${price} →
+          </span>
+        </span>
+      )}
+    </button>
   )
 }
 
