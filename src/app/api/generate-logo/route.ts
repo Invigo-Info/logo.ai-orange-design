@@ -31,34 +31,42 @@ interface Body {
   variant?: number
 }
 
-// Per-variant art direction so the batch returns visibly different concepts
-// instead of four near-identical logos.
+// Per-variant art direction so the batch returns visibly different concepts.
+// These describe the VISUAL TREATMENT only (mood / weight / feel) and never
+// the logo TYPE, so they can't contradict the user's chosen logo style.
 const VARIANTS = [
-  'Bold and iconic — a strong, memorable symbol paired with the name.',
-  'Minimal and modern — clean geometric simplicity, lots of negative space.',
-  'Elegant and refined — a sophisticated, premium feel.',
-  'Friendly and approachable — rounded, warm, characterful.',
-  'A distinctive abstract mark — a unique, ownable geometric form.',
+  'Bold and confident treatment.',
+  'Minimal and modern — clean, geometric, with generous negative space.',
+  'Elegant and refined — sophisticated and premium.',
+  'Friendly and approachable — rounded and warm.',
+  'Distinctive and unique — a memorable, custom feel.',
   'Classic and timeless — understated and professional.',
 ]
 
 const empty = () => NextResponse.json({ image: null })
 
 function buildPrompt(b: Body): string {
-  const colors = (b.colors ?? [])
-    .filter((c) => c && c.hex)
-    .map((c) => `${c.name ?? ''} ${c.hex}`.trim())
-    .join(', ')
+  const brand = b.brandName || 'the brand'
+  // Use colour NAMES only and weave everything into natural prose. Image
+  // models transcribe label-like content (hex codes, "Key: a, b, c" lists)
+  // straight into the artwork as text, so we never feed them raw metadata.
+  const colorNames = (b.colors ?? [])
+    .map((c) => c?.name)
+    .filter(Boolean)
+    .join(' and ')
+  // A single feel-word as an adjective for visual mood. We deliberately do NOT
+  // pass the description or a list of mood words: the model renders those as a
+  // tagline/subtitle. Industry + colours + style keep it input-driven without
+  // the text leak.
+  const feel = (b.impressions ?? '').split(',')[0]?.trim() || ''
 
   return [
-    `Design a professional, original brand logo for a business named "${b.brandName || 'the brand'}".`,
-    b.industry ? `Industry: ${b.industry}.` : '',
-    b.description ? `What they do: ${b.description}.` : '',
-    b.impressions ? `Brand personality: ${b.impressions}.` : '',
-    b.style ? `Logo type: ${b.style}.` : '',
-    colors ? `Use this colour palette: ${colors}.` : '',
+    `A ${feel ? `${feel.toLowerCase()}, ` : ''}professional ${b.style ? `${b.style} ` : ''}logo for "${brand}"${b.industry ? `, a ${b.industry}` : ''}.`,
+    colorNames ? `Use a colour palette of ${colorNames}.` : '',
     VARIANTS[(b.variant ?? 0) % VARIANTS.length],
-    'The logo must be clean, modern, vector-style, perfectly centered on a plain solid white background, high contrast, well balanced and scalable. Render the brand name with crisp, correct, readable lettering (no misspellings). No photographic background, no mockup, no drop shadow, no watermark, no border, no extra words or taglines.',
+    'Clean modern flat vector logo, perfectly centered on a plain solid white background, high contrast and scalable. No photographic background, no mockup, no drop shadow, no watermark, no border.',
+    // The brand name is the ONLY text that should appear — no tagline/subtitle.
+    `The brand name "${brand}" is the only text in the entire image, spelled exactly and correctly. Do not add any tagline, subtitle, slogan, descriptive sentence, colour codes, or any other words.`,
   ]
     .filter(Boolean)
     .join(' ')
