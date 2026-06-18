@@ -13,7 +13,12 @@ export const dynamic = 'force-dynamic'
 // Image generation takes ~10s; give the function room (Vercel Pro allows >10s).
 export const maxDuration = 60
 
-const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'gemini-2.5-flash-image'
+// Default to Imagen — on the free tier it is fast (~4s) and reliable, whereas
+// gemini-2.5-flash-image gets throttled (503 / timeouts) after a few calls.
+// Override with GEMINI_IMAGE_MODEL. Models whose name starts with "imagen" use
+// the :predict endpoint; Gemini image models use :generateContent.
+const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'imagen-4.0-fast-generate-001'
+const IS_IMAGEN = IMAGE_MODEL.startsWith('imagen')
 
 interface Body {
   brandName?: string
@@ -70,11 +75,17 @@ export async function POST(req: Request) {
     return empty()
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${key}`
-  const payload = JSON.stringify({
-    contents: [{ role: 'user', parts: [{ text: buildPrompt(body) }] }],
-    generationConfig: { responseModalities: ['IMAGE'] },
-  })
+  const prompt = buildPrompt(body)
+  const method = IS_IMAGEN ? 'predict' : 'generateContent'
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:${method}?key=${key}`
+  const payload = JSON.stringify(
+    IS_IMAGEN
+      ? { instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1' } }
+      : {
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ['IMAGE'] },
+        },
+  )
 
   // The image model can return transient 503 ("model overloaded") / 429 under
   // load. Retry once after a short backoff before giving up to the fallback.
@@ -100,11 +111,22 @@ export async function POST(req: Request) {
       if (!res.ok) return empty()
 
       const data = await res.json()
+
+      if (IS_IMAGEN) {
+        // Imagen :predict -> { predictions: [{ bytesBase64Encoded, mimeType }] }
+        const pred = data?.predictions?.[0]
+        const b64: string | undefined = pred?.bytesBase64Encoded
+        if (!b64) return empty()
+        return NextResponse.json({
+          image: `data:${pred?.mimeType || 'image/png'};base64,${b64}`,
+        })
+      }
+
+      // Gemini image :generateContent -> inlineData part.
       const parts: { inlineData?: { mimeType?: string; data?: string } }[] =
         data?.candidates?.[0]?.content?.parts ?? []
       const inline = parts.find((p) => p?.inlineData?.data)?.inlineData
       if (!inline?.data) return empty()
-
       return NextResponse.json({
         image: `data:${inline.mimeType || 'image/png'};base64,${inline.data}`,
       })
