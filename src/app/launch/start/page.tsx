@@ -226,21 +226,32 @@ export default function LogoOnboarding() {
       }
     }
 
-    // Generate GEN_COUNT logos in parallel, then show the results. If they all
-    // fail (or no key), logoImages stays empty and Results uses SVG previews.
+    // Generate GEN_COUNT logos, then show the results. We cap concurrency at 2
+    // because the image model returns 503 ("overloaded") when hit with too many
+    // simultaneous requests — 2-at-a-time is far more reliable than a burst of
+    // 4. If they all fail (or no key), logoImages stays empty and Results uses
+    // the SVG previews.
     ;(async () => {
-      const results = await Promise.all(
-        Array.from({ length: GEN_COUNT }, (_, i) => genOne(i)),
-      )
+      const out: (string | null)[] = []
+      let next = 0
+      async function worker() {
+        while (next < GEN_COUNT && !cancelled) {
+          const cur = next++
+          out[cur] = await genOne(cur)
+        }
+      }
+      await Promise.all([worker(), worker()]) // concurrency = 2
       if (cancelled) return
-      setLogoImages(results.filter((x): x is string => Boolean(x)))
+      setLogoImages(out.filter((x): x is string => Boolean(x)))
       setPhase('results')
     })()
 
     // Safety net — never leave the user stuck on the generating screen.
+    // Concurrency 2 over GEN_COUNT means up to a couple of sequential rounds,
+    // so allow generous headroom before forcing the results screen.
     const safety = setTimeout(() => {
       if (!cancelled) setPhase('results')
-    }, 40000)
+    }, 75000)
 
     return () => {
       cancelled = true
