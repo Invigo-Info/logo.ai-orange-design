@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic'
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
 
 const SYSTEM_PROMPT =
   'You generate concise, on-brand suggestions for a logo-creation onboarding. Always reply with ONLY the requested JSON object — no prose, no markdown fences.'
@@ -40,7 +40,15 @@ async function generateJSON(instruction: string, signal: AbortSignal): Promise<s
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: [{ role: 'user', parts: [{ text: instruction }] }],
-        generationConfig: { temperature: 0.8, responseMimeType: 'application/json' },
+        generationConfig: {
+          temperature: 0.8,
+          responseMimeType: 'application/json',
+          // gemini-2.5-flash "thinks" by default, which adds seconds of
+          // latency and can blow the timeout on the bigger prompts (palette
+          // / style). These are short structured outputs that don't need it,
+          // so disable thinking for fast, reliable responses.
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
       signal,
     })
