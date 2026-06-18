@@ -1,9 +1,13 @@
 // POST /api/suggest — server-side AI suggestion endpoint for the /launch
-// onboarding. The OpenAI key lives ONLY here (process.env.OPENAI_API_KEY); it
-// is never sent to the browser. The client (useLiveSuggestions) already
-// debounces, caches, validates shapes, and falls back to its static lists, so
-// on ANY failure we simply return { suggestions: [] } and the UI shows the
-// fallback — users never see an error.
+// onboarding. The API keys live ONLY here (process.env); they are never sent
+// to the browser. The client (useLiveSuggestions) already debounces, caches,
+// validates shapes, and falls back to its static lists, so on ANY failure we
+// simply return { suggestions: [] } and the UI shows the fallback — users
+// never see an error.
+//
+// Provider: prefers Gemini (GEMINI_API_KEY); falls back to OpenAI
+// (OPENAI_API_KEY) if Gemini isn't configured. If neither key is set, returns
+// empty and the onboarding uses its built-in static lists.
 //
 // Handles six "kinds": industry | description | tagline | impression |
 // palette | style. Each returns { suggestions: [...] } and (for the steps
@@ -16,7 +20,59 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
-const MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+
+const SYSTEM_PROMPT =
+  'You generate concise, on-brand suggestions for a logo-creation onboarding. Always reply with ONLY the requested JSON object — no prose, no markdown fences.'
+
+// Calls the configured provider and returns the raw JSON text (a string the
+// caller then JSON.parses), or null on any failure. Gemini is preferred.
+async function generateJSON(instruction: string, signal: AbortSignal): Promise<string | null> {
+  const geminiKey = process.env.GEMINI_API_KEY
+  const openaiKey = process.env.OPENAI_API_KEY
+
+  if (geminiKey) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiKey}`
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: 'user', parts: [{ text: instruction }] }],
+        generationConfig: { temperature: 0.8, responseMimeType: 'application/json' },
+      }),
+      signal,
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const text: string | undefined = data?.candidates?.[0]?.content?.parts?.[0]?.text
+    return text ?? null
+  }
+
+  if (openaiKey) {
+    const res = await fetch(OPENAI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiKey}` },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        temperature: 0.8,
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: instruction },
+        ],
+      }),
+      signal,
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const text: string | undefined = data?.choices?.[0]?.message?.content
+    return text ?? null
+  }
+
+  return null // no provider configured
+}
 
 interface Body {
   kind?: string
@@ -84,8 +140,8 @@ Respond as JSON: {"suggestions": [{"name":"Wordmark","pct":35,"desc":"...","ex":
 }
 
 export async function POST(req: Request) {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) return empty() // key not configured -> silent static fallback
+  // No provider key configured -> silent static fallback.
+  if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) return empty()
 
   let body: Body
   try {
@@ -102,37 +158,16 @@ export async function POST(req: Request) {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 11000)
 
-    const res = await fetch(OPENAI_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        temperature: 0.8,
-        response_format: { type: 'json_object' },
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You generate concise, on-brand suggestions for a logo-creation onboarding. Always reply with ONLY the requested JSON object — no prose, no markdown fences.',
-          },
-          { role: 'user', content: instruction },
-        ],
-      }),
-      signal: controller.signal,
-    })
+    const content = await generateJSON(instruction, controller.signal)
     clearTimeout(timeout)
-
-    if (!res.ok) return empty()
-    const data = await res.json()
-    const content: string | undefined = data?.choices?.[0]?.message?.content
     if (!content) return empty()
 
     let parsed: { suggestions?: unknown; recommended?: unknown }
     try {
-      parsed = JSON.parse(content)
+      // Gemini can occasionally wrap JSON in ```json fences despite the
+      // responseMimeType hint — strip them before parsing.
+      const cleaned = content.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
+      parsed = JSON.parse(cleaned)
     } catch {
       return empty()
     }
