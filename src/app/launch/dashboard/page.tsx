@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
+import { buildAsset } from './assets'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
 // LogoArtwork/WatermarkOverlay into a shared component so the dashboard bundle
@@ -71,6 +72,8 @@ export default function Dashboard() {
   // page then falls back to the SVG placeholder art).
   const [logos, setLogos] = useState<string[]>([])
   const [purchased, setPurchased] = useState<number[]>([])
+  // Which asset is currently being generated (its fmt key), or null when idle.
+  const [downloading, setDownloading] = useState<string | null>(null)
 
   // Sentiment split: 4–5★ opens a public review box; 1–3★ opens private feedback.
   function submitReview(n: number) {
@@ -92,29 +95,40 @@ export default function Dashboard() {
     window.location.href = '/'
   }
 
-  // Download the purchased logo(s). `what === 'all'` builds a .zip of every
-  // purchased PNG; any other key downloads the purchased PNG directly (we only
-  // generate PNGs, so every format maps to the same image for now).
+  // Download a generated asset. `what === 'all'` builds a .zip of the full pack;
+  // any other key (png-transparent, var-black, social, palette, …) generates and
+  // downloads that single processed file from the purchased logo.
   async function handleDownload(what: string) {
+    if (downloading) return
+    const src = purchasedImages[0]
+    if (!src) return // placeholder mode — nothing real to process
+    const paletteColors = palette?.colors ?? []
+    const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
+    setDownloading(what)
     try {
-      const imgs = purchasedImages
-      if (imgs.length === 0) return // placeholder mode — nothing real to download
-      const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
-
       if (what === 'all') {
+        // The most useful deliverables, zipped. (PDF/EPS stay as individual
+        // downloads to keep the zip fast.)
+        const keys = ['png-transparent', 'png-white', 'svg', 'var-color', 'var-black', 'var-white', 'favicon', 'social', 'palette']
         const zip = new JSZip()
-        imgs.forEach((dataUrl, i) => {
-          const base64 = dataUrl.split(',')[1] ?? ''
-          zip.file(imgs.length > 1 ? `${safe}-logo-${i + 1}.png` : `${safe}-logo.png`, base64, { base64: true })
-        })
+        for (const k of keys) {
+          const { filename, blob } = await buildAsset(k, src, brand, paletteColors)
+          zip.file(filename, blob)
+        }
         const blob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(blob)
-        triggerDownload(url, `${safe}-logos.zip`)
-        setTimeout(() => URL.revokeObjectURL(url), 2000)
+        triggerDownload(url, `${safe}-logo-pack.zip`)
+        setTimeout(() => URL.revokeObjectURL(url), 3000)
       } else {
-        triggerDownload(imgs[0], `${safe}-${what}.png`)
+        const { filename, blob } = await buildAsset(what, src, brand, paletteColors)
+        const url = URL.createObjectURL(blob)
+        triggerDownload(url, filename)
+        setTimeout(() => URL.revokeObjectURL(url), 3000)
       }
+    } catch {
+      /* generation failed — silently ignore so the UI never breaks */
     } finally {
+      setDownloading(null)
       if (!downloaded) {
         setDownloaded(true)
         setShowReview(true) // review nudge on the first download (post-purchase win)
@@ -259,10 +273,17 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => handleDownload('all')}
+                  disabled={downloading !== null}
                   className="m-display"
-                  style={{ marginTop: 16, width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 9, padding: '15px 26px', borderRadius: 'var(--m-radius-lg)', background: 'var(--m-brand)', color: '#fff', fontSize: 15, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', border: 'none', cursor: 'pointer' }}
+                  style={{ marginTop: 16, width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 9, padding: '15px 26px', borderRadius: 'var(--m-radius-lg)', background: 'var(--m-brand)', color: '#fff', fontSize: 15, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', border: 'none', cursor: downloading !== null ? 'wait' : 'pointer', opacity: downloading !== null ? 0.75 : 1 }}
                 >
-                  <DlIcon /> Download all files <span style={{ opacity: 0.7, fontWeight: 600, textTransform: 'none' }}>.zip</span>
+                  {downloading === 'all' ? (
+                    <>Preparing your files…</>
+                  ) : (
+                    <>
+                      <DlIcon /> Download all files <span style={{ opacity: 0.7, fontWeight: 600, textTransform: 'none' }}>.zip</span>
+                    </>
+                  )}
                 </button>
                 <p className="m-sans" style={{ marginTop: 14, fontSize: 13, color: 'var(--m-text-soft)', textAlign: 'center', lineHeight: 1.5 }}>
                   Yours forever, no subscription — or grab any individual file on the right.
@@ -276,7 +297,7 @@ export default function Dashboard() {
                     <div className="m-sans" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--m-text-soft)' }}>{g.group}</div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" style={{ gap: 12, marginTop: 12 }}>
                       {g.items.map((it) => (
-                        <DownloadTile key={it.fmt} item={it} onClick={() => handleDownload(it.fmt)} />
+                        <DownloadTile key={it.fmt} item={it} busy={downloading === it.fmt} disabled={downloading !== null} onClick={() => handleDownload(it.fmt)} />
                       ))}
                     </div>
                   </div>
@@ -464,19 +485,20 @@ function DlIcon() {
 }
 
 // A single downloadable asset as a horizontal tile in a grid.
-function DownloadTile({ item, onClick }: { item: { label: string; note: string; fmt: string }; onClick: () => void }) {
+function DownloadTile({ item, onClick, busy, disabled }: { item: { label: string; note: string; fmt: string }; onClick: () => void; busy?: boolean; disabled?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className="m-sans hover:border-[var(--m-brand)] hover:bg-[var(--m-surface-alt)]"
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, width: '100%', textAlign: 'left', padding: '14px 16px', borderRadius: 12, border: '1px solid var(--m-border)', background: 'var(--m-surface)', cursor: 'pointer', transition: 'border-color 0.15s ease, background 0.15s ease' }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, width: '100%', textAlign: 'left', padding: '14px 16px', borderRadius: 12, border: '1px solid var(--m-border)', background: 'var(--m-surface)', cursor: disabled ? 'wait' : 'pointer', opacity: disabled && !busy ? 0.6 : 1, transition: 'border-color 0.15s ease, background 0.15s ease' }}
     >
       <span style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
         <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--m-ink)' }}>{item.label}</span>
-        <span style={{ fontSize: 12, color: 'var(--m-text-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.note}</span>
+        <span style={{ fontSize: 12, color: 'var(--m-text-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{busy ? 'Preparing…' : item.note}</span>
       </span>
-      <span aria-hidden="true" style={{ color: 'var(--m-text-muted)', flexShrink: 0, display: 'inline-flex' }}><DlIcon /></span>
+      <span aria-hidden="true" style={{ color: busy ? 'var(--m-brand)' : 'var(--m-text-muted)', flexShrink: 0, display: 'inline-flex' }}><DlIcon /></span>
     </button>
   )
 }
