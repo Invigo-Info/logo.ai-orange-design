@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
-import { buildAsset } from './assets'
+import { buildAsset, monoPng, blobToDataUrl } from './assets'
 import { idbGet } from '../idb'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
@@ -75,6 +75,10 @@ export default function Dashboard() {
   const [purchased, setPurchased] = useState<number[]>([])
   // Which asset is currently being generated (its fmt key), or null when idle.
   const [downloading, setDownloading] = useState<string | null>(null)
+  // Pre-rendered colour variants of the purchased logo for the preview toggle:
+  // `dark` is the all-white version (for the dark backdrop), `mono` the all-black
+  // version. Built once from the hero image; null until ready (falls back to full).
+  const [previews, setPreviews] = useState<{ dark: string; mono: string } | null>(null)
 
   // Sentiment split: 4–5★ opens a public review box; 1–3★ opens private feedback.
   function submitReview(n: number) {
@@ -184,6 +188,33 @@ export default function Dashboard() {
     .filter((x): x is string => Boolean(x))
   const heroImage = purchasedImages[0] ?? null
 
+  // Build the on-dark (white) and mono (black) previews once the hero loads, so
+  // the Full colour / On dark / Mono toggle actually recolours the real logo
+  // instead of only swapping the backdrop.
+  useEffect(() => {
+    if (!heroImage) {
+      setPreviews(null)
+      return
+    }
+    let cancelled = false
+    setPreviews(null)
+    ;(async () => {
+      try {
+        const [darkBlob, monoBlob] = await Promise.all([
+          monoPng(heroImage, 'white'),
+          monoPng(heroImage, 'black'),
+        ])
+        const [dark, mono] = await Promise.all([blobToDataUrl(darkBlob), blobToDataUrl(monoBlob)])
+        if (!cancelled) setPreviews({ dark, mono })
+      } catch {
+        if (!cancelled) setPreviews(null)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [heroImage])
+
   const navItem = (active: boolean): React.CSSProperties => ({
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
     padding: '10px 12px', borderRadius: 10, fontSize: 14, textAlign: 'left', width: '100%',
@@ -253,9 +284,9 @@ export default function Dashboard() {
                     {heroImage ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={heroImage}
+                        src={colorMode === 'dark' ? previews?.dark ?? heroImage : colorMode === 'mono' ? previews?.mono ?? heroImage : heroImage}
                         alt={`${brand} logo`}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', background: colorMode === 'dark' ? '#141413' : '#FFFFFF' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                       />
                     ) : (
                       <LogoArtwork variant={PURCHASED} brandName={brand} tagline={tagline} palette={palette} colorMode={colorMode} />
