@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
 import { buildAsset } from './assets'
+import { idbGet } from '../idb'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
 // LogoArtwork/WatermarkOverlay into a shared component so the dashboard bundle
@@ -26,8 +27,8 @@ const DOWNLOADS: { group: string; items: { label: string; note: string; fmt: str
   {
     group: 'Logo files',
     items: [
-      { label: 'PNG — transparent', note: '4000 × 4000px, no background', fmt: 'png-transparent' },
-      { label: 'PNG — white background', note: '4000 × 4000px', fmt: 'png-white' },
+      { label: 'PNG — transparent', note: '2048 × 2048px, no background', fmt: 'png-transparent' },
+      { label: 'PNG — white background', note: '2048 × 2048px', fmt: 'png-white' },
       { label: 'SVG — vector', note: 'Scales to any size', fmt: 'svg' },
       { label: 'PDF — print-ready', note: 'CMYK, high resolution', fmt: 'pdf' },
       { label: 'EPS — vector source', note: 'For print & designers', fmt: 'eps' },
@@ -147,18 +148,29 @@ export default function Dashboard() {
           paletteIndex: typeof b.paletteIndex === 'number' ? b.paletteIndex : FALLBACK.paletteIndex,
         })
       }
-      // Real generated images + purchased indices.
-      const rawLogos = localStorage.getItem('logoai:logos')
-      if (rawLogos) {
-        const arr = JSON.parse(rawLogos)
-        if (Array.isArray(arr)) setLogos(arr.filter((x) => typeof x === 'string' && x.startsWith('data:')))
-      }
       const rawPurchased = localStorage.getItem('logoai:purchased')
       if (rawPurchased) {
         const arr = JSON.parse(rawPurchased)
         if (Array.isArray(arr)) setPurchased(arr.filter((x) => typeof x === 'number'))
       }
     } catch {}
+    // Real generated images live in IndexedDB (too big for localStorage at 2K).
+    // Fall back to the old localStorage key for sessions created before this.
+    idbGet<string[]>('logos')
+      .then((arr) => {
+        if (Array.isArray(arr) && arr.length) {
+          setLogos(arr.filter((x) => typeof x === 'string' && x.startsWith('data:')))
+          return
+        }
+        try {
+          const raw = localStorage.getItem('logoai:logos')
+          if (raw) {
+            const a = JSON.parse(raw)
+            if (Array.isArray(a)) setLogos(a.filter((x: unknown) => typeof x === 'string' && (x as string).startsWith('data:')))
+          }
+        } catch {}
+      })
+      .catch(() => {})
   }, [])
 
   const brand = brief.brandName

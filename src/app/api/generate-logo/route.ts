@@ -13,12 +13,15 @@ export const dynamic = 'force-dynamic'
 // Image generation takes ~10s; give the function room (Vercel Pro allows >10s).
 export const maxDuration = 60
 
-// Default to Imagen — on the free tier it is fast (~4s) and reliable, whereas
-// gemini-2.5-flash-image gets throttled (503 / timeouts) after a few calls.
-// Override with GEMINI_IMAGE_MODEL. Models whose name starts with "imagen" use
-// the :predict endpoint; Gemini image models use :generateContent.
-const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'imagen-4.0-fast-generate-001'
+// Default to Imagen standard at 2K (2048×2048) for crisp, high-resolution
+// logos. (The "fast" variant only does 1024 and 2K request 400s; the standard
+// model supports sampleImageSize "2K".) Override with GEMINI_IMAGE_MODEL /
+// GEMINI_IMAGE_SIZE. Models whose name starts with "imagen" use the :predict
+// endpoint; Gemini image models use :generateContent.
+const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || 'imagen-4.0-generate-001'
 const IS_IMAGEN = IMAGE_MODEL.startsWith('imagen')
+// "1K" or "2K". Only applies to Imagen standard/ultra (not -fast).
+const IMAGE_SIZE = process.env.GEMINI_IMAGE_SIZE || '2K'
 
 interface Body {
   brandName?: string
@@ -86,9 +89,12 @@ export async function POST(req: Request) {
   const prompt = buildPrompt(body)
   const method = IS_IMAGEN ? 'predict' : 'generateContent'
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:${method}?key=${key}`
+  const imagenParams: Record<string, unknown> = { sampleCount: 1, aspectRatio: '1:1' }
+  // -fast doesn't accept sampleImageSize; only set it for standard/ultra.
+  if (IS_IMAGEN && !IMAGE_MODEL.includes('fast')) imagenParams.sampleImageSize = IMAGE_SIZE
   const payload = JSON.stringify(
     IS_IMAGEN
-      ? { instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: '1:1' } }
+      ? { instances: [{ prompt }], parameters: imagenParams }
       : {
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: { responseModalities: ['IMAGE'] },

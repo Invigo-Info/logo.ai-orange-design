@@ -38,6 +38,7 @@ import { PALETTES } from './data/palettes'
 import { LOGO_TYPES, STYLE_ICONS } from './data/logoTypes'
 import { GEN_PHASES } from './data/genPhases'
 import { LOGO_PRICE, PREVIEW_COUNT, PREVIEW_LOGOS, RESERVATION_MINUTES, GEN_COUNT } from './data/constants'
+import { idbSet } from '../idb'
 
 // Hard cliché filter for tagline suggestions — a safety net under the
 // prompt's no-cliché rule. Any AI tagline matching one of these shapes is
@@ -270,11 +271,12 @@ export default function LogoOnboarding() {
     if (phase !== 'results') return
     try {
       localStorage.setItem('logoai_brief', JSON.stringify({ brandName, tagline, paletteIndex }))
-      // The real generated logo data-URLs (empty if generation fell back to SVG).
-      localStorage.setItem('logoai:logos', JSON.stringify(logoImages))
     } catch {
       /* quota / unavailable — dashboard falls back to placeholders */
     }
+    // The real generated logo data-URLs go to IndexedDB — at 2K they're far too
+    // big for localStorage. Empty if generation fell back to SVG.
+    idbSet('logos', logoImages).catch(() => {})
   }, [phase, brandName, tagline, paletteIndex, logoImages])
 
   // Reservation timer — kicks in once results render.
