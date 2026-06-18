@@ -162,28 +162,36 @@ export async function POST(req: Request) {
   const instruction = instructionFor(kind, body)
   if (!instruction) return empty()
 
-  try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 11000)
-
-    const content = await generateJSON(instruction, controller.signal)
-    clearTimeout(timeout)
-    if (!content) return empty()
-
-    let parsed: { suggestions?: unknown; recommended?: unknown }
+  // The model occasionally returns an empty or unparseable result (seen
+  // intermittently on the "impression" kind). Try up to twice so a single bad
+  // response doesn't drop the step to its generic static fallback.
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      // Gemini can occasionally wrap JSON in ```json fences despite the
-      // responseMimeType hint — strip them before parsing.
-      const cleaned = content.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
-      parsed = JSON.parse(cleaned)
-    } catch {
-      return empty()
-    }
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 11000)
+      const content = await generateJSON(instruction, controller.signal)
+      clearTimeout(timeout)
+      if (!content) continue
 
-    const suggestions = Array.isArray(parsed.suggestions) ? parsed.suggestions : []
-    const recommended = Array.isArray(parsed.recommended) ? parsed.recommended : []
-    return NextResponse.json({ suggestions, recommended })
-  } catch {
-    return empty() // network error / abort -> silent static fallback
+      let parsed: { suggestions?: unknown; recommended?: unknown }
+      try {
+        // Gemini can occasionally wrap JSON in ```json fences despite the
+        // responseMimeType hint — strip them before parsing.
+        const cleaned = content.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '')
+        parsed = JSON.parse(cleaned)
+      } catch {
+        continue // bad JSON -> retry once
+      }
+
+      const suggestions = Array.isArray(parsed.suggestions) ? parsed.suggestions : []
+      const recommended = Array.isArray(parsed.recommended) ? parsed.recommended : []
+      // Empty suggestions almost always means a flaky generation — retry once
+      // before giving up to the client's static fallback.
+      if (suggestions.length === 0 && attempt === 0) continue
+      return NextResponse.json({ suggestions, recommended })
+    } catch {
+      // network error / abort -> retry once, then fall back
+    }
   }
+  return empty()
 }
