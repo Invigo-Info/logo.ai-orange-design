@@ -37,7 +37,7 @@ import type { Palette } from './data/palettes'
 import { PALETTES } from './data/palettes'
 import { LOGO_TYPES, STYLE_ICONS } from './data/logoTypes'
 import { GEN_PHASES } from './data/genPhases'
-import { LOGO_PRICE, PREVIEW_COUNT, PREVIEW_LOGOS, RESERVATION_MINUTES } from './data/constants'
+import { LOGO_PRICE, PREVIEW_COUNT, PREVIEW_LOGOS, RESERVATION_MINUTES, GEN_COUNT } from './data/constants'
 
 // Hard cliché filter for tagline suggestions — a safety net under the
 // prompt's no-cliché rule. Any AI tagline matching one of these shapes is
@@ -175,8 +175,12 @@ export default function LogoOnboarding() {
   const [aiPickPending, setAiPickPending] = useState(false)
   const [email, setEmail] = useState('')
 
-  // Generating screen — rotating phase text, auto-advances.
+  // Generating screen — rotating phase text while real logos are generated.
   const [genLine, setGenLine] = useState(0)
+  // Real AI-generated logo images (data URLs) for the results screen. Empty
+  // until generation finishes; the Results screen falls back to SVG previews
+  // when empty (e.g. generation failed or no API key configured).
+  const [logoImages, setLogoImages] = useState<string[]>([])
   // "Generate again" re-runs generation with the SAME brief (no re-doing the
   // form or login) and is capped; after MAX_REGENS the results step pivots to
   // pick & pay.
@@ -189,11 +193,62 @@ export default function LogoOnboarding() {
       () => setGenLine((l) => Math.min(l + 1, GEN_PHASES.length - 1)),
       1300,
     )
-    const done = setTimeout(() => setPhase('results'), 6800)
-    return () => {
-      clearInterval(tick)
-      clearTimeout(done)
+
+    // Build the image brief from the collected onboarding answers.
+    const colors = (palette?.colors ?? []).map((c) => ({ name: c.name, hex: c.hex }))
+    const styleName = logoTypeIndex !== null ? LOGO_TYPES[logoTypeIndex]?.name ?? '' : ''
+    const brief = {
+      brandName,
+      tagline,
+      industry: industryLabel,
+      description,
+      impressions: impressions.join(', '),
+      colors,
+      style: styleName,
     }
+
+    let cancelled = false
+    const controller = new AbortController()
+
+    async function genOne(variant: number): Promise<string | null> {
+      try {
+        const r = await fetch('/api/generate-logo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...brief, variant }),
+          signal: controller.signal,
+        })
+        if (!r.ok) return null
+        const d: { image?: unknown } = await r.json()
+        return typeof d.image === 'string' && d.image.startsWith('data:') ? d.image : null
+      } catch {
+        return null
+      }
+    }
+
+    // Generate GEN_COUNT logos in parallel, then show the results. If they all
+    // fail (or no key), logoImages stays empty and Results uses SVG previews.
+    ;(async () => {
+      const results = await Promise.all(
+        Array.from({ length: GEN_COUNT }, (_, i) => genOne(i)),
+      )
+      if (cancelled) return
+      setLogoImages(results.filter((x): x is string => Boolean(x)))
+      setPhase('results')
+    })()
+
+    // Safety net — never leave the user stuck on the generating screen.
+    const safety = setTimeout(() => {
+      if (!cancelled) setPhase('results')
+    }, 40000)
+
+    return () => {
+      cancelled = true
+      controller.abort()
+      clearInterval(tick)
+      clearTimeout(safety)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
   // Persist the brief so the dashboard shows the SAME brand name + logos the
@@ -579,6 +634,7 @@ export default function LogoOnboarding() {
             tagline={tagline}
             palette={palette}
             logoTypeIndex={logoTypeIndex}
+            logos={logoImages}
             unlocked={unlocked}
             onTap={(i) => {
               if (unlocked[i]) {
@@ -3570,6 +3626,7 @@ function Results({
   tagline,
   palette,
   logoTypeIndex,
+  logos = [],
   unlocked,
   onTap,
   regensLeft,
@@ -3580,12 +3637,17 @@ function Results({
   tagline: string
   palette: Palette | null
   logoTypeIndex: number | null
+  // Real AI-generated logo data URLs. When non-empty, the grid shows these;
+  // when empty, it falls back to the SVG LogoArtwork previews.
+  logos?: string[]
   unlocked: boolean[]
   onTap: (i: number) => void
   regensLeft: number
   onRegenerate: () => void
   onStartFresh: () => void
 }) {
+  const hasRealLogos = logos.length > 0
+  const cardCount = hasRealLogos ? logos.length : PREVIEW_COUNT
   const displayName = (() => {
     const n = brandName.trim()
     if (!n) return 'there'
@@ -3612,8 +3674,9 @@ function Results({
 
       {/* All concepts spread out — hover any card to buy it */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style={{ gap: 18, marginTop: 36 }}>
-        {Array.from({ length: PREVIEW_COUNT }).map((_, i) => {
+        {Array.from({ length: cardCount }).map((_, i) => {
           const isUnlocked = unlocked[i]
+          const realLogo = logos[i]
           return (
             <button
               key={i}
@@ -3624,7 +3687,16 @@ function Results({
               style={{ aspectRatio: '1 / 1', borderRadius: 14, border: '1px solid var(--m-border)', background: '#FFFFFF', padding: 0, cursor: 'pointer', animationDelay: `${i * 90}ms` }}
             >
               <div style={{ position: 'absolute', inset: 0 }}>
-                <LogoArtwork variant={i} brandName={brandName} tagline={tagline} palette={palette} />
+                {realLogo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={realLogo}
+                    alt={`${brandName} logo ${i + 1}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#FFFFFF' }}
+                  />
+                ) : (
+                  <LogoArtwork variant={i} brandName={brandName} tagline={tagline} palette={palette} />
+                )}
               </div>
               {!isUnlocked && <WatermarkOverlay />}
 
