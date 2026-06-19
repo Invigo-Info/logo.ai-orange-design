@@ -102,6 +102,41 @@ const TOTAL_STEPS = STEPS.length
 
 const NAME_STYLES = ['all lowercase', 'Title Case', 'ALL CAPS', 'camelCase']
 
+// When the AI style list isn't available (no key / fetch failed), every brand
+// would otherwise default to the highest static % = always "Wordmark". This
+// maps the industry + brand name to a sensible default logo type so the choice
+// still reflects the business. Falls back to the highest-% type when nothing
+// matches. `list` is the live-or-static style list (items have name + pct).
+function defaultStyleIndex(
+  industry: string | null | undefined,
+  brand: string | undefined,
+  list: { name: string; pct?: number }[],
+): number {
+  const text = `${industry ?? ''} ${brand ?? ''}`.toLowerCase()
+  const rules: [RegExp, string][] = [
+    [/law|legal|attorney|advoc|finance|financ|bank|insurance|consult|capital|advisory|account|notary/, 'Lettermark'],
+    [/tech|software|app\b|saas|digital|\bai\b|data|cloud|cyber|web|dev|robot|crypto|fintech/, 'Abstract Mark'],
+    [/coffee|cafe|café|restaurant|food|bakery|brew|kitchen|bar\b|bistro|pizza|grill|diner|catering|deli/, 'Combination Mark'],
+    [/oil|lubricant|petrol|industrial|manufactur|construction|logistics|transport|cargo|auto|motor|energy|mining|steel|machin|factory|chemical/, 'Combination Mark'],
+    [/health|clinic|medical|pharma|dental|care|wellness|hospital|therapy|fitness|gym|nutrition/, 'Combination Mark'],
+    [/sport|athletic|outdoor|run\b|cycle|surf|ski|team|league|esport|gaming/, 'Brandmark'],
+    [/craft|artisan|heritage|farm|organic|barber|workshop|roaster|distill|winery|brewery|estate/, 'Emblem'],
+    [/luxury|premium|boutique|fashion|jewel|jewelry|cosmetic|beauty|spa|salon|hotel|resort|couture|atelier/, 'Wordmark'],
+  ]
+  for (const [re, name] of rules) {
+    if (re.test(text)) {
+      const idx = list.findIndex((s) => s.name === name)
+      if (idx >= 0) return idx
+    }
+  }
+  // No keyword matched → highest popularity %.
+  let best = 0
+  for (let i = 1; i < list.length; i++) {
+    if ((list[i].pct ?? 0) > (list[best].pct ?? 0)) best = i
+  }
+  return best
+}
+
 /* ------------------------------------------------------------------ */
 /* tokens used widely below                                            */
 /* ------------------------------------------------------------------ */
@@ -2207,13 +2242,13 @@ function FormSteps(p: FormProps) {
       step === 7 && liveStyles.status === 'done' &&
       p.logoTypeIndex === null && stylesList.length > 0
     ) {
-      // Default to the MOST popular logo type for this brand — the highest
-      // popularity %. (Ties keep the earlier/AI-ordered one.)
-      let best = 0
-      for (let i = 1; i < stylesList.length; i++) {
-        if ((stylesList[i].pct ?? 0) > (stylesList[best].pct ?? 0)) best = i
-      }
-      p.setLogoTypeIndex(best)
+      // Pick a default that reflects THIS business, not always Wordmark:
+      //   1. the AI's explicit recommendation (most brand-specific), else
+      //   2. a deterministic per-industry/brand default, else
+      //   3. the highest popularity %.
+      const recIdx = stylesList.findIndex((s) => s.name === liveStyles.recommended[0])
+      const idx = recIdx >= 0 ? recIdx : defaultStyleIndex(industryLabel, p.brandName, stylesList)
+      p.setLogoTypeIndex(idx)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, liveImpression.status, livePalettes.status, liveStyles.status])
