@@ -51,6 +51,11 @@ async function getPixels(src: string) {
   return { ctx, canvas, data: ctx.getImageData(0, 0, w, h), w, h }
 }
 
+// Alpha below this in the final cutout is treated as stray fringe/glow and
+// dropped to fully transparent — kills the faint halo that otherwise shows as a
+// glow on dark backgrounds, without touching the solid logo or its real edge.
+const ALPHA_FLOOR = 26
+
 // White/near-white background -> transparent. Fast, exact, no dependencies —
 // but it also deletes any white *inside* the logo (punching holes) and only
 // works on white backgrounds. Used as the dependable fallback for the AI path.
@@ -66,9 +71,33 @@ export async function transparentPng(src: string): Promise<Blob> {
       const fade = 1 - (m - WHITE_LO) / (WHITE_HI - WHITE_LO)
       px[i + 3] = Math.round(px[i + 3] * fade)
     }
+    if (px[i + 3] < ALPHA_FLOOR) px[i + 3] = 0 // drop fringe
   }
   ctx.putImageData(data, 0, 0)
   return canvasToBlob(canvas)
+}
+
+// Drop near-transparent fringe pixels (a soft halo / glow) to fully clear. Used
+// to clean the AI cutout, whose mask can leave a faint matte around the logo.
+async function defringe(blob: Blob): Promise<Blob> {
+  try {
+    const dataUrl = await blobToDataUrl(blob)
+    const img = await loadImage(dataUrl)
+    const w = img.naturalWidth || 1024
+    const h = img.naturalHeight || 1024
+    const canvas = makeCanvas(w, h)
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(img, 0, 0)
+    const data = ctx.getImageData(0, 0, w, h)
+    const px = data.data
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 3] < ALPHA_FLOOR) px[i + 3] = 0
+    }
+    ctx.putImageData(data, 0, 0)
+    return await canvasToBlob(canvas)
+  } catch {
+    return blob // never fail the download over a cosmetic cleanup
+  }
 }
 
 // ── Option A: AI background removal ──────────────────────────────────────────
@@ -97,7 +126,9 @@ let bgCache: { src: string; blob: Blob } | null = null
 export async function transparentPngBest(src: string): Promise<Blob> {
   if (bgCache && bgCache.src === src) return bgCache.blob
   const ai = await removeBgAI(src)
-  const blob = ai ?? (await transparentPng(src))
+  // AI result gets a defringe pass to remove the soft halo; the threshold path
+  // already floors its own alpha inline.
+  const blob = ai ? await defringe(ai) : await transparentPng(src)
   bgCache = { src, blob }
   return blob
 }
@@ -311,7 +342,12 @@ async function svgFromTransparent(transparent: Blob): Promise<Blob> {
 // any size regardless. `colorMode: 'mono'` traces a single-colour silhouette
 // (for the black/white variants); 'color' keeps the logo's colours. Returns
 // null on any failure so callers fall back to the embedded-raster SVG.
-async function tracedSvg(pngBlob: Blob, colorMode: 'color' | 'mono'): Promise<Blob | null> {
+// `forceColor` (e.g. '#101010' or '#ffffff') repaints every traced shape that
+// single colour — used for the black/white variations. We always trace the
+// full-COLOUR transparent image (good geometry) and recolour afterwards, rather
+// than tracing a pre-recoloured PNG: a black-on-transparent PNG shares the same
+// RGB as its transparent background, which confuses the tracer into a blank SVG.
+async function tracedSvg(pngBlob: Blob, forceColor?: string): Promise<Blob | null> {
   try {
     const ImageTracer = (await import('imagetracerjs')).default
     const dataUrl = await blobToDataUrl(pngBlob)
@@ -326,12 +362,17 @@ async function tracedSvg(pngBlob: Blob, colorMode: 'color' | 'mono'): Promise<Bl
     const ctx = canvas.getContext('2d')!
     ctx.drawImage(img, 0, 0, w, h)
     const imgd = ctx.getImageData(0, 0, w, h)
-    const options: Record<string, number | boolean> =
-      colorMode === 'mono'
-        ? { numberofcolors: 2, colorquantcycles: 1, pathomit: 8, ltres: 1, qtres: 1, rightangleenhance: true }
-        : { numberofcolors: 16, colorquantcycles: 3, pathomit: 4, ltres: 1, qtres: 1 }
+    const options: Record<string, number | boolean> = { numberofcolors: 16, colorquantcycles: 3, pathomit: 4, ltres: 1, qtres: 1 }
     let svg = ImageTracer.imagedataToSVG(imgd, options)
     if (!svg || !svg.includes('<path')) return null
+    if (forceColor) {
+      // Repaint every fill/stroke the target colour; the per-path opacity (0 for
+      // the transparent background, 1 for shapes) is preserved, so the result is
+      // a clean single-colour silhouette with smooth edges.
+      svg = svg
+        .replace(/fill="rgb\([^)]*\)"/g, `fill="${forceColor}"`)
+        .replace(/stroke="rgb\([^)]*\)"/g, `stroke="${forceColor}"`)
+    }
     // imagetracerjs emits a bare <svg width/height …> with no XML prolog and no
     // viewBox. Browsers render that, but strict viewers (Windows Photos,
     // Illustrator, Inkscape, some thumbnailers) show a blank. Add the prolog and
@@ -352,7 +393,7 @@ async function tracedSvg(pngBlob: Blob, colorMode: 'color' | 'mono'): Promise<Bl
 // succeeds, otherwise an embedded-raster SVG.
 export async function svgWrap(src: string): Promise<Blob> {
   const transparent = await transparentPngBest(src)
-  const traced = await tracedSvg(transparent, 'color')
+  const traced = await tracedSvg(transparent)
   return traced ?? (await svgFromTransparent(transparent))
 }
 
@@ -367,10 +408,14 @@ export async function colorVariantFiles(
 ): Promise<{ tag: string; files: { filename: string; blob: Blob }[] }> {
   const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
   const tag = mode === 'color' ? 'full-color' : mode === 'black' ? 'black' : 'white'
-  // Full colour uses AI background removal; the mono variants recolour every
-  // shape (no AI needed). The SVG is real vector paths when tracing succeeds.
+  // PNG: full colour uses the AI cutout; black/white recolour every shape.
   const png = mode === 'color' ? await transparentPngBest(src) : await monoPng(src, mode)
-  const traced = await tracedSvg(png, mode === 'color' ? 'color' : 'mono')
+  // SVG: always TRACE the full-colour transparent image (clean geometry), then
+  // force the colour for the mono variants. Tracing the recoloured PNG directly
+  // produced blank black/white SVGs (shape & background share the same RGB).
+  const base = await transparentPngBest(src)
+  const force = mode === 'black' ? '#111111' : mode === 'white' ? '#ffffff' : undefined
+  const traced = await tracedSvg(base, force)
   const svg = traced ?? (await svgFromTransparent(png))
   return {
     tag,
