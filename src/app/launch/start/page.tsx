@@ -2207,8 +2207,13 @@ function FormSteps(p: FormProps) {
       step === 7 && liveStyles.status === 'done' &&
       p.logoTypeIndex === null && stylesList.length > 0
     ) {
-      const idx = stylesList.findIndex((s) => s.name === liveStyles.recommended[0])
-      p.setLogoTypeIndex(idx >= 0 ? idx : 0)
+      // Default to the MOST popular logo type for this brand — the highest
+      // popularity %. (Ties keep the earlier/AI-ordered one.)
+      let best = 0
+      for (let i = 1; i < stylesList.length; i++) {
+        if ((stylesList[i].pct ?? 0) > (stylesList[best].pct ?? 0)) best = i
+      }
+      p.setLogoTypeIndex(best)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, liveImpression.status, livePalettes.status, liveStyles.status])
@@ -2730,6 +2735,25 @@ function FormSteps(p: FormProps) {
                   }}
                 >
                   {lt.name}
+                </span>
+                {/* Always-visible popularity % so the choice is transparent. */}
+                <span
+                  aria-hidden="true"
+                  className="m-sans"
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    left: 10,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: '3px 7px',
+                    borderRadius: 999,
+                    background: selected ? 'var(--m-brand)' : 'var(--m-surface-alt)',
+                    color: selected ? 'var(--m-on-brand, #FFFFFF)' : 'var(--m-text-soft)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {lt.pct}%
                 </span>
                 <span
                   className="flex flex-col justify-center opacity-0 group-hover:opacity-100"
