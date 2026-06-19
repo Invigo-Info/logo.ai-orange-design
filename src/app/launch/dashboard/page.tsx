@@ -11,6 +11,7 @@ import { idbGet } from '../idb'
 // doesn't pull in the whole onboarding page.
 import { LogoArtwork, WatermarkOverlay } from '../start/page'
 import { PALETTES, type Palette } from '../start/data/palettes'
+import NCheckoutModal from '../_components/NCheckoutModal'
 
 const PRICE = 49
 const PURCHASED = 1 // the variant the user bought
@@ -81,6 +82,13 @@ export default function Dashboard() {
   // page then falls back to the SVG placeholder art).
   const [logos, setLogos] = useState<string[]>([])
   const [purchased, setPurchased] = useState<number[]>([])
+  // Which logo is shown in the brand view (its index in `logos`). Defaults to
+  // the first purchased one; clicking another purchased logo, or buying a new
+  // one, switches it here.
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  // The logo index whose checkout modal is open (null = closed). Set when the
+  // user clicks an un-purchased logo in the "Other logos" grid.
+  const [buyIndex, setBuyIndex] = useState<number | null>(null)
   // Which asset is currently being generated (its fmt key), or null when idle.
   const [downloading, setDownloading] = useState<string | null>(null)
   // Pre-rendered colour variants of the purchased logo for the preview toggle:
@@ -113,7 +121,7 @@ export default function Dashboard() {
   // downloads that single processed file from the purchased logo.
   async function handleDownload(what: string) {
     if (downloading) return
-    const src = purchasedImages[0]
+    const src = heroImage // the logo currently shown in the brand view
     if (!src) return // placeholder mode — nothing real to process
     const paletteColors = palette?.colors ?? []
     const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
@@ -189,10 +197,19 @@ export default function Dashboard() {
         })
       }
       const rawPurchased = localStorage.getItem('logoai:purchased')
+      let owned: number[] = []
       if (rawPurchased) {
         const arr = JSON.parse(rawPurchased)
-        if (Array.isArray(arr)) setPurchased(arr.filter((x) => typeof x === 'number'))
+        if (Array.isArray(arr)) {
+          owned = arr.filter((x) => typeof x === 'number')
+          setPurchased(owned)
+        }
       }
+      // Restore which purchased logo was last viewed; default to the first one.
+      const rawActive = localStorage.getItem('logoai:active')
+      const savedActive = rawActive !== null && rawActive !== '' ? Number(rawActive) : NaN
+      if (!Number.isNaN(savedActive) && owned.includes(savedActive)) setActiveIndex(savedActive)
+      else if (owned.length) setActiveIndex(owned[0])
     } catch {}
     // Real generated images live in IndexedDB (too big for localStorage at 2K).
     // Fall back to the old localStorage key for sessions created before this.
@@ -222,7 +239,28 @@ export default function Dashboard() {
   const purchasedImages = (purchased.length ? purchased : logos.length ? [0] : [])
     .map((i) => logos[i])
     .filter((x): x is string => Boolean(x))
-  const heroImage = purchasedImages[0] ?? null
+  // The brand view shows the active logo (the one clicked / just bought),
+  // falling back to the first purchased one.
+  const activeImage = activeIndex !== null ? logos[activeIndex] : undefined
+  const heroImage = activeImage ?? purchasedImages[0] ?? null
+
+  // Switch the brand view to a purchased logo and remember it across reloads.
+  function selectLogo(i: number) {
+    setActiveIndex(i)
+    try { localStorage.setItem('logoai:active', String(i)) } catch {}
+    setView('brand')
+  }
+
+  // Record a freshly-bought logo as purchased + active (called by the modal).
+  function markPurchased(i: number) {
+    setPurchased((prev) => {
+      const next = prev.includes(i) ? prev : [...prev, i]
+      try { localStorage.setItem('logoai:purchased', JSON.stringify(next)) } catch {}
+      return next
+    })
+    setActiveIndex(i)
+    try { localStorage.setItem('logoai:active', String(i)) } catch {}
+  }
 
   // Build the on-dark (white) and mono (black) previews once the hero loads, so
   // the Full colour / On dark / Mono toggle actually recolours the real logo
@@ -419,7 +457,8 @@ export default function Dashboard() {
                       brand={brand}
                       isPurchased={purchased.includes(i)}
                       price={PRICE}
-                      onBuy={() => setView('brand')}
+                      onBuy={() => setBuyIndex(i)}
+                      onSelect={() => selectLogo(i)}
                     />
                   ))
                 : ALL_CONCEPTS.map((v, i) => (
@@ -498,6 +537,24 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* Checkout for buying another (un-purchased) logo from the grid. On
+          success the logo becomes purchased + active and the brand view reveals
+          it in place (no page reload). */}
+      <NCheckoutModal
+        open={buyIndex !== null}
+        index={buyIndex ?? 0}
+        price={PRICE}
+        preview={
+          buyIndex !== null && logos[buyIndex] ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logos[buyIndex]} alt={`${brand} logo`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', background: '#FFFFFF' }} />
+          ) : null
+        }
+        onClose={() => setBuyIndex(null)}
+        onPaid={() => { if (buyIndex !== null) markPurchased(buyIndex) }}
+        onViewDashboard={() => { setBuyIndex(null); setView('brand') }}
+      />
     </div>
   )
 }
@@ -514,13 +571,13 @@ function triggerDownload(href: string, filename: string) {
 
 // A real generated logo tile for the "Other logos" grid. Purchased ones show
 // clean with a PURCHASED badge; the rest stay watermarked with a buy hint.
-function RealTile({ src, brand, isPurchased, price, onBuy }: { src: string; brand: string; isPurchased: boolean; price: number; onBuy: () => void }) {
+function RealTile({ src, brand, isPurchased, price, onBuy, onSelect }: { src: string; brand: string; isPurchased: boolean; price: number; onBuy: () => void; onSelect: () => void }) {
   return (
     <button
       type="button"
-      onClick={isPurchased ? undefined : onBuy}
+      onClick={isPurchased ? onSelect : onBuy}
       className="group relative overflow-hidden"
-      style={{ aspectRatio: '1 / 1', borderRadius: 12, border: '1px solid var(--m-border)', background: '#FFFFFF', padding: 0, cursor: isPurchased ? 'default' : 'pointer', textAlign: 'left' }}
+      style={{ aspectRatio: '1 / 1', borderRadius: 12, border: '1px solid var(--m-border)', background: '#FFFFFF', padding: 0, cursor: 'pointer', textAlign: 'left' }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={`${brand} logo`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }} />

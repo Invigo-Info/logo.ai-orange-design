@@ -21,6 +21,10 @@ type Props = {
   onPaid: () => void
   /** Where to send the user after they hit the success-screen CTA. */
   dashboardHref?: string
+  /** When set, the success-screen CTA calls this instead of navigating to
+   *  dashboardHref — used when checkout happens *inside* the dashboard so it
+   *  reveals the bought logo in place rather than reloading the page. */
+  onViewDashboard?: () => void
 }
 
 /* ---------- icons ---------- */
@@ -101,7 +105,7 @@ function CardBrand({ label, bg, color = '#FFFFFF', w = 38 }: { label: string; bg
 
 /* ---------- modal ---------- */
 
-export default function NCheckoutModal({ open, index, price, preview, onClose, onPaid, dashboardHref = '/launch/dashboard' }: Props) {
+export default function NCheckoutModal({ open, index, price, preview, onClose, onPaid, dashboardHref = '/launch/dashboard', onViewDashboard }: Props) {
   const router = useRouter()
   const [method, setMethod] = useState<PaymentMethod>('card')
   const [paying, setPaying] = useState(false)
@@ -291,7 +295,8 @@ export default function NCheckoutModal({ open, index, price, preview, onClose, o
             <button
               type="button"
               onClick={() => {
-                router.push(dashboardHref)
+                if (onViewDashboard) onViewDashboard()
+                else router.push(dashboardHref)
               }}
               className="m-cta-btn w-full mt-7 inline-flex items-center justify-center gap-2"
               style={{
