@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
-import { buildAsset, monoPng, blobToDataUrl } from './assets'
+import { buildAsset, colorVariantFiles, monoPng, blobToDataUrl } from './assets'
 import { idbGet } from '../idb'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
@@ -14,6 +14,14 @@ import { PALETTES, type Palette } from '../start/data/palettes'
 
 const PRICE = 49
 const PURCHASED = 1 // the variant the user bought
+
+// Colour-variation download tiles → the recolour mode each one delivers. These
+// produce BOTH a PNG and an SVG (zipped), matching their "PNG + SVG" label.
+const COLOR_VARIANTS: Record<string, 'color' | 'black' | 'white'> = {
+  'var-color': 'color',
+  'var-black': 'black',
+  'var-white': 'white',
+}
 const FALLBACK = { brandName: 'Velvet Roast', tagline: 'Roasted fresh, every morning', paletteIndex: 0 }
 
 // All concepts the user generated, newest first — one combined grid.
@@ -111,18 +119,34 @@ export default function Dashboard() {
     const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
     setDownloading(what)
     try {
+      const colorMode = COLOR_VARIANTS[what]
       if (what === 'all') {
         // The most useful deliverables, zipped. (PDF/EPS stay as individual
         // downloads to keep the zip fast.)
-        const keys = ['png-transparent', 'png-white', 'svg', 'var-color', 'var-black', 'var-white', 'favicon', 'social', 'palette']
+        const keys = ['png-transparent', 'png-white', 'svg', 'favicon', 'social', 'palette']
         const zip = new JSZip()
         for (const k of keys) {
           const { filename, blob } = await buildAsset(k, src, brand, paletteColors)
           zip.file(filename, blob)
         }
+        // Each colour variation contributes BOTH its PNG and SVG to the pack.
+        for (const mode of ['color', 'black', 'white'] as const) {
+          const { files } = await colorVariantFiles(mode, src, brand)
+          for (const f of files) zip.file(f.filename, f.blob)
+        }
         const blob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(blob)
         triggerDownload(url, `${safe}-logo-pack.zip`)
+        setTimeout(() => URL.revokeObjectURL(url), 3000)
+      } else if (colorMode) {
+        // Colour-variation tiles are labelled "PNG + SVG" — deliver both in a
+        // small zip rather than a single file.
+        const { tag, files } = await colorVariantFiles(colorMode, src, brand)
+        const zip = new JSZip()
+        for (const f of files) zip.file(f.filename, f.blob)
+        const blob = await zip.generateAsync({ type: 'blob' })
+        const url = URL.createObjectURL(blob)
+        triggerDownload(url, `${safe}-${tag}.zip`)
         setTimeout(() => URL.revokeObjectURL(url), 3000)
       } else {
         const { filename, blob } = await buildAsset(what, src, brand, paletteColors)

@@ -112,9 +112,10 @@ export async function squarePng(src: string, size: number, bg: string | null): P
   return canvasToBlob(canvas)
 }
 
-// Wrap the transparent PNG in a valid SVG container (embedded raster).
-export async function svgWrap(src: string): Promise<Blob> {
-  const transparent = await transparentPng(src)
+// Wrap an already-transparent PNG blob in a valid SVG container (embedded
+// raster). Shared by svgWrap and the colour-variation exports so the SVG
+// carries the SAME colours as its paired PNG (full colour, black, or white).
+async function svgFromTransparent(transparent: Blob): Promise<Blob> {
   const dataUrl = await blobToDataUrl(transparent)
   const img = await loadImage(dataUrl)
   const w = img.naturalWidth || 1024
@@ -124,6 +125,33 @@ export async function svgWrap(src: string): Promise<Blob> {
   <image width="${w}" height="${h}" xlink:href="${dataUrl}"/>
 </svg>`
   return new Blob([svg], { type: 'image/svg+xml' })
+}
+
+// Wrap the transparent (full-colour) PNG in a valid SVG container.
+export async function svgWrap(src: string): Promise<Blob> {
+  return svgFromTransparent(await transparentPng(src))
+}
+
+// The two deliverables for a "Color variation" tile: a transparent PNG and a
+// matching SVG, both in the requested colour. 'color' keeps the original
+// colours; 'black'/'white' recolour every shape. Returned as a list so the
+// caller can zip them (the tile is labelled "PNG + SVG").
+export async function colorVariantFiles(
+  mode: 'color' | 'black' | 'white',
+  src: string,
+  brand: string,
+): Promise<{ tag: string; files: { filename: string; blob: Blob }[] }> {
+  const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
+  const tag = mode === 'color' ? 'full-color' : mode === 'black' ? 'black' : 'white'
+  const png = mode === 'color' ? await transparentPng(src) : await monoPng(src, mode)
+  const svg = await svgFromTransparent(png)
+  return {
+    tag,
+    files: [
+      { filename: `${safe}-${tag}.png`, blob: png },
+      { filename: `${safe}-${tag}.svg`, blob: svg },
+    ],
+  }
 }
 
 // Plain-text palette export (HEX + RGB).
