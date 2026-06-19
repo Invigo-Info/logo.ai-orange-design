@@ -12,7 +12,11 @@ export interface PaletteColor {
   desc?: string
 }
 
-const WHITE_CUTOFF = 238 // pixels brighter than this on all channels = background
+// Soft band for anti-aliased white removal: pixels whose darkest channel is
+// >= WHITE_HI are fully dropped; between WHITE_LO and WHITE_HI they fade out
+// (partial alpha) so edges stay smooth instead of jagged/stair-stepped.
+const WHITE_LO = 238
+const WHITE_HI = 252
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -54,8 +58,13 @@ export async function transparentPng(src: string): Promise<Blob> {
   const { ctx, canvas, data } = await getPixels(src)
   const px = data.data
   for (let i = 0; i < px.length; i += 4) {
-    if (px[i] >= WHITE_CUTOFF && px[i + 1] >= WHITE_CUTOFF && px[i + 2] >= WHITE_CUTOFF) {
+    const m = Math.min(px[i], px[i + 1], px[i + 2]) // darkest channel
+    if (m >= WHITE_HI) {
       px[i + 3] = 0
+    } else if (m > WHITE_LO) {
+      // Feather the near-white edge: fade alpha across the soft band.
+      const fade = 1 - (m - WHITE_LO) / (WHITE_HI - WHITE_LO)
+      px[i + 3] = Math.round(px[i + 3] * fade)
     }
   }
   ctx.putImageData(data, 0, 0)
@@ -113,10 +122,16 @@ export async function monoPng(src: string, color: 'black' | 'white'): Promise<Bl
   const px = data.data
   const v = color === 'black' ? 0 : 255
   for (let i = 0; i < px.length; i += 4) {
-    const isBg = px[i] >= WHITE_CUTOFF && px[i + 1] >= WHITE_CUTOFF && px[i + 2] >= WHITE_CUTOFF
-    if (isBg) {
+    const m = Math.min(px[i], px[i + 1], px[i + 2]) // darkest channel
+    if (m >= WHITE_HI) {
       px[i + 3] = 0
     } else {
+      // Recolour every shape pixel; feather near-white edges so the silhouette
+      // keeps smooth anti-aliased edges instead of a hard, jagged outline.
+      if (m > WHITE_LO) {
+        const fade = 1 - (m - WHITE_LO) / (WHITE_HI - WHITE_LO)
+        px[i + 3] = Math.round(px[i + 3] * fade)
+      }
       px[i] = v
       px[i + 1] = v
       px[i + 2] = v
@@ -126,22 +141,104 @@ export async function monoPng(src: string, color: 'black' | 'white'): Promise<Bl
   return canvasToBlob(canvas)
 }
 
-// Centre the (background-removed) logo on a square canvas. bg=null => transparent.
-export async function squarePng(src: string, size: number, bg: string | null): Promise<Blob> {
-  const transparent = await transparentPng(src)
-  const img = await loadImage(URL.createObjectURL(transparent))
+// The content rectangle of a transparent image. When `markOnly` is set and the
+// logo is a vertical stack (a symbol above the brand-name text, separated by a
+// gap of empty rows), it returns just the TOP symbol band — so a favicon shows
+// the recognisable mark instead of an unreadable squished wordmark. Falls back
+// to the full content box when there's no clear split (icon-only or side-by-side
+// layouts).
+function contentRegion(
+  data: ImageData,
+  markOnly: boolean,
+): { x: number; y: number; w: number; h: number } {
+  const { width: W, height: H, data: px } = data
+  const A = 24 // alpha above this = real content (ignore faint anti-alias dust)
+  const rowHas = new Array<boolean>(H).fill(false)
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (px[(y * W + x) * 4 + 3] > A) {
+        rowHas[y] = true
+        break
+      }
+    }
+  }
+  let top = 0
+  while (top < H && !rowHas[top]) top++
+  let bot = H - 1
+  while (bot >= 0 && !rowHas[bot]) bot--
+  if (bot < top) return { x: 0, y: 0, w: W, h: H } // empty → whole frame
+
+  let yTop = top
+  let yBot = bot
+  if (markOnly) {
+    // First contiguous content band from the top.
+    let bandEnd = top
+    while (bandEnd <= bot && rowHas[bandEnd]) bandEnd++
+    // Size of the gap that follows, and whether more content (text) sits below.
+    let gapEnd = bandEnd
+    while (gapEnd <= bot && !rowHas[gapEnd]) gapEnd++
+    const gap = gapEnd - bandEnd
+    const bandH = bandEnd - top
+    const GAP_MIN = Math.max(4, Math.round(H * 0.02))
+    // Only split if there's a real gap, real content below it, and the top band
+    // is a meaningful chunk (not a stray speck).
+    if (gapEnd <= bot && gap >= GAP_MIN && bandH >= H * 0.06) {
+      yTop = top
+      yBot = bandEnd - 1
+    }
+  }
+
+  // Horizontal bounds for the chosen vertical range.
+  let minX = W
+  let maxX = -1
+  for (let y = yTop; y <= yBot; y++) {
+    for (let x = 0; x < W; x++) {
+      if (px[(y * W + x) * 4 + 3] > A) {
+        if (x < minX) minX = x
+        if (x > maxX) maxX = x
+      }
+    }
+  }
+  if (maxX < 0) return { x: 0, y: top, w: W, h: bot - top + 1 }
+  return { x: minX, y: yTop, w: maxX - minX + 1, h: yBot - yTop + 1 }
+}
+
+// Centre the (background-removed) logo on a square canvas, trimmed to its
+// content so it fills the frame. bg=null => transparent. `markOnly` isolates the
+// symbol for favicons. Uses the AI cutout + high-quality scaling for crisp,
+// smooth edges.
+export async function squarePng(
+  src: string,
+  size: number,
+  bg: string | null,
+  markOnly = false,
+): Promise<Blob> {
+  const transparent = await transparentPngBest(src)
+  const dataUrl = await blobToDataUrl(transparent)
+  const img = await loadImage(dataUrl)
+  const W = img.naturalWidth || 1024
+  const H = img.naturalHeight || 1024
+
+  // Read pixels once to find the region to crop to.
+  const probe = makeCanvas(W, H)
+  const pctx = probe.getContext('2d')!
+  pctx.drawImage(img, 0, 0)
+  const region = contentRegion(pctx.getImageData(0, 0, W, H), markOnly)
+
   const canvas = makeCanvas(size, size)
   const ctx = canvas.getContext('2d')!
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
   if (bg) {
     ctx.fillStyle = bg
     ctx.fillRect(0, 0, size, size)
   }
-  const pad = size * 0.12
+  const pad = size * (markOnly ? 0.08 : 0.1)
   const max = size - pad * 2
-  const scale = Math.min(max / img.width, max / img.height)
-  const dw = img.width * scale
-  const dh = img.height * scale
-  ctx.drawImage(img, (size - dw) / 2, (size - dh) / 2, dw, dh)
+  const scale = Math.min(max / region.w, max / region.h)
+  const dw = region.w * scale
+  const dh = region.h * scale
+  ctx.drawImage(img, region.x, region.y, region.w, region.h, (size - dw) / 2, (size - dh) / 2, dw, dh)
   return canvasToBlob(canvas)
 }
 
@@ -178,8 +275,9 @@ export async function faviconFiles(
   brand: string,
 ): Promise<{ files: { filename: string; blob: Blob }[] }> {
   const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
-  const png512 = await squarePng(src, 512, null)
-  const png256 = await squarePng(src, 256, null)
+  // markOnly=true → favicon shows the symbol, not the unreadable wordmark.
+  const png512 = await squarePng(src, 512, null, true)
+  const png256 = await squarePng(src, 256, null, true)
   const ico = await pngToIco(png256)
   return {
     files: [
@@ -407,7 +505,7 @@ export async function buildAsset(
     case 'var-white':
       return { filename: `${safe}-white.png`, blob: await monoPng(src, 'white') }
     case 'favicon':
-      return { filename: `${safe}-favicon-512.png`, blob: await squarePng(src, 512, null) }
+      return { filename: `${safe}-favicon-512.png`, blob: await squarePng(src, 512, null, true) }
     case 'social':
       return { filename: `${safe}-social-1024.png`, blob: await squarePng(src, 1024, '#FFFFFF') }
     case 'palette':
