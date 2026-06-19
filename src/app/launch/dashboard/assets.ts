@@ -47,7 +47,9 @@ async function getPixels(src: string) {
   return { ctx, canvas, data: ctx.getImageData(0, 0, w, h), w, h }
 }
 
-// White/near-white background -> transparent.
+// White/near-white background -> transparent. Fast, exact, no dependencies —
+// but it also deletes any white *inside* the logo (punching holes) and only
+// works on white backgrounds. Used as the dependable fallback for the AI path.
 export async function transparentPng(src: string): Promise<Blob> {
   const { ctx, canvas, data } = await getPixels(src)
   const px = data.data
@@ -58,6 +60,37 @@ export async function transparentPng(src: string): Promise<Blob> {
   }
   ctx.putImageData(data, 0, 0)
   return canvasToBlob(canvas)
+}
+
+// ── Option A: AI background removal ──────────────────────────────────────────
+// @imgly/background-removal runs a real segmentation model (U²-Net) in the
+// browser. Unlike the threshold method it keeps white *inside* the logo and
+// copes with non-white backgrounds. The model is several MB, so it is lazily
+// imported only when first needed and cached. Returns null on ANY failure so
+// callers transparently fall back to the threshold method.
+async function removeBgAI(src: string): Promise<Blob | null> {
+  try {
+    const { removeBackground } = await import('@imgly/background-removal')
+    const out = await removeBackground(src)
+    // Guard against an empty/odd result.
+    return out && out.size > 0 ? out : null
+  } catch {
+    return null
+  }
+}
+
+// One-shot cache: a single "Download all" triggers several conversions off the
+// same source logo; without this each would re-run the multi-second AI model.
+let bgCache: { src: string; blob: Blob } | null = null
+
+// Best-effort transparent PNG: AI segmentation first, fast threshold fallback.
+// This is what the user-facing "PNG — transparent" and "Full color" exports use.
+export async function transparentPngBest(src: string): Promise<Blob> {
+  if (bgCache && bgCache.src === src) return bgCache.blob
+  const ai = await removeBgAI(src)
+  const blob = ai ?? (await transparentPng(src))
+  bgCache = { src, blob }
+  return blob
 }
 
 // Flatten onto a solid white background.
@@ -171,9 +204,46 @@ async function svgFromTransparent(transparent: Blob): Promise<Blob> {
   return new Blob([svg], { type: 'image/svg+xml' })
 }
 
-// Wrap the transparent (full-colour) PNG in a valid SVG container.
+// ── Option B: true vectorization ─────────────────────────────────────────────
+// imagetracerjs converts a raster into REAL <path> vector art (not an embedded
+// image), so the SVG is infinitely scalable and editable in design tools. We
+// trace at a reduced resolution for speed/size — the vector output scales to
+// any size regardless. `colorMode: 'mono'` traces a single-colour silhouette
+// (for the black/white variants); 'color' keeps the logo's colours. Returns
+// null on any failure so callers fall back to the embedded-raster SVG.
+async function tracedSvg(pngBlob: Blob, colorMode: 'color' | 'mono'): Promise<Blob | null> {
+  try {
+    const ImageTracer = (await import('imagetracerjs')).default
+    const dataUrl = await blobToDataUrl(pngBlob)
+    const img = await loadImage(dataUrl)
+    const TRACE_MAX = 1000
+    const ow = img.naturalWidth || 1024
+    const oh = img.naturalHeight || 1024
+    const scale = Math.min(1, TRACE_MAX / Math.max(ow, oh))
+    const w = Math.max(1, Math.round(ow * scale))
+    const h = Math.max(1, Math.round(oh * scale))
+    const canvas = makeCanvas(w, h)
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(img, 0, 0, w, h)
+    const imgd = ctx.getImageData(0, 0, w, h)
+    const options: Record<string, number | boolean> =
+      colorMode === 'mono'
+        ? { numberofcolors: 2, colorquantcycles: 1, pathomit: 8, ltres: 1, qtres: 1, rightangleenhance: true }
+        : { numberofcolors: 16, colorquantcycles: 3, pathomit: 4, ltres: 1, qtres: 1 }
+    const svg = ImageTracer.imagedataToSVG(imgd, options)
+    if (!svg || !svg.includes('<path')) return null
+    return new Blob([svg], { type: 'image/svg+xml' })
+  } catch {
+    return null
+  }
+}
+
+// Wrap the transparent (full-colour) PNG as SVG — real vector paths if tracing
+// succeeds, otherwise an embedded-raster SVG.
 export async function svgWrap(src: string): Promise<Blob> {
-  return svgFromTransparent(await transparentPng(src))
+  const transparent = await transparentPngBest(src)
+  const traced = await tracedSvg(transparent, 'color')
+  return traced ?? (await svgFromTransparent(transparent))
 }
 
 // The two deliverables for a "Color variation" tile: a transparent PNG and a
@@ -187,8 +257,11 @@ export async function colorVariantFiles(
 ): Promise<{ tag: string; files: { filename: string; blob: Blob }[] }> {
   const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
   const tag = mode === 'color' ? 'full-color' : mode === 'black' ? 'black' : 'white'
-  const png = mode === 'color' ? await transparentPng(src) : await monoPng(src, mode)
-  const svg = await svgFromTransparent(png)
+  // Full colour uses AI background removal; the mono variants recolour every
+  // shape (no AI needed). The SVG is real vector paths when tracing succeeds.
+  const png = mode === 'color' ? await transparentPngBest(src) : await monoPng(src, mode)
+  const traced = await tracedSvg(png, mode === 'color' ? 'color' : 'mono')
+  const svg = traced ?? (await svgFromTransparent(png))
   return {
     tag,
     files: [
@@ -318,7 +391,7 @@ export async function buildAsset(
   const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
   switch (fmt) {
     case 'png-transparent':
-      return { filename: `${safe}-transparent.png`, blob: await transparentPng(src) }
+      return { filename: `${safe}-transparent.png`, blob: await transparentPngBest(src) }
     case 'png-white':
       return { filename: `${safe}-white-bg.png`, blob: await whiteBgPng(src) }
     case 'svg':
