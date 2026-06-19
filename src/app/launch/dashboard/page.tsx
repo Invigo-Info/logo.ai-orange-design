@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import JSZip from 'jszip'
 import LogoWordmark from '@/components/home/LogoWordmark'
-import { buildAsset, colorVariantFiles, monoPng, blobToDataUrl } from './assets'
+import { buildAsset, colorVariantFiles, faviconFiles, monoPng, blobToDataUrl } from './assets'
 import { idbGet } from '../idb'
 // Reuse the EXACT logo art + watermark from the generation step so the
 // dashboard shows identical logos. PROGRAMMER: for production, extract
@@ -123,7 +123,7 @@ export default function Dashboard() {
       if (what === 'all') {
         // The most useful deliverables, zipped. (PDF/EPS stay as individual
         // downloads to keep the zip fast.)
-        const keys = ['png-transparent', 'png-white', 'svg', 'favicon', 'social', 'palette']
+        const keys = ['png-transparent', 'png-white', 'svg', 'social', 'palette']
         const zip = new JSZip()
         for (const k of keys) {
           const { filename, blob } = await buildAsset(k, src, brand, paletteColors)
@@ -134,6 +134,9 @@ export default function Dashboard() {
           const { files } = await colorVariantFiles(mode, src, brand)
           for (const f of files) zip.file(f.filename, f.blob)
         }
+        // Favicon contributes the real .ico + 512px PNG.
+        const fav = await faviconFiles(src, brand)
+        for (const f of fav.files) zip.file(f.filename, f.blob)
         const blob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(blob)
         triggerDownload(url, `${safe}-logo-pack.zip`)
@@ -147,6 +150,15 @@ export default function Dashboard() {
         const blob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(blob)
         triggerDownload(url, `${safe}-${tag}.zip`)
+        setTimeout(() => URL.revokeObjectURL(url), 3000)
+      } else if (what === 'favicon') {
+        // Labelled ".ico + 512px PNG" — deliver the real .ico and the PNG zipped.
+        const { files } = await faviconFiles(src, brand)
+        const zip = new JSZip()
+        for (const f of files) zip.file(f.filename, f.blob)
+        const blob = await zip.generateAsync({ type: 'blob' })
+        const url = URL.createObjectURL(blob)
+        triggerDownload(url, `${safe}-favicon.zip`)
         setTimeout(() => URL.revokeObjectURL(url), 3000)
       } else {
         const { filename, blob } = await buildAsset(what, src, brand, paletteColors)

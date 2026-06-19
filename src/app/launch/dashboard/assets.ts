@@ -112,6 +112,50 @@ export async function squarePng(src: string, size: number, bg: string | null): P
   return canvasToBlob(canvas)
 }
 
+// Wrap a square PNG blob into a real .ico file. ICO can embed PNG data
+// directly (PNG-in-ICO), which every modern browser and Windows reads, so we
+// store one 256×256 PNG entry. This is what browsers actually load as a
+// favicon — the bare PNG the tile used to hand back was not a usable icon file.
+async function pngToIco(png: Blob): Promise<Blob> {
+  const data = new Uint8Array(await png.arrayBuffer())
+  const header = new Uint8Array(22) // 6-byte ICONDIR + one 16-byte ICONDIRENTRY
+  const dv = new DataView(header.buffer)
+  dv.setUint16(0, 0, true) // reserved
+  dv.setUint16(2, 1, true) // type: 1 = icon
+  dv.setUint16(4, 1, true) // image count
+  header[6] = 0 // width  (0 means 256)
+  header[7] = 0 // height (0 means 256)
+  header[8] = 0 // colour-palette count
+  header[9] = 0 // reserved
+  dv.setUint16(10, 1, true) // colour planes
+  dv.setUint16(12, 32, true) // bits per pixel
+  dv.setUint32(14, data.length, true) // size of PNG data
+  dv.setUint32(18, 22, true) // offset to PNG data
+  const out = new Uint8Array(22 + data.length)
+  out.set(header, 0)
+  out.set(data, 22)
+  return new Blob([out], { type: 'image/x-icon' })
+}
+
+// The favicon deliverables: a real .ico (256×256 PNG-in-ICO) plus a 512px PNG.
+// Matches the tile's ".ico + 512px PNG" label. Both have a transparent
+// background so the icon sits cleanly on any browser-tab colour.
+export async function faviconFiles(
+  src: string,
+  brand: string,
+): Promise<{ files: { filename: string; blob: Blob }[] }> {
+  const safe = brand.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'logo'
+  const png512 = await squarePng(src, 512, null)
+  const png256 = await squarePng(src, 256, null)
+  const ico = await pngToIco(png256)
+  return {
+    files: [
+      { filename: `${safe}-favicon.ico`, blob: ico },
+      { filename: `${safe}-favicon-512.png`, blob: png512 },
+    ],
+  }
+}
+
 // Wrap an already-transparent PNG blob in a valid SVG container (embedded
 // raster). Shared by svgWrap and the colour-variation exports so the SVG
 // carries the SAME colours as its paired PNG (full colour, black, or white).
