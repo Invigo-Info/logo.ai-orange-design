@@ -295,9 +295,11 @@ async function svgFromTransparent(transparent: Blob): Promise<Blob> {
   const img = await loadImage(dataUrl)
   const w = img.naturalWidth || 1024
   const h = img.naturalHeight || 1024
+  // Provide BOTH href (SVG2 / modern viewers) and xlink:href (older viewers) so
+  // the embedded image renders everywhere, not just in browsers.
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-  <image width="${w}" height="${h}" xlink:href="${dataUrl}"/>
+  <image width="${w}" height="${h}" href="${dataUrl}" xlink:href="${dataUrl}"/>
 </svg>`
   return new Blob([svg], { type: 'image/svg+xml' })
 }
@@ -328,8 +330,18 @@ async function tracedSvg(pngBlob: Blob, colorMode: 'color' | 'mono'): Promise<Bl
       colorMode === 'mono'
         ? { numberofcolors: 2, colorquantcycles: 1, pathomit: 8, ltres: 1, qtres: 1, rightangleenhance: true }
         : { numberofcolors: 16, colorquantcycles: 3, pathomit: 4, ltres: 1, qtres: 1 }
-    const svg = ImageTracer.imagedataToSVG(imgd, options)
+    let svg = ImageTracer.imagedataToSVG(imgd, options)
     if (!svg || !svg.includes('<path')) return null
+    // imagetracerjs emits a bare <svg width/height …> with no XML prolog and no
+    // viewBox. Browsers render that, but strict viewers (Windows Photos,
+    // Illustrator, Inkscape, some thumbnailers) show a blank. Add the prolog and
+    // a viewBox so the file renders everywhere.
+    if (!/viewBox=/.test(svg)) {
+      svg = svg.replace(/<svg /, `<svg viewBox="0 0 ${w} ${h}" `)
+    }
+    if (!/^\s*<\?xml/.test(svg)) {
+      svg = `<?xml version="1.0" encoding="UTF-8"?>\n` + svg
+    }
     return new Blob([svg], { type: 'image/svg+xml' })
   } catch {
     return null
