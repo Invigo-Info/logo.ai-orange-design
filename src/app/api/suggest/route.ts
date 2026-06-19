@@ -112,10 +112,16 @@ function contextLines(b: Body): string {
 function instructionFor(kind: string, b: Body): string | null {
   const ctx = contextLines(b)
   switch (kind) {
-    case 'industry':
-      return `You autocomplete business types for a logo onboarding. The user typed: "${b.query ?? ''}".
-Return 8 specific, real business-type labels that complete or closely relate to what they typed (e.g. "coff" -> "Coffee Shop", "Coffee Roastery", "Coffee Cart", "Espresso Bar"). Title Case, 1-4 words each, no duplicates, no descriptions.
+    case 'industry': {
+      const typed = (b.query ?? '').trim()
+      const named = (b.brand ?? '').trim()
+      // When the user has typed, autocomplete that. When they haven't, infer
+      // likely business types from the BRAND NAME so suggestions appear up
+      // front (e.g. "Motor Vehicals" -> "Car Dealership", "Auto Repair Shop").
+      return `You autocomplete the business TYPE / industry for a logo onboarding.${named ? ` The business is named "${named}".` : ''}${typed ? ` The user has typed: "${typed}".` : ''}
+Return 8 specific, real business-type labels ${typed ? 'that complete or closely relate to what they typed' : 'that best fit a business with this name'} (Title Case, 1-4 words each, no duplicates, no descriptions). Examples: "coff" -> "Coffee Shop", "Coffee Roastery", "Espresso Bar"; a business named "Motor Vehicals" -> "Car Dealership", "Auto Repair Shop", "Motorcycle Dealer", "Vehicle Rental", "Auto Parts Store".
 Respond as JSON: {"suggestions": ["...", ...]}`
+    }
 
     case 'description':
       return `Context:\n${ctx}\n

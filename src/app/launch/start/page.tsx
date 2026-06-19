@@ -866,11 +866,13 @@ function IndustryCombobox({
   setIndustry,
   industryLabel,
   setIndustryLabel,
+  brand,
 }: {
   industry: string | null
   setIndustry: (k: string) => void
   industryLabel: string
   setIndustryLabel: (v: string) => void
+  brand: string
 }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -878,6 +880,9 @@ function IndustryCombobox({
   // current query; `status` drives what the dropdown shows.
   const [aiMatches, setAiMatches] = useState<string[]>([])
   const [status, setStatus] = useState<IndustryStatus>('idle')
+  // Suggestions inferred from the BUSINESS NAME, shown up front (empty query)
+  // so the user sees relevant business types before typing anything.
+  const [brandMatches, setBrandMatches] = useState<string[]>([])
   const aiReqRef = useRef(0)
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -900,7 +905,7 @@ function IndustryCombobox({
       setStatus('idle')
       return
     }
-    const cacheKey = q.toLowerCase()
+    const cacheKey = `${brand.trim().toLowerCase()}|${q.toLowerCase()}`
     const cached = industryAiCache.get(cacheKey)
     if (cached) {
       setAiMatches(cached)
@@ -914,7 +919,7 @@ function IndustryCombobox({
       fetch('/api/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'industry', brand: '', query: q }),
+        body: JSON.stringify({ kind: 'industry', brand: brand.trim(), query: q }),
         signal: controller.signal,
       })
         .then((r) => r.json())
@@ -944,7 +949,50 @@ function IndustryCombobox({
       clearTimeout(timer)
       controller.abort()
     }
-  }, [query, industry])
+  }, [query, industry, brand])
+
+  // Brand-based suggestions: infer likely business types from the business
+  // NAME so the dropdown shows relevant options BEFORE the user types. Runs
+  // once per brand (cached); cleared once an industry is committed.
+  useEffect(() => {
+    const name = brand.trim()
+    if (!name || industry) {
+      setBrandMatches([])
+      return
+    }
+    const key = `name|${name.toLowerCase()}`
+    const cached = industryAiCache.get(key)
+    if (cached) {
+      setBrandMatches(cached)
+      if (cached.length > 0) setOpen(true)
+      return
+    }
+    const controller = new AbortController()
+    const timer = setTimeout(() => {
+      fetch('/api/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'industry', brand: name, query: '' }),
+        signal: controller.signal,
+      })
+        .then((r) => r.json())
+        .then((data: { suggestions?: unknown[] }) => {
+          const list = Array.isArray(data.suggestions)
+            ? (data.suggestions
+                .filter((x) => typeof x === 'string' && x.trim().length > 0)
+                .map((x) => (x as string).trim()) as string[])
+            : []
+          industryAiCache.set(key, list)
+          setBrandMatches(list)
+          if (list.length > 0) setOpen(true)
+        })
+        .catch(() => setBrandMatches([]))
+    }, 200)
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [brand, industry])
 
   // Outside-click / Escape close the dropdown.
   useEffect(() => {
@@ -1089,7 +1137,7 @@ function IndustryCombobox({
             setOpen(v.trim().length > 0)
           }}
           onFocus={() => {
-            if (query.trim().length > 0) setOpen(true)
+            if (query.trim().length > 0 || brandMatches.length > 0) setOpen(true)
           }}
           onKeyDown={(e) => {
             // Enter commits whatever is typed (match or free-text) so the
@@ -1146,7 +1194,7 @@ function IndustryCombobox({
         )}
       </div>
 
-      {open && query.trim().length > 0 && (
+      {open && (query.trim().length > 0 || brandMatches.length > 0) && (
         <div
           style={{
             position: 'absolute',
@@ -1161,8 +1209,33 @@ function IndustryCombobox({
             padding: 6,
           }}
         >
+          {/* Empty query → suggestions inferred from the business NAME. */}
+          {query.trim().length === 0 && brandMatches.length > 0 && (
+            <>
+              <div
+                className="m-sans"
+                style={{ padding: '8px 12px 6px', fontSize: 11, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--m-text-soft)' }}
+              >
+                Based on “{brand.trim()}”
+              </div>
+              {brandMatches.map((label) => (
+                <button
+                  key={`brand-${label}`}
+                  type="button"
+                  onClick={() => commit(slugify(label) || 'custom', label.toLowerCase())}
+                  className="m-sans w-full text-left"
+                  style={rowStyle}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--m-surface-alt)' }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+                >
+                  {label.toLowerCase()}
+                </button>
+              ))}
+            </>
+          )}
+
           {/* Searching… — shown while the AI is thinking. */}
-          {status === 'loading' && (
+          {query.trim().length > 0 && status === 'loading' && (
             <div
               className="m-sans"
               style={{
@@ -2390,6 +2463,7 @@ function FormSteps(p: FormProps) {
           }}
           industryLabel={p.industryLabel}
           setIndustryLabel={p.setIndustryLabel}
+          brand={p.brand}
         />
       )}
 
