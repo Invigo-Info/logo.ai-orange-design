@@ -46,8 +46,13 @@ const VARIANTS = [
   'Classic and timeless — understated and professional.',
 ]
 
+// Standard failure response — the results screen treats { image: null } as
+// "no real image" and falls back to its built-in SVG previews.
 const empty = () => NextResponse.json({ image: null })
 
+// Turns the onboarding brief into a single natural-language image prompt.
+// Deliberately uses only colour names + style + industry (no hex/description/
+// mood lists) so the model doesn't transcribe metadata into the artwork.
 function buildPrompt(b: Body): string {
   const brand = b.brandName || 'the brand'
   // Use colour NAMES only and weave everything into natural prose. Image
@@ -75,6 +80,9 @@ function buildPrompt(b: Body): string {
     .join(' ')
 }
 
+// Logo image endpoint: builds the prompt, calls Imagen/Gemini (with one retry
+// on 503/429), and returns { image: <data URL> }. Any failure or missing key
+// returns empty() so the client falls back to SVG previews.
 export async function POST(req: Request) {
   const key = process.env.GEMINI_API_KEY
   if (!key) return empty() // no key -> client falls back to SVG previews

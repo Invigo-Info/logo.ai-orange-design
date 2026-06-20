@@ -64,6 +64,8 @@ const DOWNLOADS: { group: string; items: { label: string; note: string; fmt: str
 
 type View = 'brand' | 'concepts'
 
+// The post-purchase dashboard: shows the bought logo, a download center for all
+// deliverables, the user's other generated concepts, and a review prompt.
 export default function Dashboard() {
   const [view, setView] = useState<View>('brand')
   const [showReview, setShowReview] = useState(false)
@@ -101,6 +103,7 @@ export default function Dashboard() {
     setRating(n)
     setReviewPhase('write')
   }
+  // Finish the review flow after the user writes (or skips) their feedback.
   function submitWritten() {
     setReviewPhase('done')
     // PROGRAMMER: POST { rating, text: reviewText }. For rating >= 4, this is a
@@ -108,6 +111,7 @@ export default function Dashboard() {
     // and/or feature it; for <= 3 keep it private and route to the feedback queue.
   }
 
+  // Close the profile menu and send the user back to the marketing home.
   function handleLogout() {
     // PROGRAMMER: clear the auth session (cookie / JWT) server-side, then send
     // the user to the marketing home. Replace the inline redirect with your
@@ -289,6 +293,7 @@ export default function Dashboard() {
     }
   }, [heroImage])
 
+  // Inline style for a sidebar nav button, highlighted when it's the active view.
   const navItem = (active: boolean): React.CSSProperties => ({
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
     padding: '10px 12px', borderRadius: 10, fontSize: 14, textAlign: 'left', width: '100%',
@@ -632,6 +637,8 @@ function RealTile({ src, brand, isPurchased, price, onBuy, onSelect }: { src: st
   )
 }
 
+// A placeholder concept tile (SVG art) for the "Other logos" grid when no real
+// generated logos exist — watermarked, with a buy hint on hover.
 function FreeTile({ variant, brand, tagline, palette }: { variant: number; brand: string; tagline: string; palette: Palette | null }) {
   return (
     <div className="group relative overflow-hidden" style={{ aspectRatio: '1 / 1', borderRadius: 12, border: '1px solid var(--m-border)', background: '#FFFFFF' }}>
@@ -684,6 +691,7 @@ const menuLink: React.CSSProperties = {
 
 const svgProps = { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
 
+// Gear icon for the Settings menu row.
 function IconSettings() {
   return (
     <svg {...svgProps}>
@@ -693,6 +701,7 @@ function IconSettings() {
   )
 }
 
+// Card icon for the Billing menu row.
 function IconBilling() {
   return (
     <svg {...svgProps}>
@@ -702,6 +711,7 @@ function IconBilling() {
   )
 }
 
+// Question-mark help icon for the Support menu row.
 function IconSupport() {
   return (
     <svg {...svgProps}>
@@ -712,6 +722,7 @@ function IconSupport() {
   )
 }
 
+// Exit-door icon for the Log out menu row.
 function IconLogout() {
   return (
     <svg {...svgProps}>
@@ -722,6 +733,7 @@ function IconLogout() {
   )
 }
 
+// Chevron icon for the profile button; rotates 180° when the menu is open.
 function IconChevron({ open }: { open: boolean }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease' }}>

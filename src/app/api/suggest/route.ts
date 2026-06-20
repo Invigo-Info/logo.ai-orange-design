@@ -96,6 +96,8 @@ interface Body {
 // static fallback list. Used for every error path so the UI never breaks.
 const empty = () => NextResponse.json({ suggestions: [], recommended: [] })
 
+// Builds the human-readable context block (business name, industry, niche,
+// etc.) that's prepended to most per-kind prompts so the model has the brief.
 function contextLines(b: Body): string {
   const lines: string[] = []
   if (b.brand) lines.push(`Business name: ${b.brand}`)
@@ -153,6 +155,10 @@ Respond as JSON: {"suggestions": [{"name":"Wordmark","pct":35,"desc":"...","ex":
   }
 }
 
+// Onboarding suggestion endpoint: validates the body, builds the per-kind
+// instruction, calls the AI provider (with one retry on empty/bad JSON), and
+// returns { suggestions, recommended }. Any failure returns empty() so the
+// client keeps its static fallback.
 export async function POST(req: Request) {
   // No provider key configured -> silent static fallback.
   if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) return empty()

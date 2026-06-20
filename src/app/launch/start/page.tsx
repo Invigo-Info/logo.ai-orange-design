@@ -54,6 +54,8 @@ const TAGLINE_CLICHES = [
   /\bjust do it\b/i,
   /\bthink different\b/i,
 ]
+// Type guard: true only for strings that are taglines free of the cliché
+// shapes above — used to drop bad AI taglines before they reach the user.
 const isCleanTagline = (x: unknown): x is string =>
   isString(x) && !TAGLINE_CLICHES.some((re) => re.test(x))
 
@@ -165,10 +167,14 @@ const stepEyebrow: CSSProperties = {
 
 type Phase = 'form' | 'brief' | 'auth' | 'generating' | 'results'
 
+// True when `v` looks like a valid email address (basic shape check) — gates
+// the auth-wall "Continue with email" button.
 function isValidEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
 }
 
+// Root onboarding component — owns all form/brief/auth/generating/results
+// phase state and the 7-step wizard, then renders the active phase's screen.
 export default function LogoOnboarding() {
   const [phase, setPhase] = useState<Phase>('form')
   const [step, setStep] = useState(1)
@@ -246,6 +252,8 @@ export default function LogoOnboarding() {
     let cancelled = false
     const controller = new AbortController()
 
+    // Generate a single logo variant via the API; returns its data-URL, or
+    // null on any failure (so a failed variant just drops out of the grid).
     async function genOne(variant: number): Promise<string | null> {
       try {
         const r = await fetch('/api/generate-logo', {
@@ -271,6 +279,8 @@ export default function LogoOnboarding() {
     ;(async () => {
       const out: (string | null)[] = []
       let next = 0
+      // One concurrency worker — pulls the next variant index and generates it
+      // until all GEN_COUNT logos are done (or generation is cancelled).
       async function worker() {
         while (next < GEN_COUNT && !cancelled) {
           const cur = next++
@@ -1019,6 +1029,8 @@ function IndustryCombobox({
   // mirror whatever they're typing.
   const inputValue = industry && !query ? industryLabel : query
 
+  // Commit an industry choice: store the key + label, close the dropdown,
+  // and mark committedRef so the deferred blur handler won't overwrite it.
   function commit(key: string, label: string) {
     committedRef.current = true
     setIndustry(key)
@@ -1076,6 +1088,8 @@ function IndustryCombobox({
     }
     commit(slugify(q) || 'custom', q)
   }
+  // Clear the committed industry and reset the input back to an empty,
+  // editable state, then refocus it.
   function clear() {
     committedRef.current = false
     setIndustry('' as unknown as string) // resets state; gating handles null/''
@@ -1564,12 +1578,16 @@ function ServicesCombobox({
 
   const atMax = selected.length >= max
 
+  // Add a suggested service to the selection (no-op when already at the max
+  // or already picked), then clear the query.
   function commit(service: string) {
     if (atMax) return
     if (selected.includes(service)) return
     onToggle(service)
     setQuery('')
   }
+  // Add the typed-in text as a custom service (on Enter / "+ Add"), unless
+  // it's blank, a duplicate, or the selection is already at the max.
   function commitCustom() {
     const trimmed = query.trim()
     if (!trimmed || atMax || selected.includes(trimmed)) return
@@ -1900,6 +1918,8 @@ function SkeletonGrid({
   )
 }
 
+// Row-based suggestion list (Steps 3 & 4). Renders `visibleCount` items with a
+// "Show N more" toggle; clicking a row calls onPick and highlights the match.
 function SuggestionRows({
   label,
   items,
@@ -2176,6 +2196,8 @@ export function LogoArtwork({
   }
 }
 
+// Renders the active form step (1-7) and wires up its live AI suggestions,
+// auto-preselection, and the "Let AI pick" resolver for the wizard inputs.
 function FormSteps(p: FormProps) {
   const { step } = p
   // Long lists collapse to 5 by default with a "Show more" link — 10/12
@@ -2938,6 +2960,8 @@ function FormSteps(p: FormProps) {
 /* Brand brief                                                         */
 /* ------------------------------------------------------------------ */
 
+// Summary card showing the user's collected answers (business, services,
+// tagline, impression, colours, logo type) with a "Generate" call to action.
 function BrandBrief({
   brand,
   description,
@@ -3078,6 +3102,8 @@ function BrandBrief({
 /* Generating                                                          */
 /* ------------------------------------------------------------------ */
 
+// Loading screen shown while logos generate — a spinner plus a rotating
+// phase line ("Creating logos for {brand}…").
 function Generating({ brand, line }: { brand: string; line: string }) {
   return (
     <div className="mx-auto flex flex-col items-center text-center" style={{ maxWidth: 480, paddingTop: 40 }}>
@@ -3774,6 +3800,7 @@ function RefinePanel({
   )
 }
 
+// Titled group wrapper used inside RefinePanel to label each refinement block.
 function RefineSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section style={{ marginBottom: 22 }}>
@@ -3792,6 +3819,8 @@ function RefineSection({ title, children }: { title: string; children: ReactNode
 /* Results                                                             */
 /* ------------------------------------------------------------------ */
 
+// Results screen — grid of watermarked logo previews (real AI images or SVG
+// fallbacks) with per-card buy taps, plus "generate again" / "start over".
 function Results({
   brandName,
   tagline,
@@ -3990,6 +4019,8 @@ const textInputStyle: CSSProperties = {
   transition: 'border-color 0.2s ease',
 }
 
+// Small toggleable pill button (e.g. name-casing options) — styled selected
+// when `selected` is true.
 function Pill({
   selected,
   onClick,
@@ -4022,6 +4053,8 @@ function Pill({
   )
 }
 
+// Numbered selectable list row — shows its `number` (or a check when selected),
+// supports a disabled state, and renders `children` as the row label.
 function ListRow({
   selected,
   disabled = false,

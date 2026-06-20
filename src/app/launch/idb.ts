@@ -6,6 +6,7 @@
 const DB_NAME = 'logoai'
 const STORE = 'kv'
 
+// Opens (and lazily creates) the `logoai` database, ensuring the `kv` store exists.
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, 1)
@@ -17,6 +18,7 @@ function openDb(): Promise<IDBDatabase> {
   })
 }
 
+// Stores a value under `key` in the kv store, overwriting any existing entry.
 export async function idbSet(key: string, value: unknown): Promise<void> {
   const db = await openDb()
   try {
@@ -31,6 +33,7 @@ export async function idbSet(key: string, value: unknown): Promise<void> {
   }
 }
 
+// Reads the value stored under `key`, or undefined if no entry exists.
 export async function idbGet<T = unknown>(key: string): Promise<T | undefined> {
   const db = await openDb()
   try {

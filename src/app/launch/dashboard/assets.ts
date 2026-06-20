@@ -18,6 +18,7 @@ export interface PaletteColor {
 const WHITE_LO = 238
 const WHITE_HI = 252
 
+// Load an image element from a URL/data-URL, resolving once it has decoded.
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -27,6 +28,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
+// Create an off-screen canvas of the given pixel dimensions.
 function makeCanvas(w: number, h: number) {
   const c = document.createElement('canvas')
   c.width = w
@@ -34,6 +36,7 @@ function makeCanvas(w: number, h: number) {
   return c
 }
 
+// Promisified canvas.toBlob, rejecting if the browser returns no blob.
 function canvasToBlob(canvas: HTMLCanvasElement, type = 'image/png'): Promise<Blob> {
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), type),
@@ -513,20 +516,24 @@ grestore
 
 /* ---------- helpers ---------- */
 
+// Format a 0–255 byte as a two-digit lowercase hex string.
 function toHex(n: number) {
   return n.toString(16).padStart(2, '0')
 }
+// Split a string into newline-separated chunks of at most n characters.
 function chunk(s: string, n: number) {
   const out: string[] = []
   for (let i = 0; i < s.length; i += n) out.push(s.slice(i, i + n))
   return out.join('\n')
 }
+// Parse a #rrggbb hex colour into {r,g,b}, or null if it isn't valid.
 function hexToRgb(hex: string) {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex)
   if (!m) return null
   const n = parseInt(m[1], 16)
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
 }
+// Read a Blob into a base64 data-URL string.
 export function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const r = new FileReader()

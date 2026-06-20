@@ -62,6 +62,7 @@ interface Result<T> {
 // Module-level cache so multi-component re-mounts share fetched results.
 const cache = new Map<string, { items: unknown[]; recommended: string[] }>()
 
+// Builds the stable cache key for a context by joining its identifying fields.
 function ctxKey<T>(c: Ctx<T>): string {
   return [
     c.kind,
@@ -74,6 +75,8 @@ function ctxKey<T>(c: Ctx<T>): string {
   ].join('|')
 }
 
+// Hook that returns static fallback suggestions immediately, then swaps in
+// validated AI-generated ones (debounced, cached, abortable) once they arrive.
 export function useLiveSuggestions<T>(ctx: Ctx<T>): Result<T> {
   const enabled = ctx.enabled !== false && ctx.brand.trim().length > 0
   const key = ctxKey(ctx)
@@ -165,6 +168,7 @@ export function useLiveSuggestions<T>(ctx: Ctx<T>): Result<T> {
 
 // Common validators for the supported item shapes.
 
+// Accepts any non-empty string.
 export const isString = (x: unknown): x is string => typeof x === 'string' && x.trim().length > 0
 
 export interface PaletteShape {
@@ -173,6 +177,7 @@ export interface PaletteShape {
   colors: { name: string; hex: string; desc: string }[]
 }
 
+// Validates a palette object: name/hint strings plus exactly 3 colours with hex codes.
 export const isPalette = (x: unknown): x is PaletteShape => {
   if (!x || typeof x !== 'object') return false
   const p = x as Record<string, unknown>
@@ -203,6 +208,7 @@ const VALID_STYLE_NAMES = new Set([
   'Emblem',
 ])
 
+// Validates a style object: a recognised style name plus pct/desc/ex fields.
 export const isStyle = (x: unknown): x is StyleShape => {
   if (!x || typeof x !== 'object') return false
   const s = x as Record<string, unknown>

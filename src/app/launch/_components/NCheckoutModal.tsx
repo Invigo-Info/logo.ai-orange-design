@@ -29,6 +29,7 @@ type Props = {
 
 /* ---------- icons ---------- */
 
+// Padlock icon used on the secure-checkout badge and pay button.
 function LockIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -37,6 +38,7 @@ function LockIcon({ size = 14 }: { size?: number }) {
     </svg>
   )
 }
+// Green checkmark used in the feature/benefit lists.
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--n-check, #00A63E)' }} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -44,6 +46,7 @@ function CheckIcon() {
     </svg>
   )
 }
+// Shield icon for the money-back guarantee row.
 function ShieldIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--n-check, #00A63E)' }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -51,6 +54,7 @@ function ShieldIcon() {
     </svg>
   )
 }
+// Clock icon for the "no subscriptions" trust item.
 function ClockIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--n-check, #00A63E)' }} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -59,6 +63,7 @@ function ClockIcon() {
     </svg>
   )
 }
+// Right-pointing arrow for the success-screen CTA.
 function ArrowIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -67,6 +72,7 @@ function ArrowIcon() {
     </svg>
   )
 }
+// Left chevron for the top-bar Back button.
 function BackIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -74,6 +80,7 @@ function BackIcon() {
     </svg>
   )
 }
+// Animated spinner shown while payment is processing.
 function Spinner() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="n-co-spin">
@@ -83,6 +90,7 @@ function Spinner() {
   )
 }
 
+// Small coloured pill rendering a payment-brand label (VISA, MC, PayPal, etc).
 function CardBrand({ label, bg, color = '#FFFFFF', w = 38 }: { label: string; bg: string; color?: string; w?: number }) {
   return (
     <span
@@ -105,6 +113,8 @@ function CardBrand({ label, bg, color = '#FFFFFF', w = 38 }: { label: string; bg
 
 /* ---------- modal ---------- */
 
+// Full-screen checkout modal: payment-method picker, order summary, simulated
+// pay flow, and an animated success screen for the single $49 logo purchase.
 export default function NCheckoutModal({ open, index, price, preview, onClose, onPaid, dashboardHref = '/launch/dashboard', onViewDashboard }: Props) {
   const router = useRouter()
   const [method, setMethod] = useState<PaymentMethod>('card')
@@ -645,6 +655,7 @@ const fieldInputStyle = {
   transition: 'border-color 0.15s ease',
 } as const
 
+// A selectable payment-method row with a radio indicator, label, and brand icons.
 function MethodOption({
   selected,
   onSelect,
@@ -693,6 +704,7 @@ function MethodOption({
   )
 }
 
+// Labelled form-field wrapper rendering an uppercase caption above its input.
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block" style={{ marginBottom: 10 }}>
@@ -714,6 +726,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   )
 }
 
+// Small icon + label pair for the trust badges (SSL, no subscriptions, etc).
 function TrustItem({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
     <span className="flex items-center gap-1.5">
