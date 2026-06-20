@@ -331,6 +331,9 @@ export default function Dashboard() {
           .dash-nav-label, .dash-feedback, .dash-profile { display: none !important; }
           .dash-main { padding: 24px 16px 72px !important; max-width: 100% !important; }
           .dash-concepts { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+          /* Centre the purchased-logo card instead of leaving it left with empty
+             space beside it. */
+          .dash-hero-left { margin-left: auto !important; margin-right: auto !important; }
         }
       `}</style>
       {/* ── Sidebar ── */}
@@ -385,7 +388,7 @@ export default function Dashboard() {
 
             <div className="flex flex-col lg:flex-row" style={{ gap: 32, marginTop: 18, alignItems: 'flex-start' }}>
               {/* Left: the purchased logo + the one-click download */}
-              <div style={{ width: '100%', maxWidth: 420, flexShrink: 0 }}>
+              <div className="dash-hero-left" style={{ width: '100%', maxWidth: 420, flexShrink: 0 }}>
                 <div style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: 20, border: '1px solid var(--m-border)', background: colorMode === 'dark' ? '#141413' : '#FFFFFF', overflow: 'hidden', position: 'relative', transition: 'background 0.2s ease' }}>
                   <div style={{ position: 'absolute', inset: 0 }}>
                     {heroImage ? (
