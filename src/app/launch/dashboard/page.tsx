@@ -299,22 +299,55 @@ export default function Dashboard() {
   })
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="dash-shell" style={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Mobile: collapse the fixed sidebar into a compact top bar so the main
+          content gets the full width instead of being squished. */}
+      <style>{`
+        @media (max-width: 768px) {
+          .dash-shell { flex-direction: column; }
+          .dash-aside {
+            width: 100% !important;
+            height: auto !important;
+            position: sticky !important;
+            top: 0;
+            z-index: 30;
+            background: var(--m-surface);
+            border-right: none !important;
+            border-bottom: 1px solid var(--m-border);
+            flex-direction: row !important;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px !important;
+          }
+          .dash-nav {
+            flex-direction: row !important;
+            margin-top: 0 !important;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 auto !important;
+            overflow-x: auto;
+          }
+          .dash-nav button { width: auto !important; white-space: nowrap; }
+          .dash-nav-label, .dash-feedback, .dash-profile { display: none !important; }
+          .dash-main { padding: 24px 16px 72px !important; max-width: 100% !important; }
+          .dash-concepts { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+        }
+      `}</style>
       {/* ── Sidebar ── */}
-      <aside style={{ width: 260, flexShrink: 0, borderRight: '1px solid var(--m-border)', padding: '24px 20px', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
+      <aside className="dash-aside" style={{ width: 260, flexShrink: 0, borderRight: '1px solid var(--m-border)', padding: '24px 20px', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
         <a href="/" aria-label="LOGO.AI — home" style={{ display: 'inline-flex', color: 'var(--m-ink)', textDecoration: 'none' }}>
           <LogoWordmark className="h-[26px]" />
         </a>
-        <nav style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-          <div className="m-sans" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--m-text-soft)', padding: '0 10px 8px' }}>My logos</div>
+        <nav className="dash-nav" style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+          <div className="m-sans dash-nav-label" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--m-text-soft)', padding: '0 10px 8px' }}>My logos</div>
           <button type="button" className="m-sans" onClick={() => setView('brand')} style={navItem(view === 'brand')}>{brand}</button>
           <button type="button" className="m-sans" onClick={() => setView('concepts')} style={navItem(view === 'concepts')}>
             <span>Other logos</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: view === 'concepts' ? 'var(--m-ink)' : 'var(--m-text-soft)' }}>{logos.length || ALL_CONCEPTS.length}</span>
           </button>
-          <a href="/launch/feedback" className="m-sans" style={{ padding: '10px 12px', borderRadius: 10, color: 'var(--m-text-muted)', fontSize: 14, textDecoration: 'none' }}>Feedback</a>
+          <a href="/launch/feedback" className="m-sans dash-feedback" style={{ padding: '10px 12px', borderRadius: 10, color: 'var(--m-text-muted)', fontSize: 14, textDecoration: 'none' }}>Feedback</a>
         </nav>
-        <div style={{ position: 'relative', paddingTop: 16, borderTop: '1px solid var(--m-border)' }}>
+        <div className="dash-profile" style={{ position: 'relative', paddingTop: 16, borderTop: '1px solid var(--m-border)' }}>
           {profileOpen && (
             <>
               {/* click-away catcher */}
@@ -340,7 +373,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ── Main ── */}
-      <main style={{ flex: 1, padding: '40px clamp(20px,4vw,56px) 100px', maxWidth: 1320 }}>
+      <main className="dash-main" style={{ flex: 1, padding: '40px clamp(20px,4vw,56px) 100px', maxWidth: 1320 }}>
         {view === 'brand' ? (
           <>
             {/* Hero — the purchased logo */}
@@ -448,7 +481,7 @@ export default function Dashboard() {
             <p className="m-body" style={{ marginTop: 8, maxWidth: 600, fontSize: 15, color: 'var(--m-text-soft)' }}>
               Every logo you generated, saved as a watermarked preview — newest first. Unlock any in HD for ${PRICE}.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginTop: 28 }}>
+            <div className="dash-concepts" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginTop: 28 }}>
               {logos.length > 0
                 ? logos.map((src, i) => (
                     <RealTile
