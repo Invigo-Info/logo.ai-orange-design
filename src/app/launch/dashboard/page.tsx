@@ -386,7 +386,7 @@ export default function Dashboard() {
             </div>
             <h1 className="m-display" style={{ fontSize: 'clamp(24px,3vw,30px)', fontWeight: 700, color: 'var(--m-ink)' }}>{brand}</h1>
 
-            <div className="flex flex-col lg:flex-row" style={{ gap: 32, marginTop: 18, alignItems: 'flex-start' }}>
+            <div className="flex flex-col xl:flex-row" style={{ gap: 32, marginTop: 18, alignItems: 'flex-start' }}>
               {/* Left: the purchased logo + the one-click download */}
               <div className="dash-hero-left" style={{ width: '100%', maxWidth: 420, flexShrink: 0 }}>
                 <div style={{ width: '100%', aspectRatio: '1 / 1', borderRadius: 20, border: '1px solid var(--m-border)', background: colorMode === 'dark' ? '#141413' : '#FFFFFF', overflow: 'hidden', position: 'relative', transition: 'background 0.2s ease' }}>
@@ -448,7 +448,7 @@ export default function Dashboard() {
                 {DOWNLOADS.map((g, gi) => (
                   <div key={g.group} style={{ marginTop: gi === 0 ? 0 : 26 }}>
                     <div className="m-sans" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--m-text-soft)' }}>{g.group}</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" style={{ gap: 12, marginTop: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(185px, 1fr))', gap: 12, marginTop: 12 }}>
                       {g.items.map((it) => (
                         <DownloadTile key={it.fmt} item={it} busy={downloading === it.fmt} disabled={downloading !== null} onClick={() => handleDownload(it.fmt)} />
                       ))}
