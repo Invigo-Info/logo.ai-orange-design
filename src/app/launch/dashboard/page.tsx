@@ -443,12 +443,13 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* Right: every individual download, grouped — fills the space beside the logo */}
-              <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Right: every individual download, grouped — fills the space beside the
+                  logo (row) and the full width when stacked (alignSelf stretch). */}
+              <div style={{ flex: 1, minWidth: 0, alignSelf: 'stretch', width: '100%' }}>
                 {DOWNLOADS.map((g, gi) => (
                   <div key={g.group} style={{ marginTop: gi === 0 ? 0 : 26 }}>
                     <div className="m-sans" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--m-text-soft)' }}>{g.group}</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(185px, 1fr))', gap: 12, marginTop: 12 }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 12, marginTop: 12 }}>
                       {g.items.map((it) => (
                         <DownloadTile key={it.fmt} item={it} busy={downloading === it.fmt} disabled={downloading !== null} onClick={() => handleDownload(it.fmt)} />
                       ))}
