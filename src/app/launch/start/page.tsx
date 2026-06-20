@@ -1891,7 +1891,7 @@ function SkeletonGrid({
   return (
     <>
       {inlineKeyframes}
-      <div className="grid grid-cols-3" style={{ gap: 10 }}>
+      <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: 10 }}>
         {items.map((_, i) => (
           <div key={i} style={{ ...baseStyle, aspectRatio: '1 / 1', borderRadius: 14 }} />
         ))}
@@ -2798,7 +2798,7 @@ function FormSteps(p: FormProps) {
           {liveStyles.loading ? (
             <SkeletonGrid shape="style" count={6} />
           ) : (
-          <div className="grid grid-cols-3" style={{ gap: 10 }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: 10 }}>
           {stylesList.map((lt, i) => {
             const selected = p.logoTypeIndex === i
             return (
