@@ -5,14 +5,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Best AI Logo Generator — Logo.ai",
   description:
-    "Create a custom logo in 60 seconds. Secure your free logo at launch — first 2,000,000 users only. Join the waitlist now.",
+    "Create a custom logo in 60 seconds. Secure your free logo at launch — first 2,500,000 users only. Join the waitlist now.",
   applicationName: "Logo.ai",
   openGraph: {
     type: "website",
     siteName: "Logo.ai",
     title: "Best AI Logo Generator — Logo.ai",
     description:
-      "Create a custom logo in 60 seconds. Secure your free logo at launch — first 2,000,000 users only. Join the waitlist now.",
+      "Create a custom logo in 60 seconds. Secure your free logo at launch — first 2,500,000 users only. Join the waitlist now.",
     url: "https://www.logo.ai",
   },
 };

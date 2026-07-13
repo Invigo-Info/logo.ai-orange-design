@@ -16,6 +16,14 @@ import {
 const BASE_COUNT = 63482;
 export const revalidate = 60;
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Logo.ai",
+  alternateName: "Logo.ai",
+  url: "https://www.logo.ai/",
+};
+
 export default async function Home() {
   const [logoCategories, mockupCategories] = await Promise.all([
     getLogoCategories(),
@@ -33,6 +41,10 @@ export default async function Home() {
 
   return (
     <CountProvider initialCount={initialCount}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <Navbar />
       <Hero />
       <LogoExamples categories={logoCategories} />

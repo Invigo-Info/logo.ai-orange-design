@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import EmailBar from "./EmailBar";
 import { useCount } from "./CountProvider";
 
-const TOTAL = 2_000_000;
+const TOTAL = 2_500_000;
 const COUNTDOWN_START = new Date("2026-04-01T00:00:00").getTime();
-const COUNTDOWN_END = new Date("2026-08-01T00:00:00").getTime();
+const COUNTDOWN_END = new Date("2026-09-01T00:00:00").getTime();
 
 export default function Hero() {
   const { count, setCount } = useCount();
-  const [time, setTime] = useState({ d: "61", h: "00", m: "00", s: "00" });
+  const [time, setTime] = useState({ d: "50", h: "00", m: "00", s: "00" });
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function Hero() {
 
         {/* Subhead */}
         <p className="text-[1.12rem] text-cream-55 leading-[1.7] max-w-[500px] mb-11 text-center opacity-0 animate-rise-3">
-          Free logo for the first 2,000,000 users. Join now to secure yours at
+          Free logo for the first 2,500,000 users. Join now to secure yours at
           launch.
           {/* Original, professional AI-generated logos.
           <br />
@@ -104,7 +104,7 @@ export default function Hero() {
           {/* Claimed count */}
           <p className="text-[0.78rem] text-cream-35 font-medium">
             <strong className="text-cream-55">{count.toLocaleString()}</strong>{" "}
-            of 2,000,000 free logos secured
+            of 2,500,000 free logos secured
           </p>
         </div>
       </div>
