@@ -108,7 +108,7 @@ export default function TermsContent() {
             signups for free logos at launch.
           </P>
           <P>
-            When we launch in August 2026, you&apos;ll be able to create, edit,
+            When we launch in September 2026, you&apos;ll be able to create, edit,
             and download logos and brand assets through our platform.
           </P>
         </PolicySection>

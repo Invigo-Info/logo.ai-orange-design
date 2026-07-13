@@ -8,10 +8,10 @@ import {
   type ReactNode,
 } from "react";
 
-const TOTAL = 2_000_000;
+const TOTAL = 2_500_000;
 const SIMULATED_BASE = 1_184_294;
 const REFERENCE_DATE = new Date("2026-06-01T00:00:00").getTime();
-const LAUNCH_DATE = new Date("2026-08-01T00:00:00").getTime();
+const LAUNCH_DATE = new Date("2026-09-01T00:00:00").getTime();
 const RATE = (TOTAL - SIMULATED_BASE) / (LAUNCH_DATE - REFERENCE_DATE);
 const TICK_INTERVAL = 1_000;
 
