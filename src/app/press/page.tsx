@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Press & Media — Logo.ai | AI-Powered Logo Generator",
   description:
     "Logo.ai press resources, media inquiries, and brand assets. Get the latest news about the AI logo generator launching October 2026 with 3,000,000 free logos.",
+  alternates: {
+    canonical: "/press",
+  },
 };
 
 export default async function PressPage() {

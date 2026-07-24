@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Contact — Logo.ai | AI-Powered Logo & Brand Design",
   description:
     "Got a question about Logo.ai? Find answers about our launch, pricing, free logos, and what's included — or send us a message. We reply within 24 hours.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default async function ContactPage() {

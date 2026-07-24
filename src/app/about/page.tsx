@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   title: "About Logo.ai — AI-Powered Logos, Built from Scratch",
   description:
     "Logo.ai creates original, professional logos using AI — not templates. Learn how we're making agency-level brand design accessible to everyone, for free.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default async function AboutPage() {
