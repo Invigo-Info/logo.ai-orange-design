@@ -3,10 +3,14 @@ import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.logo.ai"),
   title: "Best AI Logo Generator — Logo.ai",
   description:
     "Create a custom logo in 60 seconds. Secure your free logo at launch — first 3,000,000 users only. Join the waitlist now.",
   applicationName: "Logo.ai",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     siteName: "Logo.ai",

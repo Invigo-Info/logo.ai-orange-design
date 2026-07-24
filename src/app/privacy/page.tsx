@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy — Logo.ai | Your Data, Your Control",
   description:
     "Learn how Logo.ai collects, uses, and protects your personal information. We never sell your data to third parties. Read our full privacy policy here.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default async function PrivacyPage() {

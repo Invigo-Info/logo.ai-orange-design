@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Cookie Policy — Logo.ai | Clear, Simple, No Tricks",
   description:
     "How Logo.ai uses cookies to improve your experience. No advertising cookies. No tracking cookies. We never sell your data to advertisers. Simple and clear.",
+  alternates: {
+    canonical: "/cookies",
+  },
 };
 
 export default async function CookiesPage() {

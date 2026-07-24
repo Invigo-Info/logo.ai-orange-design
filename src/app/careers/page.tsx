@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Careers at Logo.ai — Build the Future of Logo Design",
   description:
     "Logo.ai is looking for builders, self-starters, and long-term thinkers. Excited about AI and want to shape the future of brand design? We'd love to meet you.",
+  alternates: {
+    canonical: "/careers",
+  },
 };
 
 export default async function CareersPage() {

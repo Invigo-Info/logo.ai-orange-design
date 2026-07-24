@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Terms of Service — Logo.ai | AI-Powered Logo Generator",
   description:
     "Read the Terms of Service for Logo.ai, the AI-powered logo generator launching October 2026. You own what you create. Full commercial rights are included.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default async function TermsPage() {
