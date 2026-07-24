@@ -83,6 +83,6 @@ export const milestones: Milestone[] = [
     date: "Apr 2025",
     title: "Public Launch",
     description:
-      "Logo.ai opens to the world — free for the first 2,500,000 users.",
+      "Logo.ai opens to the world — free for the first 3,000,000 users.",
   },
 ];
